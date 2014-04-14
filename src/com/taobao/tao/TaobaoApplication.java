@@ -9,6 +9,7 @@ import java.util.zip.ZipFile;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
+import android.content.pm.PackageInfo;
 import android.taobao.atlas.framework.Atlas;
 import android.util.Log;
 
@@ -18,13 +19,14 @@ public class TaobaoApplication extends PanguApplication {
 
     final static String TAG = "TaobaoApplication";
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onCreate() {
         super.onCreate();
 
         Globals.setApplication(this);
         TaoApplication.context = this;
-        
+
         try {
             Atlas.getInstance().init(this);
             Atlas.getInstance().startup(null);
@@ -32,14 +34,14 @@ public class TaobaoApplication extends PanguApplication {
             Log.e(TAG, "Could not start up atlas framework !!!", e);
         }
 
-//        Coordinator.postTask(new TaggedRunnable("InstallBundles") {
-//
-//            @Override
-//            public void run() {
-//                processBundles();
-//            }
-//        });
-        
+        // Coordinator.postTask(new TaggedRunnable("InstallBundles") {
+        //
+        // @Override
+        // public void run() {
+        // processBundles();
+        // }
+        // });
+
         processBundles();
 
     }
@@ -54,21 +56,54 @@ public class TaobaoApplication extends PanguApplication {
                 ZipEntry zipEntry = entries.nextElement();
                 // 寻找assets目录下的后缀为.awb的文件
                 if (zipEntry.getName().startsWith("assets/") && zipEntry.getName().endsWith(".awb")) {
-                    Log.d(TAG, "processing " + zipEntry.getName());
-                    String packageName = substringBetween(zipEntry.getName(), "assets/", ".awb");
+                    Log.d(TAG, "Processing " + zipEntry.getName());
+                    
+                    String fileName = zipEntry.getName().substring(zipEntry.getName().lastIndexOf("/") + 1,
+                                                                   zipEntry.getName().length());
+                    String packageName = substringBetween(zipEntry.getName(), "assets/", "-");
+                    String versionCode = substringBetween(zipEntry.getName(), "-", ".awb");
+                    
                     Bundle bundle = Atlas.getInstance().getBundle(packageName);
                     if (bundle != null) {
-                        // TODO: 检测是否需要更新
+                        PackageInfo packageInfo = Atlas.getInstance().getBundlePackageInfo(packageName);
+                        if (packageInfo != null) {
+                            try {
+                                int v = Integer.valueOf(versionCode);
+                                if (v < packageInfo.versionCode) {
+                                    InputStream inputStream = null;
+                                    try {
+                                        inputStream = this.getAssets().open(fileName);
+                                        Atlas.getInstance().updateBundle(packageName, inputStream);
+                                    } catch (IOException e) {
+                                        Log.e(TAG, "Could not update bundle.", e);
+                                    } catch (BundleException e) {
+                                        Log.e(TAG, "Could not update bundle.", e);
+                                    } finally {
+                                        if (inputStream != null) {
+                                            try {
+                                                inputStream.close();
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch (NumberFormatException e) {
+                                Log.e(TAG, "Could not get version of " + zipEntry.getName() + " , Skip update");
+                            }
+                        } else {
+                            Log.e(TAG, "Could not get PackageInfo of " + zipEntry.getName() + " , Skip update");
+                        }
                     } else {
                         // 新增Bundle,需要安装
                         InputStream inputStream = null;
                         try {
-                            inputStream = this.getAssets().open(packageName + ".awb");
+                            inputStream = this.getAssets().open(fileName);
                             Atlas.getInstance().installBundle(packageName, inputStream);
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            Log.e(TAG, "Could not install bundle.", e);
                         } catch (BundleException e) {
-                            e.printStackTrace();
+                            Log.e(TAG, "Could not install bundle.", e);
                         } finally {
                             if (inputStream != null) {
                                 try {
