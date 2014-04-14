@@ -58,6 +58,7 @@
 	   <filtering>true</filtering>
 	   </resource>
       -->  
+    </resources>
       <pluginManagement>
 	<plugins>
 	  <plugin>
