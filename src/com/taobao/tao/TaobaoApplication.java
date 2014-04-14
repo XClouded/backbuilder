@@ -32,9 +32,6 @@ public class TaobaoApplication extends PanguApplication {
         } catch (Exception e) {
             Log.e(TAG, "Could not set Globals.sApplication !!!", e);
         }
-        
-        // 兼容旧代码，新代码需要获取系统Application都使用Globals.getApplication()
-        TaoApplication.context = this;
 
         try {
             Atlas.getInstance().init(this);
