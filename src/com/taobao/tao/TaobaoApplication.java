@@ -2,6 +2,7 @@ package com.taobao.tao;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -24,7 +25,15 @@ public class TaobaoApplication extends PanguApplication {
     public void onCreate() {
         super.onCreate();
 
-        Globals.setApplication(this);
+        try {
+            Field sApplication = Globals.class.getDeclaredField("sApplication");
+            sApplication.setAccessible(true);
+            sApplication.set(null, this);
+        } catch (Exception e) {
+            Log.e(TAG, "Could not set Globals.sApplication !!!", e);
+        }
+        
+        // 兼容旧代码，新代码需要获取系统Application都使用Globals.getApplication()
         TaoApplication.context = this;
 
         try {
