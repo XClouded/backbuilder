@@ -21,13 +21,7 @@
       <version>4.3.0</version>
       <scope>provided</scope>
     </dependency>
-    	<!--<dependency>
-			<groupId>com.taobao.android</groupId>
-			<artifactId>taobaocompat</artifactId>
-			<type>apklib</type>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>-->
-    <!--<dependency>
+      <dependency>
       <groupId>com.taobao.android</groupId>
       <artifactId>taobao_mytaobao</artifactId>
       <type>awb</type>
@@ -38,7 +32,7 @@
         </exclusion>
       </exclusions>
       <version>1.0.0-SNAPSHOT</version>
-    </dependency>-->
+    </dependency>
    <dependency>
       <groupId>com.taobao.android</groupId>
       <artifactId>taobaocompat</artifactId>
