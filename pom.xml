@@ -331,6 +331,37 @@
 			<properties>
 				<packaging.type>skt</packaging.type>
 			</properties>
+				<build>
+			  <plugins>
+			  <plugin>
+				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+				<artifactId>android-maven-plugin</artifactId>
+				<version>${android.maven.plugin.version}</version>
+				<configuration>
+					<undeployBeforeDeploy>true</undeployBeforeDeploy>
+					<sdk>
+						<path>${env.ANDROID_HOME}</path>
+						<platform>${android.compile.apilevel}</platform>
+					</sdk>
+					<proguard>
+						<skip>true</skip>
+						<config>proguard.cfg</config>
+					</proguard>
+					<androidManifestFile>
+						${project.basedir}/AndroidManifest.xml
+					</androidManifestFile>
+					<mergeManifests>false</mergeManifests>
+					<extractDuplicates>true</extractDuplicates>
+					<!--<isResIDDependency>false</isResIDDependency> <customPackageID>127</customPackageID> -->
+					<dex>
+						<jvmArguments>
+							<jvmArgument>-Xmx2048M</jvmArgument>
+						</jvmArguments>
+					</dex>
+				</configuration>
+			</plugin>
+		      </plugins>
+			  </build>
 			<build>
 			  <plugins>
 			  <plugin>
