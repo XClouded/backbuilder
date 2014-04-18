@@ -46,6 +46,20 @@
 			</exclusions>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.taobao.android</groupId>
+			<artifactId>login4android_sdk</artifactId>
+			<type>awb</type>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>com.taobao.android</groupId>
 			<artifactId>taobao_shop</artifactId>
