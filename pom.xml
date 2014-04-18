@@ -215,6 +215,13 @@
     		<version>feature_20140520-SNAPSHOT</version>
 			<type>apklib</type>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.taobao.android</groupId>
+			<artifactId>taobao_scancode</artifactId>
+			<version>1.0.6-SNAPSHOT</version>
+			<type>apklib</type>
+		</dependency>		
 
 		<dependency>
 			<groupId>com.taobao.android</groupId>
