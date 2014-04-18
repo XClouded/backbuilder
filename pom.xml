@@ -160,6 +160,18 @@
 					<groupId>com.taobao.android</groupId>
 					<artifactId>taobaocompat</artifactId>
 				</exclusion>
+				<exclusion>
+				    <artifactId>usertrack-share</artifactId>
+				    <groupId>com.taobao.android</groupId>
+				</exclusion>
+				<exclusion>
+				    <artifactId>usertrack</artifactId>
+				    <groupId>com.taobao.android</groupId>
+				</exclusion>
+				<exclusion>
+				    <artifactId>share</artifactId>
+				    <groupId>com.taobao.android</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
