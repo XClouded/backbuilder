@@ -98,7 +98,7 @@
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		
-		<dependency>
+		<!--<dependency>
 			<groupId>com.taobao.android</groupId>
 			<artifactId>taobao_scancode</artifactId>
 			<type>awb</type>
@@ -110,7 +110,7 @@
 			</exclusions>
 			<version>1.0.6-SNAPSHOT</version>
 		</dependency>
-		
+		-->
 		<dependency>
 			<groupId>com.taobao.android</groupId>
 			<artifactId>taobao_shop</artifactId>
@@ -215,13 +215,13 @@
     		<version>feature_20140520-SNAPSHOT</version>
 			<type>apklib</type>
 		</dependency>
-<!--		
+		
 		<dependency>
 			<groupId>com.taobao.android</groupId>
 			<artifactId>taobao_scancode</artifactId>
 			<version>1.0.6-SNAPSHOT</version>
 			<type>apklib</type>
-		</dependency>		-->
+		</dependency>		
 <!-- 
 		<dependency>
 		    <groupId>com.taobao.android</groupId>
