@@ -52,14 +52,15 @@ public class TaobaoApplication extends PanguApplication {
             Log.e(TAG, "Could not start up atlas framework !!!", e);
         }
 
-        Coordinator.postTask(new TaggedRunnable("ProcessBundles") {
+//        Coordinator.postTask(new TaggedRunnable("ProcessBundles") {
+//
+//            @Override
+//            public void run() {
+//                processBundles();
+//            }
+//        });
 
-            @Override
-            public void run() {
-                processBundles();
-            }
-        });
-
+        processBundles();
     }
 
     private void processBundles() {
