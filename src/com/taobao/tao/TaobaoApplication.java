@@ -28,7 +28,8 @@ public class TaobaoApplication extends PanguApplication {
     /**
      * 指定Bundle包的处理顺序；程序首先按照这里的顺序来处理Bundle包，然后再乱序处理剩下的Bundle包。
      */
-    final static String[] SORTED_PACKAGES = new String[] { "com.taobao.android.trade", "com.taobao.mytaobao" };
+    final static String[] SORTED_PACKAGES = new String[] { "com.taobao.browser", "com.taobao.android.trade",
+            "com.taobao.mytaobao", "com.taobao.shop" };
 
     @Override
     public void onCreate() {
@@ -45,22 +46,21 @@ public class TaobaoApplication extends PanguApplication {
         try {
             Properties props = new Properties();
             props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
-            
+
             Atlas.getInstance().init(this);
             Atlas.getInstance().startup(props);
         } catch (Exception e) {
             Log.e(TAG, "Could not start up atlas framework !!!", e);
         }
 
-//        Coordinator.postTask(new TaggedRunnable("ProcessBundles") {
-//
-//            @Override
-//            public void run() {
-//                processBundles();
-//            }
-//        });
+        Coordinator.postTask(new TaggedRunnable("ProcessBundles") {
 
-        processBundles();
+            @Override
+            public void run() {
+                processBundles();
+            }
+        });
+
     }
 
     private void processBundles() {
