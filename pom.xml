@@ -202,12 +202,12 @@
 		  <version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		
-		<!-- 
+		
 		<dependency>
 			<groupId>com.taobao.android</groupId>
 			<artifactId>cashdesk_common</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
-			<type>apklib</type>
+			<type>awb</type>
 			<exclusions>
 				<exclusion>
 					<groupId>*</groupId>
@@ -215,7 +215,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
+		<!--<dependency>
 			<groupId>com.alipay.android.app</groupId>
 			<artifactId>minipaysdk</artifactId>
 			<version>1.0.3.1-SNAPSHOT</version>
