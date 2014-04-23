@@ -111,8 +111,8 @@
 			</exclusions>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
-		
-	<!--	<dependency>
+		<!--
+		<dependency>
 			<groupId>com.taobao.android</groupId>
 			<artifactId>taobao_scancode</artifactId>
 			<type>awb</type>
@@ -125,7 +125,7 @@
 			<version>1.0.7-SNAPSHOT</version>
 		</dependency>
 -->
-		<dependency>
+	<dependency>
 			<groupId>com.taobao.android</groupId>
 			<artifactId>taobao_shop</artifactId>
 			<type>awb</type>
@@ -261,12 +261,6 @@
 			<type>apklib</type>
 		</dependency>
 		
-		<dependency>
-			<groupId>com.taobao.android</groupId>
-			<artifactId>taobao_scancode</artifactId>
-			<version>1.0.7-SNAPSHOT</version>
-			<type>apklib</type>
-		</dependency>
 
 		<dependency>
 		    <groupId>com.taobao.android</groupId>
