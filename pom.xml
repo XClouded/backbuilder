@@ -353,6 +353,29 @@
 				<artifactId>versions-maven-plugin</artifactId>
 				<version>2.1</version>
 			</plugin>
+			<plugin>
+	  <groupId>com.google.code.maven-replacer-plugin</groupId>
+	  <artifactId>replacer</artifactId>
+	  <version>1.5.2</version>
+	  <executions>
+	  <execution>
+	  <phase>prepare-package</phase>
+	  <goals>
+	  <goal>replace</goal>
+	  </goals>
+	  </execution>
+	  </executions>
+	  <configuration>
+	  <file>${project.basedir}/target/unpacked-libs/com.taobao.android_taobaocompat_apklib_1.0.0-SNAPSHOT/res/values/boolean.xml</file>
+	  <regex>false</regex>
+	  <replacements>
+	  <replacement>
+	  <token>true</token>
+	  <value>false</value>
+	  </replacement>
+	  </replacements>
+	  </configuration>
+	  </plugin>
 			<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>build-helper-maven-plugin</artifactId> 
 				<version>1.7</version> <executions> <execution> <phase>package</phase> <goals> 
 				<goal>attach-artifact</goal> </goals> <configuration> <artifacts> <artifact> 
