@@ -1,0 +1,4 @@
+desktop_shortcut::0::是否打开桌面快捷方式0(否)1(是)
+traffic_prompt::1::是否提示资费提醒0(否)1(是)
+backgroud_service_on::0::是否打开后台服务0(否)1(是)
+isCTCDevice::1::是否电信定制机0(否)1(是)

@@ -1,0 +1,5 @@
+hide_barcodesech::1::是否屏蔽条码搜功能0(否)1(是)
+backgroud_service_on::0::是否打开后台服务0(否)1(是)
+desktop_shortcut::0::是否打开桌面快捷方式0(否)1(是)
+useJinLiApnUriGetter::1::是否使用金立特殊的url生成0(否)1(是)
+isAppCenterSupported::0::是否支持应用中心0(不支持)1(支持)

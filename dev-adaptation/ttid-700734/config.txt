@@ -1,0 +1,2 @@
+﻿backgroud_service_on::0::是否打开后台服务0(否)1(是)
+isFourSquareSensor::1::是否是酷派的四方感应器0（否）；1（是）

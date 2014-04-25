@@ -1,0 +1,1 @@
+packetInstallLocation::internalOnly::packet安装的地址  auto是auto  internalOnly是rom  preferExternal是sdcard  
