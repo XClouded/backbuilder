@@ -8,12 +8,16 @@
 	<packaging>${packaging.type}</packaging>
 	<name>taobaobuilder</name>
 	<properties>
-		<project.build.Encoding>UTF-8</project.build.Encoding>
-		<android.maven.plugin.version>3.8.5-SNAPSHOT
-		</android.maven.plugin.version>
-		<java.version>1.6</java.version>
-		<!-- 8 means 2.2, 2.2 means 8, both OK , this is for apk package -->
-		<android.compile.apilevel>18</android.compile.apilevel>
+        <sign.keystore>${project.basedir}/tools/debug.keystore</sign.keystore>
+        <sign.alias>androiddebugkey</sign.alias>
+        <sign.storepass>android</sign.storepass>
+        <sign.arguments>-CN=Android Debug,O=Android,C=US</sign.arguments>
+        <project.build.Encoding>UTF-8</project.build.Encoding>
+        <android.maven.plugin.version>3.8.5-SNAPSHOT</android.maven.plugin.version>
+        <java.version>1.6</java.version>
+        <!-- 8 means 2.2, 2.2 means 8, both OK , this is for apk package -->
+        <android.compile.apilevel>18</android.compile.apilevel>
+        <tb.platform.version>1.0.0-SNAPSHOT</tb.platform.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -358,6 +362,36 @@
 					</dex>
 				</configuration>
 			</plugin>
+			 <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jarsigner-plugin</artifactId>
+                <version>1.2</version>
+                <executions>
+                    <execution>
+                        <id>signing</id>
+                        <goals>
+                            <goal>sign</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <inherited>true</inherited>
+                        <configuration>
+                            <removeExistingSignatures>true</removeExistingSignatures>
+                            <archiveDirectory/>
+                            <includes>
+                                <include>${project.build.directory}/${project.artifactId}.apk
+                                </include>
+                            </includes>
+                            <keystore>${sign.keystore}</keystore>
+                            <alias>${sign.alias}</alias>
+                            <storepass>${sign.storepass}</storepass>
+                            <!-- <keypass>${sign.keypass}</keypass> -->
+                            <verbose>true</verbose>
+                            <!--<arguments> <argument>${sign.arguments}</argument> </arguments> -->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>versions-maven-plugin</artifactId>
