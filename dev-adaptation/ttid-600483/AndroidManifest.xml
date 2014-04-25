@@ -1,0 +1,872 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest package="com.taobao.taobao" xmlns:android="http://schemas.android.com/apk/res/android"
+	android:installLocation="auto"  android:versionName="3.4.6" android:versionCode="64"
+>
+
+	<application android:icon="@drawable/icon" android:label="@string/app_name"
+
+		android:name="com.taobao.tao.TaoApplication" android:debuggable="true">
+		<!-- 欢迎界面 -->
+		<activity android:name="com.taobao.tao.Welcome" android:theme="@style/Theme.NoBackgroundAndTitleWithTranslucent"
+			android:label="@string/app_name" android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait" >
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+		
+		<service
+			android:name="com.taobao.statistic.module.data.Yolanda"
+			android:process=":utremote" >
+		</service>
+
+		<!-- 主界面 -->
+		<activity android:name="com.taobao.tao.MainActivity2"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait" android:windowSoftInputMode="adjustPan"
+			android:alwaysRetainTaskState="true"
+			android:launchMode="singleTask">
+		</activity>
+		
+		<!-- 图文详情 -->
+		<activity android:name="com.taobao.tao.topdetail.TopDetailActivity"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait" android:windowSoftInputMode="adjustPan"
+			android:process=":taobao_remote">
+		</activity>
+		
+		<activity android:name="com.taobao.tao.LogisticsActivity"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait" android:windowSoftInputMode="adjustPan"
+			android:launchMode="singleTop">
+		</activity>
+
+				<activity android:name="com.taobao.tao.mytaobao.OrderRateActivity"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait" android:windowSoftInputMode="adjustPan"
+			android:launchMode="singleTop">
+		</activity>
+		
+		<activity android:name="com.taobao.tao.MyTaobaoActivity"
+			android:theme="@android:style/Theme.NoTitleBar"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait" android:windowSoftInputMode="adjustPan"
+			android:launchMode="singleTop">
+		</activity>
+
+		<activity
+		    android:name="com.taobao.tao.mytaobao.MyTaoBaoActivity"
+				android:theme="@style/Theme.NoBackgroundAndTitle"
+		    android:configChanges="keyboardHidden|orientation"
+		    android:launchMode="singleTop"
+		    android:screenOrientation="portrait"
+		    android:windowSoftInputMode="adjustPan" >
+		</activity>
+		<activity
+		    android:name="com.taobao.tao.logistic.LogisticDetailActivity"
+				android:theme="@style/Theme.NoBackgroundAndTitle"
+		    android:configChanges="keyboardHidden|orientation"
+		    android:launchMode="singleTop"
+		    android:screenOrientation="portrait"
+		    android:windowSoftInputMode="adjustPan" >
+		</activity>
+				<activity
+		    android:name="com.taobao.tao.logistic.LogisticListActivity"
+		    android:configChanges="keyboardHidden|orientation"
+		    android:launchMode="singleTop"
+		    android:screenOrientation="portrait"
+		    android:theme="@style/Theme.NoBackgroundAndTitle"
+		    android:windowSoftInputMode="adjustPan" >
+
+		</activity>
+		
+		<activity
+		    android:name="com.taobao.tao.mytaobao.OrderListActivity"
+		    android:theme="@style/Theme.NoBackgroundAndTitle"
+		    android:configChanges="keyboardHidden|orientation"
+		    android:launchMode="singleTask"
+		    android:screenOrientation="portrait"
+		    android:windowSoftInputMode="adjustPan" >
+		</activity>
+		
+		<activity
+		    android:name="com.taobao.tao.mytaobao.OrderDetailActivity"
+		    android:theme="@style/Theme.NoBackgroundAndTitle"
+		    android:configChanges="keyboardHidden|orientation"
+		    android:launchMode="singleTop"
+		    android:screenOrientation="portrait"
+		    android:windowSoftInputMode="adjustPan" >
+		</activity>
+		
+		<activity android:name="com.taobao.tao.CartActivity"
+			android:theme="@android:style/Theme.NoTitleBar"
+			android:configChanges="keyboardHidden|orientation"
+			android:windowSoftInputMode="adjustPan"
+			android:screenOrientation="portrait"
+			android:launchMode="singleTop">
+		</activity>
+
+		<activity android:name="com.taobao.tao.MoreActivity"
+			android:theme="@android:style/Theme.NoTitleBar"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait" android:windowSoftInputMode="adjustPan"
+			android:launchMode="singleTop">
+		</activity>
+
+		<!-- 聚划算 -->
+		<activity android:name="com.taobao.tao.JuActivity"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait" android:windowSoftInputMode="adjustPan">
+		</activity>
+
+		 <!-- 失效宝贝 -->
+		<activity android:name="com.taobao.tao.InvalidCartActivity"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait" android:windowSoftInputMode="adjustPan">
+		</activity>
+		
+		<!-- 类目运营 -->
+		<activity android:name="com.taobao.tao.ClientAreaActivity"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden|adjustPan">
+		</activity>
+		
+		<!-- 类目运营 -->
+		<activity android:name="com.taobao.tao.ClientAreaSubActivity"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden|adjustPan">
+		</activity>
+		    
+		<!-- 直充 -->
+		<activity android:name="com.taobao.tao.ConvenienceCenter"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden|adjustResize">
+		</activity>
+
+		<!-- 最新促销 -->
+		<activity android:name="com.taobao.tao.PromotionActivity"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden|adjustResize">
+		</activity>
+
+		<!-- 新品活动 -->
+		<activity android:name="com.taobao.tao.GoodsActivity"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait" android:windowSoftInputMode="adjustPan">
+		</activity>
+
+		<activity android:name="com.taobao.tao.PhoneAddress"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait">
+		</activity>
+
+
+
+		<!-- 浏览器 -->
+		<activity android:name="com.taobao.tao.Browser"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:windowSoftInputMode="stateHidden|adjustResize"
+			android:screenOrientation="portrait" android:launchMode="singleTop"
+			android:allowTaskReparenting="true"
+			>
+			<intent-filter>
+				<action android:name="com.taobao.taobao.Buy_Component" />
+				<action android:name="com.taobao.tao.detail.DetailActivity" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
+
+		<!-- alipay更新 -->
+		<activity android:name="com.taobao.tao.AlipayUpdateActivity"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait">
+		</activity>
+		<!-- taobao更新 -->
+		<activity android:name="com.taobao.tao.TaobaoUpdateActivity"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait">
+		</activity>
+
+		<!-- 投诉 -->
+		<activity android:name="com.taobao.tao.ComplainActivity"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait">
+		</activity>
+
+		<!-- 二维码扫描界面 -->
+		<activity android:name="com.google.zxing.client.android.CaptureActivity"
+			android:screenOrientation="landscape" android:configChanges="keyboardHidden|orientation"
+			android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+			<intent-filter>
+				<action android:name="com.google.zxing.client.android.SCAN" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+
+		</activity>
+		
+		<activity android:screenOrientation="portrait"
+			android:name="com.taobao.tao.detail.DetailActivity" android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:windowSoftInputMode="adjustPan"
+			android:launchMode="singleTop">
+			<intent-filter>
+				<action android:name="com.taobao.tao.DetailActivity" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
+
+		<!-- 订单browser -->
+		<activity android:screenOrientation="portrait"
+			android:name="com.taobao.tao.OrderActivity" android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:launchMode="singleTop">
+		</activity>
+		<!-- 支付宝browser -->
+		<activity android:screenOrientation="portrait"
+			android:name="com.taobao.tao.AlipayActivity" android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation" 
+			android:windowSoftInputMode="adjustPan|stateHidden"
+			android:alwaysRetainTaskState="true"
+			android:launchMode="singleTop">
+		</activity>
+		<!-- 我的订单列表browser -->
+		<activity android:screenOrientation="portrait"
+			android:name="com.taobao.tao.BoughtListActivity" android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:launchMode="singleTop">
+		</activity>
+		<!-- 旺旺browser -->
+		<activity android:screenOrientation="portrait"
+			android:name="com.taobao.tao.WWwapActivity" android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation|locale"
+            android:windowSoftInputMode="stateHidden|adjustResize"
+			android:launchMode="singleTop">
+		</activity>
+
+		<!-- 推推browser -->
+		<activity android:screenOrientation="portrait"
+			android:name="com.taobao.tao.TuituiWapActivity" android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:launchMode="singleTop">
+		</activity>
+
+		<!-- 电子书browser -->
+		<activity android:screenOrientation="portrait"
+			android:name="com.taobao.tao.EbookWapActivity" android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:launchMode="singleTop">
+		</activity>
+		<!-- 登录 -->
+		<activity android:screenOrientation="portrait"
+			android:name="com.taobao.tao.LoginActivity" android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+						android:windowSoftInputMode="adjustPan|stateHidden"
+			android:launchMode="singleTop">
+		</activity>
+		<!-- 类目导航 -->
+		<activity android:screenOrientation="portrait"
+			android:name="com.taobao.tao.CategroyActivity" android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:launchMode="singleTop">
+		</activity>
+		<!-- 类目导航设置 -->
+		<activity android:screenOrientation="portrait"
+		    android:windowSoftInputMode="stateHidden|stateUnspecified"
+			android:name="com.taobao.tao.CategroySettings" android:configChanges="keyboardHidden|orientation"
+			android:theme="@style/CategoryNoTitle">
+		</activity>
+		<!-- 浏览历史 -->
+		<activity android:name="com.taobao.tao.HistoryActivity"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait"
+			android:launchMode="singleTop"
+			>
+		</activity>
+
+		<!-- 收藏夹 -->
+		<activity android:name="com.taobao.tao.FavoriteActivity"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait"
+			android:launchMode="singleTop"
+			>
+		</activity>
+
+		<receiver android:name="com.taobao.tao.BootCompletedReceiver">
+		    <intent-filter>
+		    	<action android:name="android.intent.action.BOOT_COMPLETED">
+		    </action>
+		    </intent-filter>
+		</receiver>    
+		<receiver  
+            android:name="com.taobao.push.PushAlarmReceive">  
+        </receiver>  
+        <receiver android:name="com.taobao.push.DeviceIdReceive">
+		    <intent-filter>
+		    	<action android:name="com.taobao.create.deviceid"/>
+		    	<action android:name="com.taobao.create.deviceid.fail"/>    
+		    </intent-filter>
+		</receiver> 
+		
+		<receiver android:name="com.taobao.tao.TaoApplication.SdCardReceiver">
+　　			<intent-filter android:priority="1000">
+                <action android:name="android.intent.action.ACTION_MEDIA_BAD_REMOVAL" />
+                <action android:name="android.intent.action.ACTION_MEDIA_NOFS" />
+                <action android:name="android.intent.action.ACTION_MEDIA_REMOVED" />
+                <action android:name="android.intent.action.ACTION_MEDIA_SHARED" />
+                <action android:name="android.intent.action.ACTION_MEDIA_UNMOUNTABLE" />
+                <action android:name="android.intent.action.ACTION_MEDIA_UNMOUNTED" />
+                <action android:name="android.intent.action.ACTION_MEDIA_MOUNTED" />
+　　			<data android:scheme="file"/>
+　		　</intent-filter>
+　　		</receiver>
+
+		<!-- 
+        	消息通知服务
+         -->
+		<service android:enabled="true" android:name="com.taobao.tao.WWMessageService" />
+	<!-- <service android:enabled="true" android:name="com.taobao.push.PushService" />  -->	
+		<service android:enabled="true" android:name="com.taobao.tao.pushcenter.PushCenterService" />
+		
+		<!-- 后台数据服务 -->
+		<service android:name="com.taobao.tao.dataservice.TBDataService"
+			>
+			<intent-filter>
+				<action android:name="com.taobao.tao.dataservice.ITBDataService" />
+				<action android:name="com.taobao.tao.dataservice.TBDATA_SERVICE" />
+			</intent-filter>
+		</service>
+
+		<!-- 淘搜索 -->
+		<activity android:name="com.taobao.tao.SearchListActivity"
+			android:theme="@android:style/Theme.NoTitleBar"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait" android:launchMode="singleTop"
+			android:windowSoftInputMode="adjustPan|stateHidden">
+			<intent-filter>
+				<action android:name="android.intent.action.SEARCH" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
+
+		<!-- 帮助与关于 -->
+		<activity android:name="com.taobao.tao.HelpAndAboutActivity"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait"
+			>
+		</activity>
+
+		<!--  设置界面      -->
+		<activity android:name="com.taobao.tao.SettingsActivity"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:windowSoftInputMode="adjustPan|stateHidden"
+			android:screenOrientation="portrait"
+			android:launchMode="singleTop"
+			>
+		</activity>    
+		
+   		<activity android:name="com.taobao.tao.ImgDLStateSetActivity"
+			android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:windowSoftInputMode="adjustPan|stateHidden"
+			android:screenOrientation="portrait">
+		</activity>   
+
+		<!-- 处理扫描结果的activity -->
+		<activity android:name="com.taobao.tao.ScanResultActivity"
+			android:configChanges="keyboardHidden|orientation"
+						android:windowSoftInputMode="adjustPan|stateHidden"
+			
+			android:screenOrientation="portrait" android:theme="@android:style/Theme.NoTitleBar">
+
+
+		</activity>
+
+		<!-- 显示扫描到的内部url的activity -->
+		<activity android:name="com.taobao.tao.ScanResultUrlActivity"
+			android:theme="@android:style/Theme.NoTitleBar"
+			android:configChanges="keyboardHidden|orientation"
+						android:windowSoftInputMode="adjustPan|stateHidden"
+			android:screenOrientation="portrait">
+
+		</activity>
+		
+		<!-- 彩票  -->
+		<activity android:name="com.taobao.caipiao.MainActivity"
+			android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar"
+			android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+		</activity>
+        <!-- 选球彩种  -->
+        <activity android:name="com.taobao.caipiao.bet.ChoosingActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+        </activity>
+        <activity android:name="com.taobao.caipiao.bet.ChoosingActivity3D" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+        </activity>            
+        <activity android:name="com.taobao.caipiao.bet.ChoosingActivityXSSC" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+        </activity>  
+        <!-- 选球投注  -->
+        <activity android:name="com.taobao.caipiao.bet.BettingActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation"
+         	android:windowSoftInputMode="stateHidden"
+         	android:launchMode="singleTop">
+        </activity>  
+        <!-- 开奖  --> 
+	    <activity android:name="com.taobao.caipiao.award.AwardPosterActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+        </activity>
+	    <activity android:name="com.taobao.caipiao.award.MultiAwardsActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.Light.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+        </activity>        
+        <!-- 订单  -->
+	    <activity android:name="com.taobao.caipiao.order.MyOrderActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.Light.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+        </activity>
+        <activity android:name="com.taobao.caipiao.order.OrderListActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.Translucent.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+        </activity> 
+        <activity android:name="com.taobao.caipiao.order.OrderDetailWebActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+        </activity>
+	    <activity android:name="com.taobao.caipiao.order.PursuePlanListActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+        </activity>         
+	    <activity android:name="com.taobao.caipiao.order.OrderDetailActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+        </activity>      
+            
+        <!-- 合买  -->    	
+        <activity android:name="com.taobao.caipiao.unite.UniteHallActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.Translucent.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation"
+         	android:windowSoftInputMode="adjustResize"
+         	android:launchMode="singleTop">
+        </activity>   
+        <activity android:name="com.taobao.caipiao.unite.UniteDetailActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation"
+         	android:windowSoftInputMode="stateHidden">
+        </activity>         
+        <activity android:name="com.taobao.caipiao.unite.UniteSchemeActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation"
+         	android:windowSoftInputMode="stateHidden">
+        </activity>
+        
+        <!-- 竟彩  -->
+		<activity android:name="com.taobao.caipiao.match.MatchListActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+        </activity>  
+        <activity android:name="com.taobao.caipiao.match.MatchFilterActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+        </activity>
+        <!-- 竟彩开奖  -->
+        <activity android:name="com.taobao.caipiao.match.MatchAwardsActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+        </activity>  
+        <activity android:name="com.taobao.caipiao.award.JCLQMatchAwardsActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+        </activity>  
+        <activity android:name="com.taobao.caipiao.match.DCMatchAwardsActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+        </activity> 
+        <!-- 竟彩投注  -->
+        <activity android:name="com.taobao.caipiao.match.MatchBettingActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation"
+         	android:windowSoftInputMode="stateHidden"
+         	android:launchMode="singleTop">
+		</activity> 
+        <!-- 彩票其它  -->
+        <activity android:name="com.taobao.caipiao.setting.UserDetailActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+        </activity>  
+		<activity android:name="com.taobao.caipiao.web.WebActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+        </activity>
+        <activity android:name="com.taobao.caipiao.web.LocalPageActivity" android:label="@string/cp_taobao_lottery" 
+         	android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+        </activity>    		    
+		<!-- 彩票结束  -->
+		<provider
+			android:name="android.koubei.coupon.activity.SearchCitySuggestionProvider"
+			android:authorities="koubei.coupon.searchCitySuggestionProvider"
+			android:syncable="false" />
+		<provider android:name="android.koubei.coupon.activity.SearchKeySuggestionProvider"
+			android:authorities="koubei.coupon.searchKeySuggestionProvider"
+			android:syncable="false" />
+		<!-- 欢迎界面 -->
+		<activity android:name="android.koubei.coupon.activity.CouponIndexActivity"
+			android:label="@string/app_name" android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait" android:theme="@style/Theme.NoBackground">
+			<intent-filter>
+				<action android:name="android.intent.action.SEARCH" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+			<meta-data android:name="android.app.searchable"
+				android:resource="@xml/kb_searchable" />
+
+		</activity>
+
+		<!-- 切换城市页面 -->
+		<activity android:name="android.koubei.coupon.activity.SwitchCityActivity"
+			android:theme="@android:style/Theme.NoTitleBar" android:launchMode="singleTop"
+			android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait">
+
+			<intent-filter>
+				<action android:name="android.intent.action.SEARCH" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+			<meta-data android:name="android.app.searchable"
+				android:resource="@xml/kb_citysearchable" />
+
+		</activity>
+		<!-- 无结果页面 -->
+		<activity android:name="android.koubei.coupon.activity.CouponErrPageActivity"
+			android:theme="@style/Theme.NoBackground" android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait">
+
+			<intent-filter>
+				<action android:name="android.intent.action.CouponErrPageActivity" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.SEARCH" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+			<meta-data android:name="android.app.searchable"
+				android:resource="@xml/kb_citysearchable" />
+		</activity>
+		<activity android:name="com.taobao.push.ui.AppCenterActivity"
+			android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar"
+			android:launchMode="singleTop"
+			android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+		</activity>
+		
+		<activity
+            android:name="com.taobao.tao.shop.ShopActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+<!-- WebView页面 -->
+		<activity android:name="android.koubei.coupon.activity.WebViewActivity"
+			android:screenOrientation="portrait">
+		</activity>
+
+        <!--金牌店铺-->
+         <activity android:name="com.taobao.tao.RecommandShopActivity"
+                	android:theme="@style/Theme.NoBackground" android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait" />
+         
+                 <!--下单-->
+         <activity android:name="com.taobao.tao.PurchaseActivity"
+                	android:theme="@style/Theme.NoBackground" android:configChanges="keyboardHidden|orientation"
+						android:windowSoftInputMode="adjustPan|stateHidden"
+			android:screenOrientation="portrait" />
+         
+                          <!--下单-->
+         <activity android:name="com.taobao.tao.DeliveryManageActivity"
+                	android:theme="@style/Theme.NoBackground" android:configChanges="keyboardHidden|orientation"
+			android:screenOrientation="portrait" />
+
+         <!-- CTC 定制webview页面 -->
+		<activity android:screenOrientation="portrait"
+			android:name="com.taobao.tao.CTCWapActivity" android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:launchMode="singleTop">
+		</activity>
+		
+		<!-- 四川移动掌上营业厅外跳 -->
+		<activity android:screenOrientation="portrait"
+			android:name="com.taobao.tao.SCCMWapActivity" android:theme="@style/Theme.NoBackgroundAndTitle"
+			android:configChanges="keyboardHidden|orientation"
+			android:launchMode="singleTop">
+		</activity>
+		
+		
+  
+ 		<activity android:name="com.taobao.wangxin.WangxinInstallActivity"  
+         	android:theme="@style/Theme.NoBackgroundAndTitle" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
+        </activity>
+        
+        <!-- 国内机票查询 -->
+        <activity
+            android:name="com.taobao.trip.ui.TicketInquireActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+
+        <!-- 国内机票列表页 -->
+        <activity
+            android:name="com.taobao.trip.ui.TicketListActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+
+        <!-- 国内机票价格趋势页 -->
+        <activity
+            android:name="com.taobao.trip.ui.TicketPriceTrendencyActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+
+        <!-- 国内机票详情页 -->
+        <activity
+            android:name="com.taobao.trip.ui.TicketDetailActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+
+        <!-- 选择登机人页 -->
+        <activity
+            android:name="com.taobao.trip.ui.TicketBordingsActitity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+
+        <!-- 填写订单页 -->
+        <activity
+            android:name="com.taobao.trip.ui.TicketFillInOrderActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" >
+        </activity>
+
+        <!-- 创建新登机人页 -->
+        <activity
+            android:name="com.taobao.trip.ui.TicketCreateNewBordingActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+
+        <!-- 热门城市筛选页 -->
+        <activity
+            android:name="com.taobao.trip.ui.TicketHotCityActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+
+        <!-- 国内机票筛选页 -->
+        <activity
+            android:name="com.taobao.trip.ui.TicketFilterActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+
+        <!-- 国内机票筛选选项页 -->
+        <activity
+            android:name="com.taobao.trip.ui.TicketFilterOptionActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+
+        <!-- 证件 -->
+        <activity
+            android:name="com.taobao.trip.ui.TicketCertificatesActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+
+        <!-- 确认订单页 -->
+        <activity
+            android:name="com.taobao.trip.ui.TicketConfirmOrdersActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+
+        <!-- 城市列表 -->
+        <activity
+            android:name="com.taobao.trip.ui.TicketCityListActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+
+        <!-- 日历 -->
+        <activity
+            android:name="com.taobao.trip.ui.TicketDateWidgetActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+
+        <activity
+            android:name="com.taobao.trip.ui.TicketRelationActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>   
+        
+        <!-- 订单列表页 -->
+        <activity
+            android:name="com.taobao.trip.ui.TicketOrderListActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+
+        <!-- 订单详情页 -->
+        <activity
+            android:name="com.taobao.trip.ui.TicketOrderDetailActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+		<!-- 广播接收器 -->
+		<receiver android:name="com.taobao.tao.RemoteProcessMgr"
+			android:process=":taobao_remote">   
+		
+        </receiver> 
+        
+		<receiver 
+		    android:name="com.taobao.tao.util.GetResRe">
+		    <intent-filter>
+		        <action android:name="com.perf.GetRes"/>
+		    </intent-filter>
+		</receiver>
+		
+		<receiver 
+            android:name="com.taobao.tao.util.DuRe">
+            <intent-filter>
+                <action android:name="com.perf.Du"/>
+            </intent-filter>
+        </receiver>
+		<!-- 升级通知服务 -->
+		<service android:name="com.taobao.tao.util.UpdateService"></service>
+		
+		
+		
+		<!--atlas config  -->
+		<service 
+		    android:name="android.taobao.plugincontainer.ipc.ContainerRemoteChannel" >           
+		</service>
+		<service 
+		    android:name="com.taobao.container.ContainerProcess1" 
+		    android:process=":containerprocess1">           
+		</service>
+		
+		<activity
+            android:name="com.taobao.container.ContainerActivity1"
+            android:taskAffinity="com.taobao.task.atlas1" 
+            android:configChanges="locale|mcc|mnc|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|fontScale"
+            android:process=":containerprocess1">  
+        
+        </activity>
+        <service 
+		    android:name="com.taobao.container.ContainerService1" android:process=":containerprocess1">           
+		</service>
+		<service 
+		    android:name="com.taobao.container.ContainerService2" android:process=":containerprocess1">           
+		</service>
+		<service 
+		    android:name="com.taobao.container.ContainerService3" android:process=":containerprocess1">           
+		</service>
+		
+        
+		
+		<service 
+		    android:name="com.taobao.container.ContainerProcess2" 
+		    android:process=":containerprocess2">           
+		</service>
+		<activity
+            android:name="com.taobao.container.ContainerActivity2"
+            android:configChanges="locale|mcc|mnc|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|fontScale"
+            
+            android:process=":containerprocess2">  
+        </activity>
+        <service 
+		    android:name="com.taobao.container.ContainerService4" 
+		    android:process=":containerprocess2">           
+		</service>
+		<service 
+		    android:name="com.taobao.container.ContainerService5" 
+		    android:process=":containerprocess2">           
+		</service>
+		<service 
+		    android:name="com.taobao.container.ContainerService6" 
+		    android:process=":containerprocess2">           
+		</service>
+		
+        
+		
+		<service 
+		    android:name="com.taobao.container.ContainerProcess3" 
+		    android:process=":containerprocess3">           
+		</service>
+		<activity
+            android:name="com.taobao.container.ContainerActivity3"
+            android:configChanges="locale|mcc|mnc|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|fontScale"
+           
+            android:process=":containerprocess3">  
+        </activity>
+        <service 
+		    android:name="com.taobao.container.ContainerService7" 
+		    android:process=":containerprocess3">           
+		</service>
+		<service 
+		    android:name="com.taobao.container.ContainerService9" 
+		   android:process=":containerprocess3">           
+		</service>
+		<service 
+		    android:name="com.taobao.container.ContainerService8" 
+		    android:process=":containerprocess3">           
+		</service>
+		<!--atlas config end  -->
+	</application>
+
+	<uses-permission android:name="android.permission.CAMERA"></uses-permission>
+	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+	<uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
+	<uses-permission android:name="android.permission.GET_TASKS"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+	<uses-permission android:name="android.permission.WRITE_SETTINGS"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+	<uses-permission android:name="android.permission.VIBRATE"></uses-permission>
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+
+	<uses-sdk android:targetSdkVersion="4" android:minSdkVersion="3"></uses-sdk>
+	<supports-screens android:normalScreens="true"
+		android:largeScreens="true" android:smallScreens="true"
+		android:anyDensity="true"></supports-screens>
+
+
+
+	<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"></uses-permission>
+</manifest> 

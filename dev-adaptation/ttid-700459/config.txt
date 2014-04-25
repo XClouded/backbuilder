@@ -1,0 +1,4 @@
+backgroud_service_on::0::是否打开后台服务0(否)1(是)
+isNeedFeatureGuide::0::是否需要新手引导0(去掉新手引导)1(保留新手引导)
+useJinLiApnUriGetter::1::是否使用金立特殊的url生成0(否)1(是)
+desktop_shortcut::0::是否打开桌面快捷方式0(否)1(是)

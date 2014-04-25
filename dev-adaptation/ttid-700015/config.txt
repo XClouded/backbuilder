@@ -1,0 +1,2 @@
+traffic_prompt::1::是否提示资费提醒0(否)1(是)
+backgroud_service_on::0::是否打开后台服务0(否)1(是)

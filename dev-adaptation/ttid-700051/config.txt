@@ -1,0 +1,2 @@
+hide_barcodesech::1::是否屏蔽条码搜功能0(否)1(是)
+isTuituiSupported::0::是否需要推推0(去掉推推)1(保留推推)

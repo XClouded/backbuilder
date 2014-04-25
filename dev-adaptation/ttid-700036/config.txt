@@ -1,0 +1,2 @@
+isKoubeiSupported::0::是否需要口碑0(否)1(打开)
+backgroud_service_on::0::是否打开后台服务0(否)1(是)

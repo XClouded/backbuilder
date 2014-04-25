@@ -1,0 +1,1 @@
+isFlashlightSupported::0::是否支持闪光灯0(否)1(是)
