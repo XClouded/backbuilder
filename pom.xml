@@ -80,18 +80,6 @@
 			</exclusions>
 		  <version>1.0.0-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>com.taobao.android</groupId>
-			<artifactId>login4android_sdk</artifactId>
-			<type>awb</type>
-			<exclusions>
-				<exclusion>
-					<groupId>*</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-			</exclusions>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
 
 		<dependency>
 			<groupId>com.taobao.android</groupId>
@@ -196,6 +184,19 @@
 		  <version>1.0.0-SNAPSHOT</version>
 		</dependency>
 
+		<dependency>
+		  <groupId>com.taobao.search</groupId>
+		  <artifactId>tbsearch_android</artifactId>
+		   <type>awb</type>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		  <version>feature_20140520-SNAPSHOT</version>
+		</dependency>
+		
 		<dependency>
 		  <groupId>com.taobao.android</groupId>
 		  <artifactId>taobao_android_coupon</artifactId>
@@ -303,21 +304,13 @@
 			<type>apklib</type>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
-		
-		<!--
+
 		<dependency>
-		    <groupId>com.taobao.android</groupId>
-		    <artifactId>taobao_allspark</artifactId>
-		    <version>1.0.0-SNAPSHOT</version>
+			<groupId>com.taobao.android</groupId>
+	<artifactId>login4android_sdk</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
 			<type>apklib</type>
-		</dependency>
-		-->
-		<dependency>
-		    <groupId>com.taobao.search</groupId>
-    		<artifactId>tbsearch_android</artifactId>
-    		<version>feature_20140520-SNAPSHOT</version>
-			<type>apklib</type>
-		</dependency>
+		</dependency>		
 
 		<dependency>
 			<groupId>com.taobao.android</groupId>
