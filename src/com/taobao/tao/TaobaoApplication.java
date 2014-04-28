@@ -49,13 +49,13 @@ public class TaobaoApplication extends PanguApplication {
         // lib目录为空则不是arm平台，需要我们手工将bundle文件覆盖老版本
 
         try {
-            disableComponents(this);
-            
             Properties props = new Properties();
             props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
 
             Atlas.getInstance().init(this);
-
+            
+            disableComponents(this);
+            
             try {
                 Field sApplication = Globals.class.getDeclaredField("sApplication");
                 sApplication.setAccessible(true);
