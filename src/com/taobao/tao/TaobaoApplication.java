@@ -38,7 +38,7 @@ public class TaobaoApplication extends PanguApplication {
     final static String[] SORTED_PACKAGES    = new String[] { "com.taobao.browser", "com.taobao.android.trade",
             "com.taobao.mytaobao", "com.taobao.shop" };
 
-    final static String[] AUTOSTART_PACKAGES = new String[] { "com.taobao.wangxin" };
+    final static String[] AUTOSTART_PACKAGES = new String[] { "com.taobao.wangxin", "com.taobao.passivelocation" };
 
     @Override
     public void onCreate() {
