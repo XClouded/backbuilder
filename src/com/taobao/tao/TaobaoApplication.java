@@ -54,7 +54,7 @@ public class TaobaoApplication extends PanguApplication {
 
             Atlas.getInstance().init(this);
             
-            disableComponents(this);
+            //disableComponents(this);
             
             try {
                 Field sApplication = Globals.class.getDeclaredField("sApplication");
@@ -73,7 +73,7 @@ public class TaobaoApplication extends PanguApplication {
             Log.e(TAG, "Could not start up atlas framework !!!", e);
         }
 
-        enableComponents(this);
+        //enableComponents(this);
 
         Coordinator.postTask(new TaggedRunnable("ProcessBundles") {
 
@@ -82,7 +82,7 @@ public class TaobaoApplication extends PanguApplication {
                 processLibsBundles();
                 processAssetsBundles();
                 // 或许有Bundle新增或更新，再次刷新Component的状态
-                enableComponents(TaobaoApplication.this);
+                //enableComponents(TaobaoApplication.this);
             }
         });
 
