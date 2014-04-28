@@ -286,7 +286,7 @@ public class TaobaoApplication extends PanguApplication {
         }
         if (packageInfo != null && packageInfo.activities != null) {
             for (ActivityInfo activityInfo : packageInfo.activities) {
-                if (!activityInfo.enabled) {
+                if (!activityInfo.enabled && activityInfo.targetActivity==null) {
                     try {
                         Class<?> clazz = Atlas.getInstance().getDelegateClassLoader().loadClass(activityInfo.name);
                         if (clazz != null) {
