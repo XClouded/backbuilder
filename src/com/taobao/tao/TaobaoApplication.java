@@ -44,14 +44,6 @@ public class TaobaoApplication extends PanguApplication {
     public void onCreate() {
         super.onCreate();
 
-        try {
-            Field sApplication = Globals.class.getDeclaredField("sApplication");
-            sApplication.setAccessible(true);
-            sApplication.set(null, this);
-        } catch (Exception e) {
-            Log.e(TAG, "Could not set Globals.sApplication !!!", e);
-        }
-
         // TODO: 如果当前版本大于记录版本说明客户端已经更新。
         // 先判断lib非空即arm平台，bundle已经解压出来覆盖了原文件；
         // lib目录为空则不是arm平台，需要我们手工将bundle文件覆盖老版本
@@ -61,7 +53,20 @@ public class TaobaoApplication extends PanguApplication {
             props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
 
             Atlas.getInstance().init(this);
+            
+            try {
+                Field sApplication = Globals.class.getDeclaredField("sApplication");
+                sApplication.setAccessible(true);
+                sApplication.set(null, this);
+                Field sClassLoader = Globals.class.getDeclaredField("sClassLoader");
+                sClassLoader.setAccessible(true);
+                sClassLoader.set(null, Atlas.getInstance().getDelegateClassLoader());
+            } catch (Exception e) {
+                Log.e(TAG, "Could not set Globals.sApplication & Globals.sClassLoader !!!", e);
+            }
+            
             Atlas.getInstance().startup(props);
+            
         } catch (Exception e) {
             Log.e(TAG, "Could not start up atlas framework !!!", e);
         }
