@@ -53,9 +53,9 @@ public class TaobaoApplication extends PanguApplication {
             props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
 
             Atlas.getInstance().init(this);
-            
-            //disableComponents(this);
-            
+
+            // disableComponents(this);
+
             try {
                 Field sApplication = Globals.class.getDeclaredField("sApplication");
                 sApplication.setAccessible(true);
@@ -73,18 +73,21 @@ public class TaobaoApplication extends PanguApplication {
             Log.e(TAG, "Could not start up atlas framework !!!", e);
         }
 
-        //enableComponents(this);
+        // enableComponents(this);
 
-        Coordinator.postTask(new TaggedRunnable("ProcessBundles") {
+        String processName = TaoApplication.getProcessName(Globals.getApplication());
+        if (this.getPackageName().equals(processName)) {
+            Coordinator.postTask(new TaggedRunnable("ProcessBundles") {
 
-            @Override
-            public void run() {
-                processLibsBundles();
-                processAssetsBundles();
-                // 或许有Bundle新增或更新，再次刷新Component的状态
-                //enableComponents(TaobaoApplication.this);
-            }
-        });
+                @Override
+                public void run() {
+                    processLibsBundles();
+                    processAssetsBundles();
+                    // 或许有Bundle新增或更新，再次刷新Component的状态
+                    // enableComponents(TaobaoApplication.this);
+                }
+            });
+        }
 
     }
 
