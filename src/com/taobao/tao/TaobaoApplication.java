@@ -38,7 +38,7 @@ public class TaobaoApplication extends PanguApplication {
     final static String[] SORTED_PACKAGES    = new String[] { "com.taobao.browser", "com.taobao.android.trade",
             "com.taobao.mytaobao", "com.taobao.shop" };
 
-    final static String[] AUTOSTART_PACKAGES = new String[] {"com.taobao.wangxin"};
+    final static String[] AUTOSTART_PACKAGES = new String[] { "com.taobao.wangxin" };
 
     @Override
     public void onCreate() {
@@ -49,11 +49,13 @@ public class TaobaoApplication extends PanguApplication {
         // lib目录为空则不是arm平台，需要我们手工将bundle文件覆盖老版本
 
         try {
+            disableComponents(this);
+            
             Properties props = new Properties();
             props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
 
             Atlas.getInstance().init(this);
-            
+
             try {
                 Field sApplication = Globals.class.getDeclaredField("sApplication");
                 sApplication.setAccessible(true);
@@ -64,9 +66,9 @@ public class TaobaoApplication extends PanguApplication {
             } catch (Exception e) {
                 Log.e(TAG, "Could not set Globals.sApplication & Globals.sClassLoader !!!", e);
             }
-            
+
             Atlas.getInstance().startup(props);
-            
+
         } catch (Exception e) {
             Log.e(TAG, "Could not start up atlas framework !!!", e);
         }
@@ -272,6 +274,84 @@ public class TaobaoApplication extends PanguApplication {
         return entryNames;
     }
 
+    void disableComponents(Context context) {
+        PackageInfo packageInfo = null;
+        try {
+            packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(),
+                                                                     PackageManager.GET_ACTIVITIES
+                                                                             | PackageManager.GET_RECEIVERS
+                                                                             | PackageManager.GET_SERVICES
+                                                                             | PackageManager.GET_PROVIDERS
+                                                                             | PackageManager.GET_DISABLED_COMPONENTS);
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (packageInfo != null && packageInfo.activities != null) {
+            for (ActivityInfo activityInfo : packageInfo.activities) {
+                if (activityInfo.targetActivity == null) {// except activity-alias
+                    try {
+                        Class<?> clazz = Atlas.getInstance().getDelegateClassLoader().loadClass(activityInfo.name);
+                        if (clazz != null) {
+                            continue;
+                        }
+                    } catch (ClassNotFoundException e) {
+                        ComponentName componentName = new ComponentName(context.getPackageName(), activityInfo.name);
+                        context.getPackageManager().setComponentEnabledSetting(componentName,
+                                                                               PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                                                                               PackageManager.DONT_KILL_APP);
+                    }
+                }
+            }
+        }
+
+        if (packageInfo != null && packageInfo.receivers != null) {
+            for (ActivityInfo activityInfo : packageInfo.receivers) {
+                try {
+                    Class<?> clazz = Atlas.getInstance().getDelegateClassLoader().loadClass(activityInfo.name);
+                    if (clazz != null) {
+                        continue;
+                    }
+                } catch (ClassNotFoundException e) {
+                    ComponentName componentName = new ComponentName(context.getPackageName(), activityInfo.name);
+                    context.getPackageManager().setComponentEnabledSetting(componentName,
+                                                                           PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                                                                           PackageManager.DONT_KILL_APP);
+                }
+            }
+        }
+        if (packageInfo != null && packageInfo.services != null) {
+            for (ServiceInfo activityInfo : packageInfo.services) {
+                try {
+                    Class<?> clazz = Atlas.getInstance().getDelegateClassLoader().loadClass(activityInfo.name);
+                    if (clazz != null) {
+                        continue;
+                    }
+                } catch (ClassNotFoundException e) {
+                    ComponentName componentName = new ComponentName(context.getPackageName(), activityInfo.name);
+                    context.getPackageManager().setComponentEnabledSetting(componentName,
+                                                                           PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                                                                           PackageManager.DONT_KILL_APP);
+                }
+            }
+        }
+
+        if (packageInfo != null && packageInfo.providers != null) {
+            for (ProviderInfo activityInfo : packageInfo.providers) {
+                try {
+                    Class<?> clazz = Atlas.getInstance().getDelegateClassLoader().loadClass(activityInfo.name);
+                    if (clazz != null) {
+                        continue;
+                    }
+                } catch (ClassNotFoundException e) {
+                    ComponentName componentName = new ComponentName(context.getPackageName(), activityInfo.name);
+                    context.getPackageManager().setComponentEnabledSetting(componentName,
+                                                                           PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                                                                           PackageManager.DONT_KILL_APP);
+                }
+            }
+        }
+    }
+
     void enableComponents(Context context) {
         PackageInfo packageInfo = null;
         try {
@@ -286,82 +366,69 @@ public class TaobaoApplication extends PanguApplication {
         }
         if (packageInfo != null && packageInfo.activities != null) {
             for (ActivityInfo activityInfo : packageInfo.activities) {
-                if (!activityInfo.enabled && activityInfo.targetActivity==null) {
+                if (activityInfo.targetActivity == null) {
                     try {
-                        Class<?> clazz = Atlas.getInstance().getDelegateClassLoader().loadClass(activityInfo.name);
-                        if (clazz != null) {
-                            ComponentName componentName = new ComponentName(context.getPackageName(), activityInfo.name);
-                            context.getPackageManager().setComponentEnabledSetting(componentName,
-                                                                                   PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                                                                                   PackageManager.DONT_KILL_APP);
+                        ComponentName componentName = new ComponentName(context.getPackageName(), activityInfo.name);
+                        if (context.getPackageManager().getComponentEnabledSetting(componentName) == PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
+                            Class<?> clazz = Atlas.getInstance().getDelegateClassLoader().loadClass(activityInfo.name);
+                            if (clazz != null) {
+                                context.getPackageManager().setComponentEnabledSetting(componentName,
+                                                                                       PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                                                                                       PackageManager.DONT_KILL_APP);
+                            }
                         }
                     } catch (ClassNotFoundException e) {
-                        ComponentName componentName = new ComponentName(context.getPackageName(), activityInfo.name);
-                        context.getPackageManager().setComponentEnabledSetting(componentName,
-                                                                               PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                                                                               PackageManager.DONT_KILL_APP);
                     }
                 }
             }
         }
+
         if (packageInfo != null && packageInfo.receivers != null) {
             for (ActivityInfo activityInfo : packageInfo.receivers) {
-                if (!activityInfo.enabled) {
-                    try {
+                try {
+                    ComponentName componentName = new ComponentName(context.getPackageName(), activityInfo.name);
+                    if (context.getPackageManager().getComponentEnabledSetting(componentName) == PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
                         Class<?> clazz = Atlas.getInstance().getDelegateClassLoader().loadClass(activityInfo.name);
                         if (clazz != null) {
-                            ComponentName componentName = new ComponentName(context.getPackageName(), activityInfo.name);
                             context.getPackageManager().setComponentEnabledSetting(componentName,
                                                                                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                                                                                    PackageManager.DONT_KILL_APP);
                         }
-                    } catch (ClassNotFoundException e) {
-                        ComponentName componentName = new ComponentName(context.getPackageName(), activityInfo.name);
-                        context.getPackageManager().setComponentEnabledSetting(componentName,
-                                                                               PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                                                                               PackageManager.DONT_KILL_APP);
                     }
+                } catch (ClassNotFoundException e) {
                 }
             }
         }
         if (packageInfo != null && packageInfo.services != null) {
             for (ServiceInfo activityInfo : packageInfo.services) {
-                if (!activityInfo.enabled) {
-                    try {
+                try {
+                    ComponentName componentName = new ComponentName(context.getPackageName(), activityInfo.name);
+                    if (context.getPackageManager().getComponentEnabledSetting(componentName) == PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
                         Class<?> clazz = Atlas.getInstance().getDelegateClassLoader().loadClass(activityInfo.name);
                         if (clazz != null) {
-                            ComponentName componentName = new ComponentName(context.getPackageName(), activityInfo.name);
                             context.getPackageManager().setComponentEnabledSetting(componentName,
                                                                                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                                                                                    PackageManager.DONT_KILL_APP);
                         }
-                    } catch (ClassNotFoundException e) {
-                        ComponentName componentName = new ComponentName(context.getPackageName(), activityInfo.name);
-                        context.getPackageManager().setComponentEnabledSetting(componentName,
-                                                                               PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                                                                               PackageManager.DONT_KILL_APP);
                     }
+                } catch (ClassNotFoundException e) {
                 }
             }
         }
 
         if (packageInfo != null && packageInfo.providers != null) {
             for (ProviderInfo activityInfo : packageInfo.providers) {
-                if (!activityInfo.enabled) {
-                    try {
+                try {
+                    ComponentName componentName = new ComponentName(context.getPackageName(), activityInfo.name);
+                    if (context.getPackageManager().getComponentEnabledSetting(componentName) == PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
                         Class<?> clazz = Atlas.getInstance().getDelegateClassLoader().loadClass(activityInfo.name);
                         if (clazz != null) {
-                            ComponentName componentName = new ComponentName(context.getPackageName(), activityInfo.name);
                             context.getPackageManager().setComponentEnabledSetting(componentName,
                                                                                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                                                                                    PackageManager.DONT_KILL_APP);
                         }
-                    } catch (ClassNotFoundException e) {
-                        ComponentName componentName = new ComponentName(context.getPackageName(), activityInfo.name);
-                        context.getPackageManager().setComponentEnabledSetting(componentName,
-                                                                               PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                                                                               PackageManager.DONT_KILL_APP);
                     }
+                } catch (ClassNotFoundException e) {
                 }
             }
         }
