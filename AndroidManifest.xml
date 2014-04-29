@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.taobao.taobao"
+    android:installLocation="auto"
     android:versionCode="1"
-    android:versionName="4.1.1"
-    android:installLocation="auto" >
+    android:versionName="4.1.1" >
 
     <uses-sdk
         android:minSdkVersion="9"
         android:targetSdkVersion="18" />
-    <instrumentation android:name="com.taobao.url.test.UrlTestRunner" android:targetPackage="com.taobao.taobao"/>
+
     <application
         android:name="com.taobao.tao.TaobaoApplication"
         android:icon="@drawable/icon"
         android:label="@string/taobao_app_name" >
-        <uses-library android:name="android.test.runner"/>
+
         <meta-data
             android:name="application"
             android:value="com.taobao.tao.TaoApplication" >
         </meta-data>
-        
+
         <receiver android:name="com.taobao.tao.ReplacedReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
-        </receiver>        
+        </receiver>
     </application>
 
 </manifest>
