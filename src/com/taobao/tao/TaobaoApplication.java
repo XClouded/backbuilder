@@ -92,10 +92,11 @@ public class TaobaoApplication extends PanguApplication {
     }
 
     private void processLibsBundles() {
-        List<String> entryNames = getBundleEntryNames("libs/armeabi/libcom.taobao", ".so");
+        List<String> entryNames = getBundleEntryNames("libs/armeabi/libcom_taobao", ".so");
         // 首先按照预先设定的顺序处理Bundle安装包
         for (int i = 0; i < SORTED_PACKAGES.length; i++) {
-            String entryName = filterEntryName(entryNames, SORTED_PACKAGES[i]);
+            String pkg = SORTED_PACKAGES[i].replace(".", "_");
+            String entryName = filterEntryName(entryNames, pkg);
             if (entryName != null) {
                 processLibsBundle(entryName);
                 entryNames.remove(entryName);
@@ -111,7 +112,8 @@ public class TaobaoApplication extends PanguApplication {
 
         String fileName = entryName.substring(entryName.indexOf("libs/armeabi/"));
         String packageName = entryName.substring(entryName.indexOf("libs/armeabi/lib"), entryName.indexOf(".so"));
-
+        packageName = packageName.replace("_", ".");
+        
         File libDir = new File(getFilesDir().getParentFile(), "lib");
         File soFile = new File(libDir, fileName);
 
