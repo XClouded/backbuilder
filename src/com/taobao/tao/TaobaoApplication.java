@@ -93,7 +93,7 @@ public class TaobaoApplication extends PanguApplication {
     }
 
     private void processLibsBundles() {
-        List<String> entryNames = getBundleEntryNames("libs/armeabi/libcom_taobao", ".so");
+        List<String> entryNames = getBundleEntryNames("lib/armeabi/libcom_taobao", ".so");
         // 首先按照预先设定的顺序处理Bundle安装包
         for (int i = 0; i < SORTED_PACKAGES.length; i++) {
             String pkg = SORTED_PACKAGES[i].replace(".", "_");
