@@ -85,6 +85,7 @@ public class TaobaoApplication extends PanguApplication {
                     processLibsBundles();
                     // 或许有Bundle新增或更新，再次刷新Component的状态
                     // enableComponents(TaobaoApplication.this);
+                    Log.d(TAG, "sendStickyBroadcast: com.taobao.taobao.action.BUNDLES_INSTALLED");
                     TaobaoApplication.this.sendStickyBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
                 }
             });
