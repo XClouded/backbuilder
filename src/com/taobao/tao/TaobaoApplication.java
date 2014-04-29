@@ -83,7 +83,6 @@ public class TaobaoApplication extends PanguApplication {
                 @Override
                 public void run() {
                     processLibsBundles();
-                    processAssetsBundles();
                     // 或许有Bundle新增或更新，再次刷新Component的状态
                     // enableComponents(TaobaoApplication.this);
                     TaobaoApplication.this.sendStickyBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
@@ -112,8 +111,8 @@ public class TaobaoApplication extends PanguApplication {
 
     private boolean processLibsBundle(String entryName) {
 
-        String fileName = entryName.substring(entryName.indexOf("libs/armeabi/"));
-        String packageName = entryName.substring(entryName.indexOf("libs/armeabi/lib"), entryName.indexOf(".so"));
+        String fileName = entryName.substring(entryName.indexOf("lib/armeabi/"));
+        String packageName = entryName.substring(entryName.indexOf("lib/armeabi/lib"), entryName.indexOf(".so"));
         packageName = packageName.replace("_", ".");
         
         File libDir = new File(getFilesDir().getParentFile(), "lib");
@@ -143,89 +142,6 @@ public class TaobaoApplication extends PanguApplication {
             }
         }
 
-        return false;
-    }
-
-    private void processAssetsBundles() {
-        List<String> entryNames = getBundleEntryNames("assets/", ".awb");
-        // 首先按照预先设定的顺序处理Bundle安装包
-        for (int i = 0; i < SORTED_PACKAGES.length; i++) {
-            String entryName = filterEntryName(entryNames, SORTED_PACKAGES[i]);
-            if (entryName != null) {
-                processAssetsBundle(entryName);
-                entryNames.remove(entryName);
-            }
-        }
-        // 处理剩下的Bundle包
-        for (String entryName : entryNames) {
-            processAssetsBundle(entryName);
-        }
-    }
-
-    private boolean processAssetsBundle(String fileName) {
-
-        if (!(fileName.contains("-") && fileName.contains(".awb"))) {
-            return false;
-        }
-
-        String str = fileName.substring(0, fileName.indexOf(".awb"));
-        String packageName = str.substring(0, str.indexOf("-"));
-        String versionCode = str.substring(str.indexOf("-") + 1);
-
-        Bundle bundle = Atlas.getInstance().getBundle(packageName);
-        if (bundle != null) {
-            PackageInfo packageInfo = Atlas.getInstance().getBundlePackageInfo(packageName);
-            if (packageInfo != null) {
-                try {
-                    int v = Integer.valueOf(versionCode);
-                    if (v < packageInfo.versionCode) {
-                        InputStream inputStream = null;
-                        try {
-                            inputStream = this.getAssets().open(fileName);
-                            Atlas.getInstance().updateBundle(packageName, inputStream);
-                            Log.d(TAG, "Succeed to update bundle " + packageName);
-                            return true;
-                        } catch (Exception e) {
-                            Log.e(TAG, "Could not update bundle.", e);
-                        } finally {
-                            if (inputStream != null) {
-                                try {
-                                    inputStream.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }
-                } catch (NumberFormatException e) {
-                    Log.e(TAG, "Could not get version of " + fileName + " , Skip update");
-                }
-            } else {
-                Log.e(TAG, "Could not get PackageInfo of " + fileName + " , Skip update");
-            }
-        } else {
-            // 新增Bundle,需要安装
-            InputStream inputStream = null;
-            try {
-                inputStream = this.getAssets().open(fileName);
-                bundle = Atlas.getInstance().installBundle(packageName, inputStream);
-                if (bundle != null && contains(AUTOSTART_PACKAGES, packageName)) {
-                    bundle.start();
-                }
-                Log.d(TAG, "Succeed to install bundle " + packageName);
-                return true;
-            } catch (Exception e) {
-                Log.e(TAG, "Could not install bundle.", e);
-            } finally {
-                if (inputStream != null) {
-                    try {
-                        inputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
         return false;
     }
 
