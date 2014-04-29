@@ -111,10 +111,11 @@ public class TaobaoApplication extends PanguApplication {
 
     private boolean processLibsBundle(String entryName) {
 
-        String fileName = entryName.substring(entryName.indexOf("lib/armeabi/"));
-        String packageName = entryName.substring(entryName.indexOf("lib/armeabi/lib"), entryName.indexOf(".so"));
+        String fileName = entryName.substring(entryName.indexOf("lib/armeabi/") + "lib/armeabi/".length());
+        String packageName = entryName.substring(entryName.indexOf("lib/armeabi/lib") + "lib/armeabi/lib".length(),
+                                                 entryName.indexOf(".so"));
         packageName = packageName.replace("_", ".");
-        
+
         File libDir = new File(getFilesDir().getParentFile(), "lib");
         File soFile = new File(libDir, fileName);
 
@@ -179,8 +180,7 @@ public class TaobaoApplication extends PanguApplication {
                 ZipEntry zipEntry = entries.nextElement();
                 String entryName = zipEntry.getName();
                 if (entryName.startsWith(prefix) && entryName.endsWith(suffix)) {
-                    String fileName = entryName.substring(entryName.indexOf("/") + 1, entryName.length());
-                    entryNames.add(fileName);
+                    entryNames.add(entryName);
                 }
             }
         } catch (IOException e) {
