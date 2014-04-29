@@ -15,6 +15,7 @@ import org.osgi.framework.Bundle;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -85,6 +86,7 @@ public class TaobaoApplication extends PanguApplication {
                     processAssetsBundles();
                     // 或许有Bundle新增或更新，再次刷新Component的状态
                     // enableComponents(TaobaoApplication.this);
+                    TaobaoApplication.this.sendStickyBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
                 }
             });
         }
