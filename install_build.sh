@@ -46,7 +46,7 @@ GITS=(
 cd $BUILD_PATH
 for git in ${GITS[@]}
 do
-	git clone $git
+	git clone $git -b $BRANCH
 done
 
 for file in $BUILD_PATH
