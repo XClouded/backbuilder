@@ -15,6 +15,7 @@ mkdir $BUILD_PATH
 
 
 cd $ROOT_PATH
+rm -rf taobaocompat
 git clone git@gitlab.alibaba-inc.com:taobao-android/taobaocompat.git -b $BRANCH
 cd taobaocompat
 mvn install -U -e
