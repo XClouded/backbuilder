@@ -8,12 +8,12 @@
     <uses-sdk
         android:minSdkVersion="9"
         android:targetSdkVersion="18" />
-
+    <instrumentation android:name="com.taobao.url.test.UrlTestRunner" android:targetPackage="com.taobao.taobao"/>
     <application
         android:name="com.taobao.tao.TaobaoApplication"
         android:icon="@drawable/icon"
         android:label="@string/taobao_app_name" >
-
+        <uses-library android:name="android.test.runner"/>
         <meta-data
             android:name="application"
             android:value="com.taobao.tao.TaoApplication" >
