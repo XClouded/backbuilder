@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.taobao.taobao.R;
@@ -15,10 +17,20 @@ import com.taobao.taobao.R;
  * Created by lvshan on 14-5-5.
  */
 public class UrlTestActivity extends Activity {
+    private Button btnVisitor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        btnVisitor = (Button) this.findViewById(R.id.btnView);
+        btnVisitor.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                doVisit();
+            }
+        });
     }
 
    public void doVisit() {

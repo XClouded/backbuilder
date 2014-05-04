@@ -21,7 +21,6 @@ public class UrlTestCase extends InstrumentationTestCase {
     public void setUp() throws Exception {
         super.setUp();
         solo = new Solo(this.getInstrumentation());
-        //获取所有的测试用例
         Log.e("test", "test start");
     }
 
@@ -41,13 +40,15 @@ public class UrlTestCase extends InstrumentationTestCase {
 
         intent.setClass(instrumentation.getTargetContext(), UrlTestActivity.class);
         Activity currentActivity = instrumentation.startActivitySync(intent);
-        solo.sleep(3000);
-        doVisitor( "http://a.m.tmall.com/i37505240912.htm",currentActivity);
-        doVisitor( "http://fenl.m.tmall.com/?sid=35e5334c5c7fd37bc8f1ff83151133c6",currentActivity);
+        Log.e("test","I am here");
+        if(solo.waitForActivity(UrlTestActivity.class)) {
+            Log.e("test", solo.getCurrentActivity().getComponentName().toShortString());
+            doVisitor("http://a.m.tmall.com/i37505240912.htm", currentActivity);
+            doVisitor("http://fenl.m.tmall.com/?sid=35e5334c5c7fd37bc8f1ff83151133c6", currentActivity);
+        }
     }
 
-    private void doVisitor(String url,Activity currentActivity){
-
+    public void doVisitor(String url,Activity currentActivity){
         EditText editTextUrl = (EditText) currentActivity.findViewById(R.id.etUrl);
         solo.enterText(editTextUrl, url);
         Button btnReset = (Button) currentActivity.findViewById(R.id.btnView);
