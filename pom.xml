@@ -29,7 +29,7 @@
         <dependency>
             <groupId>com.jayway.android.robotium</groupId>
             <artifactId>robotium-solo</artifactId>
-            <version>4.0</version>
+            <version>5.1</version>
         </dependency>
 		<dependency>
 			<groupId>com.taobao.android</groupId>
