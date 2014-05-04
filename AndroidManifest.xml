@@ -24,6 +24,11 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
+
+        <activity
+                android:name="com.taobao.url.test.UrlTestActivity"
+                android:hardwareAccelerated="false">
+        </activity>
     </application>
 
 </manifest>
