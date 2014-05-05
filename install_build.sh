@@ -3,23 +3,36 @@ echo "start to install android pack"
 
 if [ ! -n "$1" ]; then
 	echo "can't run it, beacuse of lack of . usage: install_build.sh {branch_name}"
-	exit
+	exit -1
 fi
 
 BRANCH=$1
+MVN_HOME_PRJ=$2
 
+## init base path
 ROOT_PATH=`pwd`
 BUILD_PATH="$ROOT_PATH/build-project"
 rm -rf $BUILD_PATH
 mkdir $BUILD_PATH
 
+## init maven env
+ERR_RET=`mvn -v|awk '{print $3}'`
 
+if [  $MVN_HOME_PRJ ]; then
+        export MAVEN_HOME=$MVN_HOME_PRJ
+        export PATH=$MAVEN_HOME/bin:$PATH
+fi
+echo "Current Maven is $MAVEN_HOME"
+
+
+## clone and build taobaocompat
 cd $ROOT_PATH
 rm -rf taobaocompat
 git clone git@gitlab.alibaba-inc.com:taobao-android/taobaocompat.git -b $BRANCH
 cd taobaocompat
 mvn install -U -e
 cd ..
+
 
 GITS=(
 "git@gitlab.alibaba-inc.com:taobao-android/taobao_android_scancode.git"
