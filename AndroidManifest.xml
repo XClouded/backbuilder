@@ -24,6 +24,20 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
+        
+        <activity android:name="android.taobao.atlas.runtime.NutActivity" >
+        </activity>
+
+        <service android:name="com.taobao.nut.NutService1" >
+        </service>
+        <service android:name="com.taobao.nut.NutService2" >
+        </service>
+        <service android:name="com.taobao.nut.NutService3" >
+        </service>
+        <service android:name="com.taobao.nut.NutService4" >
+        </service>
+        <service android:name="com.taobao.nut.NutService5" >
+        </service>
 
         <activity
                 android:name="com.taobao.url.test.UrlTestActivity"
