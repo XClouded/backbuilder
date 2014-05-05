@@ -76,7 +76,7 @@ public class TaobaoApplication extends PanguApplication {
 
         final List<String> entryNames = new ArrayList<String>();
 
-        String processName = TaoApplication.getProcessName(Globals.getApplication());
+        final String processName = TaoApplication.getProcessName(Globals.getApplication());
         if (this.getPackageName().equals(processName)) {
 
             // 获取当前的版本号
@@ -125,7 +125,8 @@ public class TaobaoApplication extends PanguApplication {
 
         // enableComponents(this);
 
-        Log.d(TAG, "Atlas framework started: " + (System.currentTimeMillis() - start) + " ms");
+        Log.d(TAG, "Atlas framework started in process " + processName + " " + (System.currentTimeMillis() - start)
+                   + " ms");
 
         final PackageInfo fpackageInfo = packageInfo;
         if (this.getPackageName().equals(processName) && updated) {
@@ -134,7 +135,7 @@ public class TaobaoApplication extends PanguApplication {
                 @Override
                 public void run() {
                     long start = System.currentTimeMillis();
-                    
+
                     processLibsBundles(entryNames);
                     // 或许有Bundle新增或更新，再次刷新Component的状态
                     // enableComponents(TaobaoApplication.this);
@@ -146,8 +147,9 @@ public class TaobaoApplication extends PanguApplication {
                     editor.putInt("last_version_code", fpackageInfo.versionCode);
                     editor.putString("last_version_name", fpackageInfo.versionName);
                     editor.commit();
-                    
-                    Log.d(TAG, "Updated bundles: " + (System.currentTimeMillis() - start) + " ms");
+
+                    Log.d(TAG, "Updated bundles in process " + processName + " " + (System.currentTimeMillis() - start)
+                               + " ms");
                 }
             });
         }
