@@ -139,8 +139,6 @@ public class TaobaoApplication extends PanguApplication {
                     processLibsBundles(entryNames);
                     // 或许有Bundle新增或更新，再次刷新Component的状态
                     // enableComponents(TaobaoApplication.this);
-                    Log.d(TAG, "sendStickyBroadcast: com.taobao.taobao.action.BUNDLES_INSTALLED");
-                    TaobaoApplication.this.sendStickyBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
 
                     SharedPreferences prefs = TaobaoApplication.this.getSharedPreferences("atlas_configs", MODE_PRIVATE);
                     Editor editor = prefs.edit();
@@ -148,10 +146,17 @@ public class TaobaoApplication extends PanguApplication {
                     editor.putString("last_version_name", fpackageInfo.versionName);
                     editor.commit();
 
+                    System.setProperty("BUNDLES_INSTALLED", "true");
+
+                    Log.d(TAG, "sendBroadcast: com.taobao.taobao.action.BUNDLES_INSTALLED");
+                    TaobaoApplication.this.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
+
                     Log.d(TAG, "Updated bundles in process " + processName + " " + (System.currentTimeMillis() - start)
                                + " ms");
                 }
             });
+        } else if (!updated) {
+            System.setProperty("BUNDLES_INSTALLED", "true");
         }
 
     }
