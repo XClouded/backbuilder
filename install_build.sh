@@ -53,6 +53,10 @@ GITS=(
 "git@gitlab.alibaba-inc.com:taobao-android/taobao_shop_common.git"
 "git@gitlab.alibaba-inc.com:taobao-android/arcticcircleplugin.git"
 "git@gitlab.alibaba-inc.com:taobao-android/taobao_legacy.git"
+"git@gitlab.alibaba-inc.com:tbw/big-android.git"
+"git@gitlab.alibaba-inc.com:taobao-android/arcticcircleplugin.git"
+"git@gitlab.alibaba-inc.com:yingying.yuanyy/juandroid_plugin.git"
+"git@gitlab.alibaba-inc.com:taobao-android/passivelocation.git"
 
 )
 
@@ -76,6 +80,6 @@ done
 cd $ROOT_PATH
 #git clone git@gitlab.alibaba-inc.com:build/taobao_builder.git -b feature_20140520
 #cd taobao_builder
-mvn clean package -e -o
+mvn clean package -e
 
 
