@@ -43,7 +43,8 @@ function build_taobaocompat(){
 	rm -rf taobaocompat
 	git clone git@gitlab.alibaba-inc.com:taobao-android/taobaocompat.git -b $BRANCH
 	cd taobaocompat
-	mvn install -U -e $MVN_OPT 
+	mvn install -U -e $MVN_OPT -Papklib
+	mvn install -U -e $MVN_OPT -Paar
 }
 
 
