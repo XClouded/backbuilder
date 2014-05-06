@@ -8,78 +8,81 @@ fi
 
 BRANCH=$1
 MVN_HOME_PRJ=$2
-
-## init base path
+MVN_D_FILE=$3
 ROOT_PATH=`pwd`
+BUILD_GIT_CONF_FILE="$ROOT_PATH/git.list"
 BUILD_PATH="$ROOT_PATH/build-project"
-rm -rf $BUILD_PATH
-mkdir $BUILD_PATH
-
-## init maven env
+MVN_REPO_LOCAL="$ROOT_PATH/build-repo"
 ERR_RET=`mvn -v|awk '{print $3}'`
-
+MVN_OPT="-Dmaven.repo.local=$MVN_REPO_LOCAL"
 if [  $MVN_HOME_PRJ ]; then
-        export MAVEN_HOME=$MVN_HOME_PRJ
-        export PATH=$MAVEN_HOME/bin:$PATH
+	export MAVEN_HOME=$MVN_HOME_PRJ
+	export PATH=$MAVEN_HOME/bin:$PATH
+	echo ">>Current Maven is $MAVEN_HOME"
 fi
-echo "Current Maven is $MAVEN_HOME"
+if [ $MVN_D_FILE -a -f $MVN_D_FILE ]; then
+	$BUILD_GIT_CONF_FILE=$MVN_D_FILE
+	echo ">>current build file:$BUILD_GIT_CONF_FILE"
+fi
 
 
-## clone and build taobaocompat
-cd $ROOT_PATH
-rm -rf taobaocompat
-git clone git@gitlab.alibaba-inc.com:taobao-android/taobaocompat.git -b $BRANCH
-cd taobaocompat
-mvn install -U -e
-cd ..
+##初始化目录
+function init_path(){
+	echo ">>remove work path"
+	rm -rf $BUILD_PATH
+	mkdir $BUILD_PATH
+	rm -rf $MVN_REPO_LOCAL
+	mkdir $MVN_REPO_LOCAL
+}
 
 
-GITS=(
-"git@gitlab.alibaba-inc.com:taobao-android/taobao_android_scancode.git"
-"git@gitlab.alibaba-inc.com:taobao-android/allspark_android.git"
-"git@gitlab.alibaba-inc.com:taobao-android/mytaobao.git"
-"git@gitlab.alibaba-inc.com:taobao-android/nearby.git"
-"git@gitlab.alibaba-inc.com:taobao-android/taobao_browser.git"
-"git@gitlab.alibaba-inc.com:taobao-android/taobao_android_coupon.git"
-"git@gitlab.alibaba-inc.com:taobao-android/taobao_wx.git"
-"git@gitlab.alibaba-inc.com:taobao-android/taobao_android_trade.git"
-"git@gitlab.alibaba-inc.com:taobao-android/tbsearch_android.git"
-"git@gitlab.alibaba-inc.com:taobao-android/taobao_android_homepage.git"
-"git@gitlab.alibaba-inc.com:taobao-android/taobao_gamecenter.git"
-"git@gitlab.alibaba-inc.com:taobao-android/taobao_android_alipay.git"
-"git@gitlab.alibaba-inc.com:taobao-android/rushpromotionactivity.git"
-"git@gitlab.alibaba-inc.com:taobao-android/taobao_shop.git"
-"git@gitlab.alibaba-inc.com:taobao-android/login4android_sdk.git"
-"git@gitlab.alibaba-inc.com:taobao-android/taobao_shop_common.git"
-"git@gitlab.alibaba-inc.com:taobao-android/arcticcircleplugin.git"
-"git@gitlab.alibaba-inc.com:taobao-android/taobao_legacy.git"
-"git@gitlab.alibaba-inc.com:tbw/big-android.git"
-"git@gitlab.alibaba-inc.com:taobao-android/arcticcircleplugin.git"
-"git@gitlab.alibaba-inc.com:yingying.yuanyy/juandroid_plugin.git"
-"git@gitlab.alibaba-inc.com:taobao-android/passivelocation.git"
+## taobaocompat是所有工程的基础
+function build_taobaocompat(){
+	echo ">> start to build taobaocompat"
+	cd $ROOT_PATH
+	rm -rf taobaocompat
+	git clone git@gitlab.alibaba-inc.com:taobao-android/taobaocompat.git -b $BRANCH
+	cd taobaocompat
+	mvn install -U -e $MVN_OPT 
+}
 
-)
 
-cd $BUILD_PATH
-for git in ${GITS[@]}
-do
-	git clone $git -b $BRANCH
-done
+function doBundleBuilder(){
+	echo ">>start to build bundle"
+	cd $BUILD_PATH
+	git_list=$(cat $BUILD_GIT_CONF_FILE)
+	while read line ; do
+		param_b=`echo $line | grep  -o ' \-b '`
+		if [ $param_b ]; then
+			git clone $line
+		else
+			git clone $line -b $BRANCH
+		fi
+	done < $BUILD_GIT_CONF_FILE
 
-for file in $BUILD_PATH
-do
-    if !test -d $file
-    then
-	echo ">>start to install in $file"
-        cd $file
-	mvn install -e
-	cd ..
-    fi
-done
+	for file in `ls $BUILD_PATH`
+	do
+	    if  test -d $file ; then
+			echo ">>start to install in $file"
+	        cd $BUILD_PATH/$file
+			mvn install -e $MVN_OPT
+	    fi
+	done
+}
 
-cd $ROOT_PATH
-#git clone git@gitlab.alibaba-inc.com:build/taobao_builder.git -b feature_20140520
-#cd taobao_builder
-mvn clean package -e
+function doBuilder(){
+	echo "start to builder apk main"
+	cd $ROOT_PATH
+	mvn clean package -e $MVN_OPT
+}
+
+init_path;
+build_taobaocompat;
+doBundleBuilder;
+doBuilder;
+
+
+
+
 
 
