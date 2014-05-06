@@ -57,6 +57,8 @@ public class TaobaoApplication extends PanguApplication {
             Log.e(TAG, "Could not init atlas framework !!!", e);
         }
 
+        Log.d(TAG, "Atlas framework inited " + (System.currentTimeMillis() - start) + " ms");
+
         try {
             Field sApplication = Globals.class.getDeclaredField("sApplication");
             sApplication.setAccessible(true);
@@ -70,6 +72,7 @@ public class TaobaoApplication extends PanguApplication {
 
         Properties props = new Properties();
         props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
+        props.put("android.taobao.atlas.debug.bundles", "true");
 
         // 安装程序是否已经升级了
         boolean updated = false;
@@ -116,6 +119,9 @@ public class TaobaoApplication extends PanguApplication {
                 Log.d(TAG, "autodelete: " + autodelete);
             }
         }
+
+        Log.d(TAG, "Atlas framework starting in process " + processName + " " + (System.currentTimeMillis() - start)
+                   + " ms");
 
         try {
             // disableComponents(this);
