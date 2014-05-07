@@ -143,15 +143,31 @@ public class TaobaoApplication extends PanguApplication {
                 public void run() {
                     long start = System.currentTimeMillis();
 
-                    processLibsBundles(entryNames);
+                    ZipFile zipFile = null;
+                    try {
+                        zipFile = new ZipFile(TaobaoApplication.this.getApplicationInfo().sourceDir);
+                        processLibsBundles(zipFile, entryNames);
+
+                        SharedPreferences prefs = TaobaoApplication.this.getSharedPreferences("atlas_configs",
+                                                                                              MODE_PRIVATE);
+                        Editor editor = prefs.edit();
+                        editor.putInt("last_version_code", fpackageInfo.versionCode);
+                        editor.putString("last_version_name", fpackageInfo.versionName);
+                        editor.commit();
+
+                    } catch (IOException e) {
+                        Log.e(TAG, "IOException while processLibsBundles >>>", e);
+                    } finally {
+                        if (zipFile != null) {
+                            try {
+                                zipFile.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
                     // 或许有Bundle新增或更新，再次刷新Component的状态
                     // enableComponents(TaobaoApplication.this);
-
-                    SharedPreferences prefs = TaobaoApplication.this.getSharedPreferences("atlas_configs", MODE_PRIVATE);
-                    Editor editor = prefs.edit();
-                    editor.putInt("last_version_code", fpackageInfo.versionCode);
-                    editor.putString("last_version_name", fpackageInfo.versionName);
-                    editor.commit();
 
                     System.setProperty("BUNDLES_INSTALLED", "true");
 
@@ -168,23 +184,23 @@ public class TaobaoApplication extends PanguApplication {
 
     }
 
-    private void processLibsBundles(List<String> entryNames) {
+    private void processLibsBundles(ZipFile zipFile, List<String> entryNames) {
         // 首先按照预先设定的顺序处理Bundle安装包
         for (int i = 0; i < SORTED_PACKAGES.length; i++) {
             String pkg = SORTED_PACKAGES[i].replace(".", "_");
             String entryName = filterEntryName(entryNames, pkg);
             if (entryName != null) {
-                processLibsBundle(entryName);
+                processLibsBundle(zipFile, entryName);
                 entryNames.remove(entryName);
             }
         }
         // 处理剩下的Bundle包
         for (String entryName : entryNames) {
-            processLibsBundle(entryName);
+            processLibsBundle(zipFile, entryName);
         }
     }
 
-    private boolean processLibsBundle(String entryName) {
+    private boolean processLibsBundle(ZipFile zipFile, String entryName) {
 
         String fileName = getFileNameFromEntryName(entryName);
         String packageName = getPackageNameFromEntryName(entryName);
@@ -200,7 +216,7 @@ public class TaobaoApplication extends PanguApplication {
                 if (soFile.exists()) {
                     bundle = Atlas.getInstance().installBundle(packageName, soFile);
                 } else {
-                    inputStream = this.getAssets().open(fileName);
+                    inputStream = zipFile.getInputStream(zipFile.getEntry(entryName));
                     bundle = Atlas.getInstance().installBundle(packageName, inputStream);
                 }
                 if (bundle != null && contains(AUTOSTART_PACKAGES, packageName)) {
