@@ -475,13 +475,15 @@
 					<artifactId>versions-maven-plugin</artifactId>
 					<version>2.1</version>
 				</plugin>
-			</plugins>
-		</pluginManagement>
-                <plugin>
+				<plugin>
                   <groupId>com.taobao.android.maven.plugins</groupId>
                   <artifactId>apklib-maven-plugin</artifactId>
                   <version>1.0.2-SNAPSHOT</version>
                 </plugin>
+			</plugins>
+			
+		</pluginManagement>
+                
 		<plugins>
 			<plugin>
 				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
