@@ -39,10 +39,6 @@
         <service android:name="com.taobao.nut.NutService5" >
         </service>
 
-        <activity
-                android:name="com.taobao.url.test.UrlTestActivity"
-                android:hardwareAccelerated="false">
-        </activity>
     </application>
 
 </manifest>
