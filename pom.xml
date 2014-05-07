@@ -477,7 +477,11 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-
+                <plugin>
+                  <groupId>com.taobao.android.maven.plugins</groupId>
+                  <artifactId>apklib-maven-plugin</artifactId>
+                  <version>1.0.2-SNAPSHOT</version>
+                </plugin>
 		<plugins>
 			<plugin>
 				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
@@ -564,6 +568,29 @@
 	  </replacements>
 	  </configuration>
 	  </plugin>
+	  
+	  <plugin>
+        <groupId>com.taobao.android.maven.plugins</groupId>
+        <artifactId>apklib-maven-plugin</artifactId>
+        <configuration> 
+        </configuration>
+        <executions>    
+          <execution>       
+            <id>rds</id>    
+            <phase>prepare-package</phase>
+            <goals>             
+              <goal>deldupso</goal>
+            </goals>        
+          </execution>      
+          <execution>       
+            <id>mc</id>     
+            <phase>process-resources</phase>
+            <goals>         
+              <goal>mergecfg</goal>
+            </goals>    
+          </execution>
+        </executions>
+      </plugin>
 			<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>build-helper-maven-plugin</artifactId> 
 				<version>1.7</version> <executions> <execution> <phase>package</phase> <goals> 
 				<goal>attach-artifact</goal> </goals> <configuration> <artifacts> <artifact> 
