@@ -105,7 +105,7 @@ public class TaobaoApplication extends PanguApplication {
 
                 updated = true;
                 // 找到安装包中所有的bundle名称，然后把磁盘上的对应bundle全部删除，以便后面重新安装新版本
-                entryNames.addAll(getBundleEntryNames("lib/armeabi/libcom_taobao", ".so"));
+                entryNames.addAll(getBundleEntryNames("lib/armeabi/libcom_", ".so"));
                 StringBuffer stringBuffer = new StringBuffer();
                 for (String entryName : entryNames) {
                     String packageName = getPackageNameFromEntryName(entryName);
