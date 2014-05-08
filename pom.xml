@@ -646,6 +646,30 @@
 			</snapshots>
 		</repository>
 	</repositories>
+	  <pluginRepositories>
+    <pluginRepository>
+      <id>central</id>
+      <url>http://mvnrepo.taobao.ali.com/mvn/repository</url>
+      <releases>
+	<enabled>true</enabled>
+      </releases>
+      <snapshots>
+	<enabled>true</enabled>
+	<updatePolicy>always</updatePolicy>  
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>snapshots</id>
+      <url>http://mvnrepo.taobao.ali.com/mvn/repository</url>
+      <releases>
+	<enabled>true</enabled>
+      </releases>
+      <snapshots>
+	<enabled>true</enabled>
+	<updatePolicy>always</updatePolicy>  
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
 	<profiles>
 		<profile>
 			<id>apk</id>
