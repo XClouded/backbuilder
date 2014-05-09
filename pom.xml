@@ -43,6 +43,31 @@
 			</exclusions>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>com.tao.diandian</groupId>
+			<artifactId>taodiandian_android</artifactId>
+			<type>awb</type>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+			<version>3.0.0.1-SNAPSHOT</version>
+		</dependency>
+
+	<dependency>
+			<groupId>com.taobao.android</groupId>
+			<artifactId>taobao_lottery</artifactId>
+			<type>awb</type>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
 
 	<dependency>
 			<groupId>com.taobao.plugin.ju</groupId>
@@ -56,7 +81,6 @@
 			</exclusions>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
-
 
 	<dependency>
 			<groupId>com.taobao.android</groupId>
@@ -475,9 +499,15 @@
 					<artifactId>versions-maven-plugin</artifactId>
 					<version>2.1</version>
 				</plugin>
+				<plugin>
+                  <groupId>com.taobao.android.maven.plugins</groupId>
+                  <artifactId>apklib-maven-plugin</artifactId>
+                  <version>1.0.2-SNAPSHOT</version>
+                </plugin>
 			</plugins>
+			
 		</pluginManagement>
-
+                
 		<plugins>
 			<plugin>
 				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
@@ -564,6 +594,29 @@
 	  </replacements>
 	  </configuration>
 	  </plugin>
+	  
+	  <plugin>
+        <groupId>com.taobao.android.maven.plugins</groupId>
+        <artifactId>apklib-maven-plugin</artifactId>
+        <configuration> 
+        </configuration>
+        <executions>    
+          <execution>       
+            <id>rds</id>    
+            <phase>prepare-package</phase>
+            <goals>             
+              <goal>deldupso</goal>
+            </goals>        
+          </execution>      
+          <execution>       
+            <id>mc</id>     
+            <phase>process-resources</phase>
+            <goals>         
+              <goal>mergecfg</goal>
+            </goals>    
+          </execution>
+        </executions>
+      </plugin>
 			<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>build-helper-maven-plugin</artifactId> 
 				<version>1.7</version> <executions> <execution> <phase>package</phase> <goals> 
 				<goal>attach-artifact</goal> </goals> <configuration> <artifacts> <artifact> 
@@ -605,6 +658,30 @@
 			</snapshots>
 		</repository>
 	</repositories>
+	  <pluginRepositories>
+    <pluginRepository>
+      <id>central</id>
+      <url>http://mvnrepo.taobao.ali.com/mvn/repository</url>
+      <releases>
+	<enabled>true</enabled>
+      </releases>
+      <snapshots>
+	<enabled>true</enabled>
+	<updatePolicy>always</updatePolicy>  
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>snapshots</id>
+      <url>http://mvnrepo.taobao.ali.com/mvn/repository</url>
+      <releases>
+	<enabled>true</enabled>
+      </releases>
+      <snapshots>
+	<enabled>true</enabled>
+	<updatePolicy>always</updatePolicy>  
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
 	<profiles>
 		<profile>
 			<id>apk</id>

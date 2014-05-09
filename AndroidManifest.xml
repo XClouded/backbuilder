@@ -2,18 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.taobao.taobao"
           android:installLocation="auto"
-          android:versionCode="97"
-          android:versionName="4.4.4" >
+          android:versionCode="98"
+          android:versionName="4.2.2" >
 
     <uses-sdk
             android:minSdkVersion="9"
             android:targetSdkVersion="18" />
-    <instrumentation android:name="com.taobao.url.test.UrlTestRunner" android:targetPackage="com.taobao.taobao"/>
+
     <application
             android:name="com.taobao.tao.TaobaoApplication"
             android:icon="@drawable/icon"
             android:label="@string/taobao_app_name" >
-        <uses-library android:name="android.test.runner"/>
+
         <meta-data
                 android:name="application"
                 android:value="com.taobao.tao.TaoApplication" >
@@ -24,25 +24,7 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
-        
-        <activity android:name="android.taobao.atlas.runtime.NutActivity" >
-        </activity>
 
-        <service android:name="com.taobao.nut.NutService1" >
-        </service>
-        <service android:name="com.taobao.nut.NutService2" >
-        </service>
-        <service android:name="com.taobao.nut.NutService3" >
-        </service>
-        <service android:name="com.taobao.nut.NutService4" >
-        </service>
-        <service android:name="com.taobao.nut.NutService5" >
-        </service>
-
-        <activity
-                android:name="com.taobao.url.test.UrlTestActivity"
-                android:hardwareAccelerated="false">
-        </activity>
     </application>
 
 </manifest>
