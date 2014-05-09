@@ -428,13 +428,17 @@
 					<groupId>com.alipay</groupId>
 					<artifactId>mobilesecuritysdk</artifactId>
 				</exclusion>
-<exclusion>
-  <groupId>com.alipay.android</groupId>
+                <exclusion>
+                    <groupId>com.alipay.android</groupId>
 					<artifactId>ipp</artifactId>
 				</exclusion>
 				<exclusion>
 					<groupId>com.alipay.trobot.external</groupId>
 					<artifactId>trobotexternalinterface</artifactId>
+				</exclusion>
+                <exclusion>
+					<groupId>com.taobao.android</groupId>
+					<artifactId>fastjson</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
