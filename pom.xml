@@ -18,6 +18,7 @@
         <!-- 8 means 2.2, 2.2 means 8, both OK , this is for apk package -->
         <android.compile.apilevel>18</android.compile.apilevel>
         <tb.platform.version>1.0.0-SNAPSHOT</tb.platform.version>
+	 <app.releasemode>false</app.releasemode>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -527,6 +528,9 @@
 						${project.basedir}/AndroidManifest.xml
 					</androidManifestFile>
 					<mergeManifests>true</mergeManifests>
+					<!-- release = true means will set BuildConfig.java debuggable = true,
+	       no need to set it in AndroidManifest any more -->
+					<release>${app.releasemode}</release>
 					<extractDuplicates>true</extractDuplicates>
 					<!--<isResIDDependency>false</isResIDDependency> <customPackageID>127</customPackageID> -->
 					<dex>
