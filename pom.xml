@@ -436,6 +436,12 @@
 		  <groupId>com.taobao.android</groupId>
 		  <artifactId>uikit_extends</artifactId>
 		  <version>1.0.0-SNAPSHOT</version>
+		  <exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
 		  <type>apklib</type>
 		</dependency> 	
 		<dependency>
