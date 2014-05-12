@@ -1,0 +1,86 @@
+<component name="libraryTable">
+  <library name="agoo-android-1.3.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/target/dependency/agoo-android-1.3.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/agoo-basic-1.3.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/agoo-core-1.3.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/agoo-taobao-1.3.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/agoo-trasfer-1.0.1-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/allspark_common-1.0.1-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/amap_api-2.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/android-4.3.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/android-proguard-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/antidecompile-1.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/atlas-2.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/calendar-taobao-0.0.6.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/cashdesk_agent-0.0.1-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/chocolate-cache-1.1.2-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/dapk-client-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/detail_common-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/disklrucache-1.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/hotpatch-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/http-dns-1.3.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/lbs-1.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/lephone-1.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/library-2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/libwebp-2.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/locate-2.1.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/login4android_api-1.0.2-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/mipush-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/mobile_sp-1.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/MRecognizer-1.0.18.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/mtopsdk_cache-1.3.4-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/mtopsdk_common-1.3.4-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/mtopsdk_mtop-1.3.4-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/mtopsdk_network-1.3.4-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/mtopsdk_security-1.3.4-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/mtopsdk_xstate-1.3.4-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/MunionTaoBaoSDK-2.1.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/mytaobao-common-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/orderdetail_common-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/orderlist_common-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/protostuff-1.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/puti-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/remote_business-1.0.1-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/robotium-solo-5.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/security-1.3.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/service-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/share-2.0.1-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/ski-2.0.1-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/spdu-dns-1.0.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/spduSDK-1.0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/sso-android-1.3.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/support-v4-r18.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/tao_business-2.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/tao_configcenter-1.0.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/tao_richview-1.8.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/tao_sdk-1.10.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/taoapp4androidapi-0.0.1-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/taobao_browser_common-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/taobao_config-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/taobao_passivelocation_common-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/taobao_scancode_common-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/taobao_shop_common-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/taobao_we_sdk-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/taobao_weapp_sdk-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/taowx_common-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/tbShortUrl-1.0.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/updatedownloader-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/usertrack-1.3.27.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/windvane-4.5.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/windvane-extra-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/wxsdk-1.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/xposedbridge-1.0.0-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/target/dependency/cashdesk_agent-0.0.1-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/detail_common-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/lbs-1.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/libwebp-2.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/orderdetail_common-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/orderlist_common-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/dependency/sso-android-1.3.4.jar!/" />
+    </SOURCES>
+  </library>
+</component>
