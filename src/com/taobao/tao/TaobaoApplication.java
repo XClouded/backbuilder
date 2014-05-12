@@ -46,13 +46,13 @@ public class TaobaoApplication extends PanguApplication {
             "com.taobao.passivelocation", "com.taobao.ble.checkin" };
 
     //doesn't delete used for online monitor
-    static long start = 0;
+    static long START = 0;
     
     @Override
     public void onCreate() {
         super.onCreate();
 
-        start = System.currentTimeMillis();
+        START = System.currentTimeMillis();
 
         try {
             Atlas.getInstance().init(this);
@@ -60,7 +60,7 @@ public class TaobaoApplication extends PanguApplication {
             Log.e(TAG, "Could not init atlas framework !!!", e);
         }
 
-        Log.d(TAG, "Atlas framework inited " + (System.currentTimeMillis() - start) + " ms");
+        Log.d(TAG, "Atlas framework inited " + (System.currentTimeMillis() - START) + " ms");
 
         try {
             Field sApplication = Globals.class.getDeclaredField("sApplication");
@@ -123,7 +123,7 @@ public class TaobaoApplication extends PanguApplication {
             }
         }
 
-        Log.d(TAG, "Atlas framework starting in process " + processName + " " + (System.currentTimeMillis() - start)
+        Log.d(TAG, "Atlas framework starting in process " + processName + " " + (System.currentTimeMillis() - START)
                    + " ms");
 
         try {
@@ -135,7 +135,7 @@ public class TaobaoApplication extends PanguApplication {
 
         // enableComponents(this);
 
-        Log.d(TAG, "Atlas framework started in process " + processName + " " + (System.currentTimeMillis() - start)
+        Log.d(TAG, "Atlas framework started in process " + processName + " " + (System.currentTimeMillis() - START)
                    + " ms");
 
         final PackageInfo fpackageInfo = packageInfo;
