@@ -22,6 +22,10 @@
         <app.releasemode>false</app.releasemode>
         <channel.version.name>4.2.2.0</channel.version.name>
         <channel.version.code>98</channel.version.code>
+        <proguard.skip>true</proguard.skip>
+        <proguard.config>proguard.cfg</proguard.config>
+        <proguard.outputDirectory>proguard_output</proguard.outputDirectory>
+        <proguard.proguardJarPath>env.PROGUARD_HOME</proguard.proguardJarPath>
     </properties>
     <dependencies>
         <dependency>
@@ -529,8 +533,14 @@
                         <platform>${android.compile.apilevel}</platform>
                     </sdk>
                     <proguard>
-                        <skip>true</skip>
-                        <config>proguard.cfg</config>
+                        <skip>${proguard.skip}</skip>
+                        <config>${proguard.config}</config>
+                        <outputDirectory>${proguard.outputDirectory}</outputDirectory>
+                        <proguardJarPath>${proguard.proguardJarPath}</proguardJarPath>
+                        <jvmArguments>
+                            <jvmArgument>-Xms512m</jvmArgument>
+                            <jvmArgument>-Xmx1024m</jvmArgument>
+                        </jvmArguments>
                     </proguard>
                     <androidManifestFile>
                         ${project.basedir}/AndroidManifest.xml
