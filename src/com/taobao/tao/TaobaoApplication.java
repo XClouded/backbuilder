@@ -45,11 +45,14 @@ public class TaobaoApplication extends PanguApplication {
     final static String[] AUTOSTART_PACKAGES = new String[] { "com.taobao.mytaobao", "com.taobao.wangxin",
             "com.taobao.passivelocation", "com.taobao.ble.checkin" };
 
+    //doesn't delete used for online monitor
+    static long start = 0;
+    
     @Override
     public void onCreate() {
         super.onCreate();
 
-        long start = System.currentTimeMillis();
+        start = System.currentTimeMillis();
 
         try {
             Atlas.getInstance().init(this);
