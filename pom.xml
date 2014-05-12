@@ -542,6 +542,9 @@
                             <jvmArgument>-Xmx1024m</jvmArgument>
                         </jvmArguments>
                     </proguard>
+                    <sign>
+                        <debug>false</debug>
+                    </sign>
                     <androidManifestFile>
                         ${project.basedir}/AndroidManifest.xml
                     </androidManifestFile>
