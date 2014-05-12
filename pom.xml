@@ -19,6 +19,8 @@
         <android.compile.apilevel>18</android.compile.apilevel>
         <tb.platform.version>1.0.0-SNAPSHOT</tb.platform.version>
 	 <app.releasemode>false</app.releasemode>
+	    <channel.version.name>4.2.2.0</channel.version.name>
+	    <channel.version.code>98</channel.version.code>
 	</properties>
 	<dependencies>
 		<dependency>
