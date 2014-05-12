@@ -536,7 +536,7 @@
                         <skip>${proguard.skip}</skip>
                         <config>${proguard.config}</config>
                         <outputDirectory>${proguard.outputDirectory}</outputDirectory>
-                        <proguardJarPath>${proguard.proguardJarPath}</proguardJarPath>
+                        <!-- proguardJarPath>${proguard.proguardJarPath}</proguardJarPath -->
                         <jvmArguments>
                             <jvmArgument>-Xms512m</jvmArgument>
                             <jvmArgument>-Xmx1024m</jvmArgument>

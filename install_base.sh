@@ -162,7 +162,7 @@ function do_awb_build(){
 function do_builder(){
   echo "start to builder apk main"
   cd $ROOT_PATH
-  mvn clean package -e $MVN_OPT -Dproguard.skip=false
+  mvn clean package -e $MVN_OPT -Dproguard.skip=false -Dproguard.
 }
 
 ##编译本工程
