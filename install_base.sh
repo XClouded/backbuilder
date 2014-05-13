@@ -60,6 +60,9 @@ function do_jar_build(){
   cd $BUILD_PATH
   git_list=$(cat $BUILD_GIT_CONF_FILE)
   while read line ; do
+    if [ !$line ]; then
+      continue
+    fi
     param_b=`echo $line | grep  -o ' \-b '`
     if [ $param_b ]; then
       git clone $line
@@ -83,6 +86,9 @@ function do_apklib_build(){
         cd $BUILD_PATH_APKLIB
         git_list=$(cat $BUILD_GIT_CONF_FILE_APKLIB)
         while read line ; do
+          if [ !$line ]; then
+            continue
+          fi
                 param_b=`echo $line | grep  -o ' \-b '`
                 if [ $param_b ]; then
                         git clone $line
@@ -106,6 +112,9 @@ function do_aar_build(){
         cd $BUILD_PATH_AAR
         git_list=$(cat $BUILD_GIT_CONF_FILE_AAR)
         while read line ; do
+          if [ !$line ]; then
+            continue
+          fi
                 param_b=`echo $line | grep  -o ' \-b '`
                 if [ $param_b ]; then
                         git clone $line
@@ -129,6 +138,9 @@ function do_awb_build(){
         cd $BUILD_PATH_AWB
         git_list=$(cat $BUILD_GIT_CONF_FILE_AWB)
         while read line ; do
+          if [ !$line ]; then
+            continue
+          fi
                 param_b=`echo $line | grep  -o ' \-b '`
                 if [ $param_b ]; then
                         git clone $line
@@ -150,7 +162,7 @@ function do_awb_build(){
 function do_builder(){
   echo "start to builder apk main"
   cd $ROOT_PATH
-  mvn clean package -e $MVN_OPT
+  mvn clean package -e $MVN_OPT -Dproguard.skip=false
 }
 
 ##编译本工程
