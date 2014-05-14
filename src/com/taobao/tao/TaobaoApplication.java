@@ -39,11 +39,11 @@ public class TaobaoApplication extends PanguApplication {
     /**
      * 指定Bundle包的处理顺序；程序首先按照这里的顺序来处理Bundle包，然后再乱序处理剩下的Bundle包。
      */
-    final static String[] SORTED_PACKAGES    = new String[] { /*"com.taobao.browser", "com.taobao.android.trade",
-            "com.taobao.mytaobao", "com.taobao.shop"*/ };
+    final static String[] SORTED_PACKAGES    = new String[] { "com.taobao.browser", "com.taobao.android.trade",
+            "com.taobao.mytaobao", "com.taobao.shop" };
 
-    final static String[] AUTOSTART_PACKAGES = new String[] { /*"com.taobao.mytaobao", "com.taobao.wangxin",
-            "com.taobao.passivelocation", "com.taobao.ble.checkin"*/ };
+    final static String[] AUTOSTART_PACKAGES = new String[] { "com.taobao.mytaobao", "com.taobao.wangxin",
+            "com.taobao.passivelocation", "com.taobao.ble.checkin" };
 
     //doesn't delete used for online monitor
     static long START = 0;
@@ -108,7 +108,7 @@ public class TaobaoApplication extends PanguApplication {
 
                 updated = true;
                 // 找到安装包中所有的bundle名称，然后把磁盘上的对应bundle全部删除，以便后面重新安装新版本
-//                entryNames.addAll(getBundleEntryNames("lib/armeabi/libcom_", ".so"));
+                entryNames.addAll(getBundleEntryNames("lib/armeabi/libcom_", ".so"));
                 StringBuffer stringBuffer = new StringBuffer();
                 for (String entryName : entryNames) {
                     String packageName = getPackageNameFromEntryName(entryName);
