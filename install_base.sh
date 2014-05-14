@@ -153,7 +153,7 @@ function do_awb_build(){
             if  test -d $file ; then
               echo ">>start to install in $file"
               cd $BUILD_PATH_AWB/$file
-              mvn install -e $MVN_OPT -Pawb
+              mvn install -e $MVN_OPT -Pawb -Dproguard.skip=true
             fi
         done
 }
