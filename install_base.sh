@@ -138,15 +138,13 @@ function do_awb_build(){
         cd $BUILD_PATH_AWB
         git_list=$(cat $BUILD_GIT_CONF_FILE_AWB)
         while read line ; do
-          if [ !$line ]; then
-            continue
-          fi
-                param_b=`echo $line | grep  -o ' \-b '`
-                if [ $param_b ]; then
-                        git clone $line
-                else
-                        git clone $line -b $BRANCH
-                fi
+	echo $line
+        #        param_b=`echo $line | grep  -o ' \-b '`
+        #        if [ $param_b ]; then
+        #                git clone $line
+        #        else
+        #                git clone $line -b $BRANCH
+        #        fi
         done < $BUILD_GIT_CONF_FILE_AWB
         for file in `ls $BUILD_PATH_AWB`
         do
