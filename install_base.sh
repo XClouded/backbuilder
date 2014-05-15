@@ -9,6 +9,7 @@ fi
 BRANCH=$1
 MVN_HOME_PRJ=$2
 MVN_D_FILE=$3
+IS_PROGUARD=$4
 ROOT_PATH=`pwd`
 BUILD_GIT_CONF_FILE="$ROOT_PATH/git.list"
 BUILD_GIT_CONF_FILE_APKLIB="$ROOT_PATH/git.list.apklib"
@@ -25,6 +26,10 @@ if [  $MVN_HOME_PRJ ]; then
   export MAVEN_HOME=$MVN_HOME_PRJ
   export PATH=$MAVEN_HOME/bin:$PATH
   echo ">>Current Maven is $MAVEN_HOME"
+fi
+
+if [ $IS_PROGUARD ]; then
+  export MVN_OPT=" -Dproguard.skip=false ":$MVN_OPT
 fi
 
 
