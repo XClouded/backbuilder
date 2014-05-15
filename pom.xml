@@ -149,7 +149,7 @@
             </exclusions>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
-        <!--<dependency>
+        <dependency>
             <groupId>com.taobao.android</groupId>
             <artifactId>taobao_gamecenter</artifactId>
             <type>awb</type>
@@ -160,7 +160,7 @@
                 </exclusion>
             </exclusions>
             <version>1.0.0-SNAPSHOT</version>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>com.tmall.android</groupId>
             <artifactId>tmallandroid_taobao_plugin</artifactId>
