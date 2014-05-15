@@ -22,7 +22,7 @@
         <app.releasemode>false</app.releasemode>
         <channel.version.name>4.2.2.0</channel.version.name>
         <channel.version.code>98</channel.version.code>
-        <proguard.skip>true</proguard.skip>
+        <proguard.skip>false</proguard.skip>
         <proguard.config>proguard.cfg</proguard.config>
         <proguard.outputDirectory>proguard_output</proguard.outputDirectory>
         <proguard.proguardJarPath>env.PROGUARD_HOME</proguard.proguardJarPath>
@@ -204,19 +204,6 @@
         </dependency>
         <dependency>
             <groupId>com.taobao.android</groupId>
-            <artifactId>taobao_browser</artifactId>
-            <type>awb</type>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.taobao.android</groupId>
             <artifactId>taobao_passivelocation</artifactId>
             <type>awb</type>
             <exclusions>
@@ -384,6 +371,58 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>com.taobao.android</groupId>
+            <artifactId>taobao_browser</artifactId>
+            <type>apklib</type>
+            <exclusions>
+                <exclusion>
+					<groupId>com.taobao.android</groupId>
+            		<artifactId>taobaocompat</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.taobao.android</groupId>
+                    <artifactId>utdid4all</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>taobaobuilder</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.alipay.android.app</groupId>
+                    <artifactId>minipaysdk</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.json</groupId>
+                    <artifactId>json</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.android</groupId>
+                    <artifactId>annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.squareup.picasso</groupId>
+                    <artifactId>picasso</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.alipay</groupId>
+                    <artifactId>mobilesecuritysdk</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.alipay.android</groupId>
+                    <artifactId>ipp</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.alipay.trobot.external</groupId>
+                    <artifactId>trobotexternalinterface</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.taobao.android</groupId>
+                    <artifactId>fastjson</artifactId>
+                </exclusion>
+            </exclusions>
+            <version>1.0.1-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>com.taobao.android</groupId>

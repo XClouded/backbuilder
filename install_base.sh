@@ -9,6 +9,7 @@ fi
 BRANCH=$1
 MVN_HOME_PRJ=$2
 MVN_D_FILE=$3
+IS_PROGUARD=$4
 ROOT_PATH=`pwd`
 BUILD_GIT_CONF_FILE="$ROOT_PATH/git.list"
 BUILD_GIT_CONF_FILE_APKLIB="$ROOT_PATH/git.list.apklib"
@@ -25,6 +26,16 @@ if [  $MVN_HOME_PRJ ]; then
   export MAVEN_HOME=$MVN_HOME_PRJ
   export PATH=$MAVEN_HOME/bin:$PATH
   echo ">>Current Maven is $MAVEN_HOME"
+fi
+
+if [ $MVN_D_FILE ]; then
+  export ANDROID_HOME=$MVN_D_FILE
+  export PATH=$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH
+  echo "set android sdk $ANDROID_HOME"
+fi
+
+if [ $IS_PROGUARD ]; then
+  export MVN_OPT=" -Dproguard.skip=false $MVN_OPT"
 fi
 
 
@@ -138,9 +149,6 @@ function do_awb_build(){
         cd $BUILD_PATH_AWB
         git_list=$(cat $BUILD_GIT_CONF_FILE_AWB)
         while read line ; do
-          if [ !$line ]; then
-            continue
-          fi
                 param_b=`echo $line | grep  -o ' \-b '`
                 if [ $param_b ]; then
                         git clone $line
@@ -150,10 +158,10 @@ function do_awb_build(){
         done < $BUILD_GIT_CONF_FILE_AWB
         for file in `ls $BUILD_PATH_AWB`
         do
-            if  test -d $file ; then
+            if  test -d $BUILD_PATH_AWB/$file ; then
               echo ">>start to install in $file"
               cd $BUILD_PATH_AWB/$file
-              mvn install -e $MVN_OPT -Pawb
+              mvn install -e $MVN_OPT -Pawb -Dproguard.skip=false
             fi
         done
 }
