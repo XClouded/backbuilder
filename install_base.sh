@@ -29,7 +29,7 @@ if [  $MVN_HOME_PRJ ]; then
 fi
 
 if [ $IS_PROGUARD ]; then
-  export MVN_OPT=" -Dproguard.skip=false ":$MVN_OPT
+  export MVN_OPT=" -Dproguard.skip=false $MVN_OPT"
 fi
 
 
