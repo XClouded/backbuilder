@@ -97,9 +97,6 @@ function do_apklib_build(){
         cd $BUILD_PATH_APKLIB
         git_list=$(cat $BUILD_GIT_CONF_FILE_APKLIB)
         while read line ; do
-          if [ !$line ]; then
-            continue
-          fi
                 param_b=`echo $line | grep  -o ' \-b '`
                 if [ $param_b ]; then
                         git clone $line

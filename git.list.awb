@@ -2,7 +2,6 @@ git@gitlab.alibaba-inc.com:taobao-android/taobao_android_scancode.git -b feature
 git@gitlab.alibaba-inc.com:taobao-android/allspark_android.git
 git@gitlab.alibaba-inc.com:taobao-android/mytaobao.git
 git@gitlab.alibaba-inc.com:taobao-android/nearby.git
-git@gitlab.alibaba-inc.com:taobao-android/taobao_browser.git
 git@gitlab.alibaba-inc.com:taobao-android/taobao_android_coupon.git
 git@gitlab.alibaba-inc.com:taobao-android/taobao_wx.git
 git@gitlab.alibaba-inc.com:taobao-android/taobao_android_trade.git
