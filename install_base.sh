@@ -28,6 +28,12 @@ if [  $MVN_HOME_PRJ ]; then
   echo ">>Current Maven is $MAVEN_HOME"
 fi
 
+if [ $MVN_D_FILE ]; then
+  export ANDROID_HOME=$MVN_D_FILE
+  export PATH=$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH
+  echo "set android sdk $ANDROID_HOME"
+fi
+
 if [ $IS_PROGUARD ]; then
   export MVN_OPT=" -Dproguard.skip=false $MVN_OPT"
 fi
