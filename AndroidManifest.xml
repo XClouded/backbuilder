@@ -16,7 +16,7 @@
 
         <meta-data
                 android:name="application"
-                android:value="com.taobao.tao.TaoApplication" >
+                android:value="com.taobao.tao.TaoApplication,com.taobao.browser.BrowserApplication" >
         </meta-data>
 
         <receiver android:name="com.taobao.tao.ReplacedReceiver" >
