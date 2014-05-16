@@ -3,3 +3,6 @@ bin
 *.iml
 build-project
 taobaocompat
+dev-adaptation
+target
+build-repo
