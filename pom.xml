@@ -365,6 +365,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+	<dependency>
+  <groupId>com.taobao.android</groupId>
+  <artifactId>antidecompile</artifactId>
+  <version>1.0.0</version>
+</dependency>
 
         <dependency>
             <groupId>com.taobao.android</groupId>
@@ -551,6 +556,11 @@
                     <artifactId>apklib-maven-plugin</artifactId>
                     <version>1.0.2-SNAPSHOT</version>
                 </plugin>
+		<plugin>
+                           <groupId>com.taobao.android</groupId>
+                           <artifactId>securityapk-maven-plugin</artifactId>
+                           <version>1.0.5-SNAPSHOT</version>
+                </plugin>
             </plugins>
 
         </pluginManagement>
@@ -595,6 +605,29 @@
                     </dex>
                 </configuration>
             </plugin>
+	    <plugin>
+          <groupId>com.taobao.android</groupId>
+          <artifactId>securityapk-maven-plugin</artifactId>
+                  <configuration>
+                           <skip>false</skip>
+                  </configuration>
+                  <executions>
+                         <execution>
+                           <id>securityprepare</id>
+                           <phase>process-classes</phase>
+                           <goals>
+                                    <goal>securityprepare</goal>
+                           </goals>
+                         </execution>
+                         <execution>
+                           <id>antide</id>
+                           <phase>prepare-package</phase>
+                           <goals>
+                                    <goal>antide</goal>
+                           </goals>
+                         </execution>
+                 </executions>
+</plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jarsigner-plugin</artifactId>
@@ -655,6 +688,8 @@
                     </replacements>
                 </configuration>
             </plugin>
+	    
+	    
 
             <plugin>
                 <groupId>com.taobao.android.maven.plugins</groupId>
