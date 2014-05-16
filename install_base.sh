@@ -86,6 +86,7 @@ function build_taobaocompat(){
   rm -rf $ROOT_PATH/taobaocompat
   git clone git@gitlab.alibaba-inc.com:taobao-android/taobaocompat.git -b $BRANCH
   cd "$ROOT_PATH/taobaocompat"
+  pwd
   mvn install -U -e $MVN_OPT -Papklib
   mvn install -U -e $MVN_OPT -Paar
 }
@@ -94,6 +95,7 @@ function build_taobaocompat(){
 function do_jar_build(){
   echo ">>start to build bundle"
   cd $BUILD_PATH
+  pwd
   git_list=$(cat $BUILD_GIT_CONF_FILE)
   while read line ; do
     param_b=`echo $line | grep  -o ' \-b '`
@@ -117,6 +119,7 @@ function do_jar_build(){
 function do_apklib_build(){
         echo ">>start to build bundle"
         cd $BUILD_PATH_APKLIB
+        pwd
         git_list=$(cat $BUILD_GIT_CONF_FILE_APKLIB)
         while read line ; do
                 param_b=`echo $line | grep  -o ' \-b '`
@@ -160,7 +163,8 @@ function do_aar_build(){
                 cp $PROGUARD_CFG $BUILD_PATH_AAR/$file
                 cp $PROGUARD_MAPPING $BUILD_PATH_AAR/$file
                 ls -l
-                cd $BUILD_PATH_AAR/$file
+                cd "$BUILD_PATH_AAR/$file"
+                pwd
                 mvn install -e $MVN_OPT -Paar
             fi
         done
@@ -185,7 +189,8 @@ function do_awb_build(){
               cp $PROGUARD_CFG $BUILD_PATH_AWB/$file
               cp $PROGUARD_MAPPING $BUILD_PATH_AWB/$file
               ls -l
-              cd $BUILD_PATH_AWB/$file
+              cd "$BUILD_PATH_AWB/$file"
+              pwd
               mvn install -e $MVN_OPT -Pawb
             fi
         done
@@ -195,24 +200,28 @@ function do_awb_build(){
 function do_builder(){
   echo "start to builder apk main"
   cd $ROOT_PATH
+  pwd
   mvn clean package -e $MVN_OPT
 }
 
 ##编译本工程
 function build_self_awb(){
 	cd $ROOT_PATH
+  pwd
 	mvn clean install -e -Pawb $MVN_OPT
 }
 
 ##编译本工程
 function build_self_apk(){
   cd $ROOT_PATH
+  pwd
   mvn clean install -e -Papk $MVN_OPT
 }
 
 ##编译本工程
 function build_self(){
   cd $ROOT_PATH
+  pwd
   mvn clean install -e  $MVN_OPT
 }
 
