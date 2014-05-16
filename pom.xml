@@ -22,7 +22,7 @@
         <app.releasemode>false</app.releasemode>
         <channel.version.name>4.2.2.0</channel.version.name>
         <channel.version.code>98</channel.version.code>
-        <proguard.skip>false</proguard.skip>
+        <proguard.skip>true</proguard.skip>
         <proguard.config>proguard.cfg</proguard.config>
         <proguard.outputDirectory>proguard_output</proguard.outputDirectory>
         <proguard.proguardJarPath>env.PROGUARD_HOME</proguard.proguardJarPath>
