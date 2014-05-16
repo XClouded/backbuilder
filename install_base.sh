@@ -52,7 +52,6 @@ function prepare_builder(){
   echo ">> start to get builder project"
   rm -rf $ROOT_PATH/taobao_builder
   git clone git@gitlab.alibaba-inc.com:build/taobao_builder.git -b $BRANCH
-  cd $ROOT_PATH/taobao_builder
 }
 
 ##定义proguard和mapping文件
@@ -86,7 +85,7 @@ function build_taobaocompat(){
   echo ">> start to build taobaocompat"
   rm -rf $ROOT_PATH/taobaocompat
   git clone git@gitlab.alibaba-inc.com:taobao-android/taobaocompat.git -b $BRANCH
-  cd $ROOT_PATH/taobaocompat
+  cd "$ROOT_PATH/taobaocompat"
   mvn install -U -e $MVN_OPT -Papklib
   mvn install -U -e $MVN_OPT -Paar
 }
