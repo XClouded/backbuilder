@@ -41,6 +41,27 @@ if [ $IS_PROGUARD ]; then
   export MVN_OPT=" -Dproguard.skip=false $MVN_OPT"
 fi
 
+if [ $MVN_OPT_INPUT ]; then
+  export MVN_OPT="$MVN_OPT_INPUT $MVN_OPT"
+fi
+
+echo "MAVEN OPT IS: $MVN_OPT"
+
+## 从builder里拉出proguard.cfg 和mapping.txt
+function prepare_builder(){
+  echo ">> start to get builder project"
+  rm -rf $ROOT_PATH/taobao_builder
+  git clone git@gitlab.alibaba-inc.com:build/taobao_builder.git -b $BRANCH taobao_builder
+  cd $ROOT_PATH/taobao_builder
+}
+
+##定义proguard和mapping文件
+function copy_proguard_file(){
+  prepare_builder
+  export PROGUARD_CFG="$ROOT_PATH/taobao_builder/proguard.cfg"
+  export PROGUARD_MAPPING="$ROOT_PATH/taobao_builder/mapping.txt"
+}
+
 
 ##初始化目录
 function init_path(){
@@ -62,7 +83,7 @@ function init_path(){
 function build_taobaocompat(){
   echo ">> start to build taobaocompat"
   rm -rf $ROOT_PATH/taobaocompat
-  git clone git@gitlab.alibaba-inc.com:taobao-android/taobaocompat.git -b $BRANCH
+  git clone git@gitlab.alibaba-inc.com:taobao-android/taobaocompat.git -b $BRANCH taobaocompat
   cd $ROOT_PATH/taobaocompat
   mvn install -U -e $MVN_OPT -Papklib
   mvn install -U -e $MVN_OPT -Paar
@@ -134,9 +155,12 @@ function do_aar_build(){
         for file in `ls $BUILD_PATH_AAR`
         do
             if  test -d $BUILD_PATH_AAR/$file ; then
-                        echo ">>start to install in $file"
+                echo ">>start to install in $file"
+                cp $PROGUARD_CFG $BUILD_PATH_AAR/$file
+                cp $PROGUARD_MAPPING $BUILD_PATH_AAR/$file
+                ls -l
                 cd $BUILD_PATH_AAR/$file
-                        LD_PATH_APKLIBmvn install -e $MVN_OPT -Paar
+                mvn install -e $MVN_OPT -Paar
             fi
         done
 }
@@ -157,8 +181,11 @@ function do_awb_build(){
         do
             if  test -d $BUILD_PATH_AWB/$file ; then
               echo ">>start to install in $file"
+              cp $PROGUARD_CFG $BUILD_PATH_AWB/$file
+              cp $PROGUARD_MAPPING $BUILD_PATH_AWB/$file
+              ls -l
               cd $BUILD_PATH_AWB/$file
-              mvn install -e $MVN_OPT -Pawb -Dproguard.skip=false
+              mvn install -e $MVN_OPT -Pawb
             fi
         done
 }
@@ -167,7 +194,7 @@ function do_awb_build(){
 function do_builder(){
   echo "start to builder apk main"
   cd $ROOT_PATH
-  mvn clean package -e $MVN_OPT -Dproguard.skip=false
+  mvn clean package -e $MVN_OPT
 }
 
 ##编译本工程
@@ -189,3 +216,4 @@ function build_self(){
 }
 
 init_path;
+copy_proguard_file;
