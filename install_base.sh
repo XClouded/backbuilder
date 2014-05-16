@@ -6,10 +6,13 @@ if [ ! -n "$1" ]; then
   exit -1
 fi
 
+echo "usage: $1=branch_name $2=mvn_home  $3=ANDROID_HOME $4=IS_PROGUARD $5=MVN_OPT"
+
 BRANCH=$1
 MVN_HOME_PRJ=$2
 MVN_D_FILE=$3
 IS_PROGUARD=$4
+MVN_OPT_INPUT=$5
 ROOT_PATH=`pwd`
 BUILD_GIT_CONF_FILE="$ROOT_PATH/git.list"
 BUILD_GIT_CONF_FILE_APKLIB="$ROOT_PATH/git.list.apklib"
@@ -71,9 +74,6 @@ function do_jar_build(){
   cd $BUILD_PATH
   git_list=$(cat $BUILD_GIT_CONF_FILE)
   while read line ; do
-    if [ !$line ]; then
-      continue
-    fi
     param_b=`echo $line | grep  -o ' \-b '`
     if [ $param_b ]; then
       git clone $line
@@ -86,7 +86,7 @@ function do_jar_build(){
   do
       if  test -d $file ; then
       echo ">>start to install in $file"
-          cd $BUILD_PATH/$file
+      cd $BUILD_PATH/$file
       mvn install -e $MVN_OPT
       fi
   done
@@ -108,7 +108,7 @@ function do_apklib_build(){
         for file in `ls $BUILD_PATH_APKLIB`
         do
             if  test -d $file ; then
-                        echo ">>start to install in $file"
+                echo ">>start to install in $file"
                 cd $BUILD_PATH_APKLIB/$file
                 mvn install -e $MVN_OPT -Papklib
             fi
@@ -133,10 +133,10 @@ function do_aar_build(){
 
         for file in `ls $BUILD_PATH_AAR`
         do
-            if  test -d $file ; then
+            if  test -d $BUILD_PATH_AAR/$file ; then
                         echo ">>start to install in $file"
                 cd $BUILD_PATH_AAR/$file
-                        mvn install -e $MVN_OPT -Paar
+                        LD_PATH_APKLIBmvn install -e $MVN_OPT -Paar
             fi
         done
 }
