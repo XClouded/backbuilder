@@ -18,10 +18,12 @@ BUILD_GIT_CONF_FILE="$ROOT_PATH/git.list"
 BUILD_GIT_CONF_FILE_APKLIB="$ROOT_PATH/git.list.apklib"
 BUILD_GIT_CONF_FILE_AAR="$ROOT_PATH/git.list.aar"
 BUILD_GIT_CONF_FILE_AWB="$ROOT_PATH/git.list.awb"
+BUILD_SVN_CONF_FILE_AWB="$ROOT_PATH/svn.list.awb"
 BUILD_PATH="$ROOT_PATH/build-project"
 BUILD_PATH_AAR="$ROOT_PATH/build-project-aar"
 BUILD_PATH_APKLIB="$ROOT_PATH/build-project-apklib"
 BUILD_PATH_AWB="$ROOT_PATH/build-project-awb"
+BUILD_PATH_SVN_AWB="$ROOT_PATH/build-project-svn-awb"
 MVN_REPO_LOCAL="$ROOT_PATH/build-repo"
 ERR_RET=`mvn -v|awk '{print $3}'`
 MVN_OPT="-Dmaven.repo.local=$MVN_REPO_LOCAL"
@@ -194,6 +196,33 @@ function do_awb_build(){
               mvn install -e $MVN_OPT -Pawb
             fi
         done
+}
+
+##svn下的awb项目编译
+function do_awb_svn(){
+echo ">>start to build bundle with svn"
+cd $BUILD_PATH_SVN_AWB
+git_list=$(cat $BUILD_SVN_CONF_FILE_AWB)
+while read line ; do
+        param_b=`echo $line | grep  -o ' \-b '`
+        if [ $param_b ]; then
+                git clone $line
+        else
+                git clone $line -b $BRANCH
+        fi
+done < $BUILD_SVN_CONF_FILE_AWB
+for file in `ls $BUILD_PATH_AWB`
+do
+    if  test -d $BUILD_PATH_SVN_AWB/$file ; then
+      echo ">>start to install in $file"
+      cp $PROGUARD_CFG $BUILD_PATH_SVN_AWB/$file
+      cp $PROGUARD_MAPPING $BUILD_PATH_SVN_AWB/$file
+      ls -l
+      cd "$BUILD_PATH_SVN_AWB/$file"
+      pwd
+      mvn install -e $MVN_OPT -Pawb
+    fi
+done
 }
 
 ##编译builder
