@@ -51,7 +51,7 @@ echo "MAVEN OPT IS: $MVN_OPT"
 function prepare_builder(){
   echo ">> start to get builder project"
   rm -rf $ROOT_PATH/taobao_builder
-  git clone git@gitlab.alibaba-inc.com:build/taobao_builder.git -b $BRANCH taobao_builder
+  git clone git@gitlab.alibaba-inc.com:build/taobao_builder.git -b $BRANCH
   cd $ROOT_PATH/taobao_builder
 }
 
@@ -60,6 +60,8 @@ function copy_proguard_file(){
   prepare_builder
   export PROGUARD_CFG="$ROOT_PATH/taobao_builder/proguard.cfg"
   export PROGUARD_MAPPING="$ROOT_PATH/taobao_builder/mapping.txt"
+  echo "PROGUSRD_CFG:$PROGUSRD_CFG"
+  echo "PROGUARD_MAPPING:$PROGUARD_MAPPING"
 }
 
 
@@ -83,7 +85,7 @@ function init_path(){
 function build_taobaocompat(){
   echo ">> start to build taobaocompat"
   rm -rf $ROOT_PATH/taobaocompat
-  git clone git@gitlab.alibaba-inc.com:taobao-android/taobaocompat.git -b $BRANCH taobaocompat
+  git clone git@gitlab.alibaba-inc.com:taobao-android/taobaocompat.git -b $BRANCH
   cd $ROOT_PATH/taobaocompat
   mvn install -U -e $MVN_OPT -Papklib
   mvn install -U -e $MVN_OPT -Paar
