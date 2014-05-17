@@ -26,6 +26,7 @@
         <proguard.config>proguard.cfg</proguard.config>
         <proguard.outputDirectory>proguard_output</proguard.outputDirectory>
         <proguard.proguardJarPath>env.PROGUARD_HOME</proguard.proguardJarPath>
+	<securityapk.skip>true</securityapk.skip>
     </properties>
     <dependencies>
         <dependency>
@@ -609,7 +610,7 @@
           <groupId>com.taobao.android</groupId>
           <artifactId>securityapk-maven-plugin</artifactId>
                   <configuration>
-                           <skip>false</skip>
+                           <skip>${securityapk.skip}</skip>
                   </configuration>
                   <executions>
                          <execution>
