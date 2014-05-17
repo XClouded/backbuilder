@@ -62,8 +62,8 @@ function copy_to_target(){
 }
 
 function mergerd_result(){
-  echo "merger mapping to main"
-  cat "$1/$MAPPING_TARGET" > $MAPPING_MERGERD
+  echo "merger mapping to main $1/$MAPPING_TARGET"
+  cat "$1/$MAPPING_TARGET" >> $MAPPING_MERGERD
 }
 
 ## 从builder里拉出proguard.cfg 和mapping.txt
@@ -216,7 +216,7 @@ function do_awb_build(){
               pwd
               copy_to_target "$BUILD_PATH_AWB/$file"
               mvn install -e $MVN_OPT -Pawb
-              mergerd_result "$BUILD_PATH_AWB/$file"
+              mergerd_result "$BUILD_PATH_AWB/$file/target/proguard"
             fi
         done
 }
@@ -240,7 +240,7 @@ do
       pwd
       copy_to_target "$BUILD_PATH_SVN_AWB/$file"
       mvn install -e $MVN_OPT -Pawb
-      mergerd_result "$BUILD_PATH_SVN_AWB/$file"
+      mergerd_result "$BUILD_PATH_SVN_AWB/$file/target/proguard"
     fi
 done
 }
