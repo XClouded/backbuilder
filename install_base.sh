@@ -79,6 +79,8 @@ function init_path(){
   mkdir $BUILD_PATH_AWB
   rm -rf $MVN_REPO_LOCAL
   mkdir $MVN_REPO_LOCAL
+  rm -rf $BUILD_PATH_SVN_AWB
+  mkdir $BUILD_PATH_SVN_AWB
 }
 
 
@@ -204,14 +206,9 @@ echo ">>start to build bundle with svn"
 cd $BUILD_PATH_SVN_AWB
 git_list=$(cat $BUILD_SVN_CONF_FILE_AWB)
 while read line ; do
-        param_b=`echo $line | grep  -o ' \-b '`
-        if [ $param_b ]; then
-                git clone $line
-        else
-                git clone $line -b $BRANCH
-        fi
+  svn co $line
 done < $BUILD_SVN_CONF_FILE_AWB
-for file in `ls $BUILD_PATH_AWB`
+for file in `ls $BUILD_PATH_SVN_AWB`
 do
     if  test -d $BUILD_PATH_SVN_AWB/$file ; then
       echo ">>start to install in $file"
