@@ -27,8 +27,6 @@ BUILD_PATH_SVN_AWB="$ROOT_PATH/build-project-svn-awb"
 MVN_REPO_LOCAL="$ROOT_PATH/build-repo"
 ERR_RET=`mvn -v|awk '{print $3}'`
 MVN_OPT="-Dmaven.repo.local=$MVN_REPO_LOCAL"
-MAPPING_MERGERD="$ROOT_PATH/mapping_mergerd.txt"
-MAPPING_TARGET="mapping.txt"
 if [  $MVN_HOME_PRJ ]; then
   export MAVEN_HOME=$MVN_HOME_PRJ
   export PATH=$MAVEN_HOME/bin:$PATH
@@ -51,28 +49,11 @@ fi
 
 echo "MAVEN OPT IS: $MVN_OPT"
 
-function init_mapping_file(){
-  rm -rf $MAPPING_MERGERD
-  touch $MAPPING_MERGERD
-}
-
-function copy_to_target(){
-  echo "copy mapping file to $1"
-  cp $MAPPING_MERGERD "$1/$MAPPING_TARGET"
-}
-
-function mergerd_result(){
-  echo "merger mapping to main $1/$MAPPING_TARGET"
-  cat "$1/$MAPPING_TARGET" >> $MAPPING_MERGERD
-}
-
 ## 从builder里拉出proguard.cfg 和mapping.txt
 function prepare_builder(){
   echo ">> start to get builder project"
   rm -rf $ROOT_PATH/taobao_builder
   git clone git@gitlab.alibaba-inc.com:build/taobao_builder.git -b $BRANCH
-  init_mapping_file;
-  cat "$ROOT_PATH/taobao_builder/$MAPPING_TARGET" > $MAPPING_MERGERD
 }
 
 ##定义proguard和mapping文件
@@ -210,13 +191,11 @@ function do_awb_build(){
             if  test -d $BUILD_PATH_AWB/$file ; then
               echo ">>start to install in $file"
               cp $PROGUARD_CFG $BUILD_PATH_AWB/$file
-              ##cp $PROGUARD_MAPPING $BUILD_PATH_AWB/$file
+              cp $PROGUARD_MAPPING $BUILD_PATH_AWB/$file
               ls -l
               cd "$BUILD_PATH_AWB/$file"
               pwd
-              copy_to_target "$BUILD_PATH_AWB/$file"
               mvn install -e $MVN_OPT -Pawb
-              mergerd_result "$BUILD_PATH_AWB/$file/target/proguard"
             fi
         done
 }
@@ -238,9 +217,7 @@ do
       ls -l
       cd "$BUILD_PATH_SVN_AWB/$file"
       pwd
-      copy_to_target "$BUILD_PATH_SVN_AWB/$file"
       mvn install -e $MVN_OPT -Pawb
-      mergerd_result "$BUILD_PATH_SVN_AWB/$file/target/proguard"
     fi
 done
 }
