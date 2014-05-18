@@ -93,12 +93,12 @@ function build_taobaocompat(){
   pwd
   mvn install -U -e $MVN_OPT -Papklib
   if [ $? -ne 0 ]; then
-        echo "build $file error!"
+        echo "build compat error!"
         ##exit $?
   fi
   mvn install -U -e $MVN_OPT -Paar
   if [ $? -ne 0 ]; then
-        echo "build $file error!"
+        echo "build compat error!"
         ##exit $?
   fi
 }
