@@ -92,7 +92,15 @@ function build_taobaocompat(){
   cd "$ROOT_PATH/taobaocompat"
   pwd
   mvn install -U -e $MVN_OPT -Papklib
+  if [ $? -ne 0 ]; then
+        echo "build $file error!"
+        exit
+  fi
   mvn install -U -e $MVN_OPT -Paar
+  if [ $? -ne 0 ]; then
+        echo "build $file error!"
+        exit
+  fi
 }
 
 ##编译jar或者无package配置的包
@@ -113,9 +121,13 @@ function do_jar_build(){
   for file in `ls $BUILD_PATH`
   do
       if  test -d $file ; then
-      echo ">>start to install in $file"
-      cd $BUILD_PATH/$file
-      mvn install -e $MVN_OPT
+        echo ">>start to install in $file"
+        cd $BUILD_PATH/$file
+        mvn install -e $MVN_OPT
+        if [ $? -ne 0 ]; then
+              echo "build $file error!"
+              exit
+        fi
       fi
   done
 }
@@ -140,6 +152,10 @@ function do_apklib_build(){
                 echo ">>start to install in $file"
                 cd $BUILD_PATH_APKLIB/$file
                 mvn install -e $MVN_OPT -Papklib
+                if [ $? -ne 0 ]; then
+                      echo "build $file error!"
+                      exit
+                fi
             fi
         done
 }
@@ -170,6 +186,10 @@ function do_aar_build(){
                 cd "$BUILD_PATH_AAR/$file"
                 pwd
                 mvn install -e $MVN_OPT -Paar
+                if [ $? -ne 0 ]; then
+                      echo "build $file error!"
+                      exit
+                fi
             fi
         done
 }
@@ -196,20 +216,24 @@ function do_awb_build(){
               cd "$BUILD_PATH_AWB/$file"
               pwd
               mvn install -e $MVN_OPT -Pawb
+              if [ $? -ne 0 ]; then
+                    echo "build $file error!"
+                    exit
+              fi
             fi
         done
 }
 
 ##svn下的awb项目编译
 function do_awb_svn(){
-echo ">>start to build bundle with svn"
-cd $BUILD_PATH_SVN_AWB
-git_list=$(cat $BUILD_SVN_CONF_FILE_AWB)
-while read line ; do
-  svn co $line
-done < $BUILD_SVN_CONF_FILE_AWB
-for file in `ls $BUILD_PATH_SVN_AWB`
-do
+  echo ">>start to build bundle with svn"
+  cd $BUILD_PATH_SVN_AWB
+  git_list=$(cat $BUILD_SVN_CONF_FILE_AWB)
+  while read line ; do
+    svn co $line
+  done < $BUILD_SVN_CONF_FILE_AWB
+  for file in `ls $BUILD_PATH_SVN_AWB`
+  do
     if  test -d $BUILD_PATH_SVN_AWB/$file ; then
       echo ">>start to install in $file"
       cp $PROGUARD_CFG $BUILD_PATH_SVN_AWB/$file
@@ -218,8 +242,12 @@ do
       cd "$BUILD_PATH_SVN_AWB/$file"
       pwd
       mvn install -e $MVN_OPT -Pawb
+      if [ $? -ne 0 ]; then
+            echo "build $file error!"
+            exit
+      fi
     fi
-done
+  done
 }
 
 ##编译builder
