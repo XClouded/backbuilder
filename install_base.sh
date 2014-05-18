@@ -217,6 +217,7 @@ function do_awb_build(){
               ls -l
               cd "$BUILD_PATH_AWB/$file"
               pwd
+              echo "mvn install -e $MVN_OPT -Pawb"
               mvn install -e $MVN_OPT -Pawb
               if [ $? -ne 0 ]; then
                     echo "build $file error!"

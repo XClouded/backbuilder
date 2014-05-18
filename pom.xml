@@ -28,7 +28,7 @@
         <proguard.config>proguard.cfg</proguard.config>
         <proguard.outputDirectory>proguard_output</proguard.outputDirectory>
         <proguard.proguardJarPath>env.PROGUARD_HOME</proguard.proguardJarPath>
-	<securityapk.skip>true</securityapk.skip>
+	       <securityapk.skip>true</securityapk.skip>
     </properties>
     <dependencies>
         <dependency>
@@ -631,7 +631,7 @@
                          </execution>
                  </executions>
 </plugin>
-            <plugin>
+            <!-- plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jarsigner-plugin</artifactId>
                 <version>1.2</version>
@@ -655,13 +655,11 @@
                             <keystore>${sign.keystore}</keystore>
                             <alias>${sign.alias}</alias>
                             <storepass>${sign.storepass}</storepass>
-                            <!-- <keypass>${sign.keypass}</keypass> -->
                             <verbose>true</verbose>
-                            <!--<arguments> <argument>${sign.arguments}</argument> </arguments> -->
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
@@ -692,8 +690,8 @@
                     </replacements>
                 </configuration>
             </plugin>
-	    
-	    
+
+
 
             <plugin>
                 <groupId>com.taobao.android.maven.plugins</groupId>
@@ -1037,7 +1035,7 @@
                 <packaging.type>apk</packaging.type>
                 <sign.online>true</sign.online>
             </properties>
-             
+
         </profile>
     </profiles>
 </project>
