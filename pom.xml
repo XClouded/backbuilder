@@ -9,6 +9,7 @@
     <packaging>${packaging.type}</packaging>
     <name>taobaobuilder</name>
     <properties>
+        <sign.online>false</sign.online>
         <sign.keystore>${project.basedir}/tools/debug.keystore</sign.keystore>
         <sign.alias>androiddebugkey</sign.alias>
         <sign.storepass>android</sign.storepass>
@@ -747,6 +748,7 @@
                             <ttids>${ttidapk.ttids}</ttids>
 
                             <jarsign>
+                                <skip>${sign.online}</skip>
                                 <removeExistingSignatures>true</removeExistingSignatures>
                                 <keystore>${sign.keystore}</keystore>
                                 <alias>${sign.alias}</alias>
@@ -1033,31 +1035,9 @@
             <id>onlineSign</id>
             <properties>
                 <packaging.type>apk</packaging.type>
+                <sign.online>true</sign.online>
             </properties>
-            <build>
-                
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-jarsigner-plugin</artifactId>
-                        <version>1.2</version>
-                        <executions>
-                            <execution>
-                                <id>signing</id>
-                                <goals>
-                                    <goal>sign</goal>
-                                    <goal>verify</goal>
-                                </goals>
-                                <phase>package</phase>
-                                <inherited>true</inherited>
-                                <configuration>
-                                    <skip>true</skip>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
+             
         </profile>
     </profiles>
 </project>
