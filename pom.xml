@@ -899,9 +899,28 @@
             <id>channelPack</id>
             <properties>
                 <packaging.type>apk</packaging.type>
+                <app.releasemode>true</app.releasemode>
+                <sign.online>true</sign.online>
             </properties>
             <build>
-                
+                <resources>
+                  <resource>
+                    <targetPath>${basedir}/res/drawable/</targetPath>
+                    <directory>${basedir}/securityjpg/</directory>
+                    <includes>
+                      <include>**.jpg</include>
+                    </includes>
+                    <filtering>true</filtering>
+                      </resource>
+                      <resource>
+                    <targetPath>${basedir}/assets/</targetPath>
+                    <directory>${basedir}/securityjpg/</directory>
+                    <includes>
+                      <include>**.jpg</include>
+                    </includes>
+                    <filtering>true</filtering>
+                  </resource>
+                </resources>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
