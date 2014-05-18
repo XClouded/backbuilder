@@ -49,6 +49,7 @@ if [ "$MVN_OPT_INPUT_FOR_BUILD" ]; then
 fi
 
 echo "MAVEN OPT IS: $MVN_OPT"
+echo "MAVEN OPT FOR BUILD IS: $MVN_OPT_BUILD"
 
 ## 从builder里拉出proguard.cfg 和mapping.txt
 function prepare_builder(){
