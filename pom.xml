@@ -20,6 +20,7 @@
         <android.compile.apilevel>18</android.compile.apilevel>
         <tb.platform.version>1.0.0-SNAPSHOT</tb.platform.version>
         <app.releasemode>false</app.releasemode>
+        <ttidapk.ttids>test</ttidapk.ttids>
         <channel.version.name>4.2.2.0</channel.version.name>
         <channel.version.code>98</channel.version.code>
         <proguard.skip>true</proguard.skip>
@@ -643,6 +644,7 @@
                         <phase>package</phase>
                         <inherited>true</inherited>
                         <configuration>
+                            <skip>true</skip>
                             <removeExistingSignatures>true</removeExistingSignatures>
                             <archiveDirectory />
                             <includes>
@@ -713,6 +715,57 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                        <groupId>com.alibaba.mtl.maven</groupId>
+                        <artifactId>taobao-maven-channelpack-plugin</artifactId>
+                        <version>0.0.4-SNAPSHOT</version>
+                        <configuration>
+                            <skip>false</skip>
+                            <versionName>${channel.version.name}</versionName>
+                            <versionCode>${channel.version.code}</versionCode>
+                            <apkName>@{ttid}@${project.artifactId}_${channel.version.name}</apkName>
+                            <autoconfig>
+                                <copyFolders>
+                                    <copyFolder>
+                                        <from>${project.basedir}/dev-adaptation/ttid-@{ttid}/</from>
+                                        <to>/res/</to>
+                                    </copyFolder>
+                                </copyFolders>
+                                <resources>
+                                    <resource>
+                                        <source>${project.basedir}/res/values/config.xml</source>
+                                        <destination>/res/values/config.xml</destination>
+                                        <configFile>
+                                            ${project.basedir}/dev-adaptation/ttid-@{ttid}/config.txt
+                                        </configFile>
+                                        <properties>
+                                            <ttid>@{ttid}</ttid>
+                                        </properties>
+                                    </resource>
+                                </resources>
+                            </autoconfig>
+                            <ttids>${ttidapk.ttids}</ttids>
+
+                            <jarsign>
+                                <removeExistingSignatures>true</removeExistingSignatures>
+                                <keystore>${sign.keystore}</keystore>
+                                <alias>${sign.alias}</alias>
+                                <storepass>${sign.storepass}</storepass>
+                                <!-- <keypass>${sign.keypass}</keypass> -->
+                                <verbose>true</verbose>
+                            </jarsign>
+
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>execution2</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>ttid</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
             <!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>build-helper-maven-plugin</artifactId>
                 <version>1.7</version> <executions> <execution> <phase>package</phase> <goals>
                 <goal>attach-artifact</goal> </goals> <configuration> <artifacts> <artifact>
