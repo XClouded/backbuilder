@@ -27,23 +27,23 @@ BUILD_PATH_SVN_AWB="$ROOT_PATH/build-project-svn-awb"
 MVN_REPO_LOCAL="$ROOT_PATH/build-repo"
 ERR_RET=`mvn -v|awk '{print $3}'`
 MVN_OPT="-Dmaven.repo.local=$MVN_REPO_LOCAL"
-if [  $MVN_HOME_PRJ ]; then
+if [  "$MVN_HOME_PRJ" ]; then
   export MAVEN_HOME=$MVN_HOME_PRJ
   export PATH=$MAVEN_HOME/bin:$PATH
   echo ">>Current Maven is $MAVEN_HOME"
 fi
 
-if [ $MVN_D_FILE ]; then
+if [ "$MVN_D_FILE" ]; then
   export ANDROID_HOME=$MVN_D_FILE
   export PATH=$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH
   echo "set android sdk $ANDROID_HOME"
 fi
 
-if [ $IS_PROGUARD ]; then
+if [ "$IS_PROGUARD" == "1" ]; then
   export MVN_OPT=" -Dproguard.skip=false $MVN_OPT"
 fi
 
-if [ $MVN_OPT_INPUT ]; then
+if [ "$MVN_OPT_INPUT" ]; then
   export MVN_OPT="$MVN_OPT_INPUT $MVN_OPT"
 fi
 
