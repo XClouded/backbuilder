@@ -901,7 +901,7 @@
                 <packaging.type>apk</packaging.type>
             </properties>
             <build>
-
+                
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -922,7 +922,7 @@
                             </execution>
                         </executions>
                     </plugin>
-<plugin>
+                    <plugin>
                         <groupId>com.alibaba.mtl.maven</groupId>
                         <artifactId>taobao-maven-channelpack-plugin</artifactId>
                         <version>0.0.4-SNAPSHOT</version>
@@ -983,7 +983,26 @@
                 <packaging.type>apk</packaging.type>
                 <sign.online>true</sign.online>
             </properties>
-
+            <build>
+                <resources>
+                  <resource>
+                    <targetPath>${basedir}/res/drawable/</targetPath>
+                    <directory>${basedir}/securityjpg/</directory>
+                    <includes>
+                      <include>**.jpg</include>
+                    </includes>
+                    <filtering>true</filtering>
+                      </resource>
+                      <resource>
+                    <targetPath>${basedir}/assets/</targetPath>
+                    <directory>${basedir}/securityjpg/</directory>
+                    <includes>
+                      <include>**.jpg</include>
+                    </includes>
+                    <filtering>true</filtering>
+                  </resource>
+                </resources>
+            </build>
         </profile>
     </profiles>
 </project>
