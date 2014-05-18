@@ -6,13 +6,13 @@ if [ ! -n "$1" ]; then
   exit -1
 fi
 
-echo "usage: $1=branch_name $2=mvn_home  $3=ANDROID_HOME $4=IS_PROGUARD $5=MVN_OPT"
+echo "usage: $1=branch_name $2=mvn_home  $3=ANDROID_HOME $4=MVN_OPT $5=MVN_OPT_FOR_BUILD"
 
 BRANCH=$1
 MVN_HOME_PRJ=$2
 MVN_D_FILE=$3
-IS_PROGUARD=$4
-MVN_OPT_INPUT=$5
+MVN_OPT_INPUT=$4
+MVN_OPT_INPUT_FOR_BUILD=$5
 ROOT_PATH=`pwd`
 BUILD_GIT_CONF_FILE="$ROOT_PATH/git.list"
 BUILD_GIT_CONF_FILE_APKLIB="$ROOT_PATH/git.list.apklib"
@@ -27,6 +27,7 @@ BUILD_PATH_SVN_AWB="$ROOT_PATH/build-project-svn-awb"
 MVN_REPO_LOCAL="$ROOT_PATH/build-repo"
 ERR_RET=`mvn -v|awk '{print $3}'`
 MVN_OPT="-Dmaven.repo.local=$MVN_REPO_LOCAL"
+MVN_OPT_BUILD="-Dmaven.repo.local=$MVN_REPO_LOCAL"
 if [  "$MVN_HOME_PRJ" ]; then
   export MAVEN_HOME=$MVN_HOME_PRJ
   export PATH=$MAVEN_HOME/bin:$PATH
@@ -39,12 +40,12 @@ if [ "$MVN_D_FILE" ]; then
   echo "set android sdk $ANDROID_HOME"
 fi
 
-if [ "$IS_PROGUARD" == "1" ]; then
-  export MVN_OPT=" -Dproguard.skip=false $MVN_OPT"
-fi
-
 if [ "$MVN_OPT_INPUT" ]; then
   export MVN_OPT="$MVN_OPT_INPUT $MVN_OPT"
+fi
+
+if [ "$MVN_OPT_INPUT_FOR_BUILD" ]; then
+  export MVN_OPT_BUILD="$MVN_OPT_INPUT_FOR_BUILD $MVN_OPT_BUILD"
 fi
 
 echo "MAVEN OPT IS: $MVN_OPT"
@@ -255,7 +256,7 @@ function do_builder(){
   echo "start to builder apk main"
   cd $ROOT_PATH
   pwd
-  mvn clean package -e $MVN_OPT
+  mvn clean package -e $MVN_OPT_BUILD
 }
 
 ##编译本工程
@@ -269,14 +270,14 @@ function build_self_awb(){
 function build_self_apk(){
   cd $ROOT_PATH
   pwd
-  mvn clean install -e -Papk $MVN_OPT
+  mvn clean install -e -Papk $MVN_OPT_BUILD
 }
 
 ##编译本工程
 function build_self(){
   cd $ROOT_PATH
   pwd
-  mvn clean install -e  $MVN_OPT
+  mvn clean install -e  $MVN_OPT_BUILD
 }
 
 init_path;
