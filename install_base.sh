@@ -125,6 +125,8 @@ function do_jar_build(){
       if  test -d $file ; then
         echo ">>start to install in $file"
         cd $BUILD_PATH/$file
+        cp $PROGUARD_CFG $BUILD_PATH/$file
+        cp $PROGUARD_MAPPING $BUILD_PATH/$file
         mvn install -e $MVN_OPT
         if [ $? -ne 0 ]; then
               echo "build $file error!"
@@ -153,6 +155,8 @@ function do_apklib_build(){
             if  test -d $file ; then
                 echo ">>start to install in $file"
                 cd $BUILD_PATH_APKLIB/$file
+                cp $PROGUARD_CFG $BUILD_PATH_APKLIB/$file
+                cp $PROGUARD_MAPPING $BUILD_PATH_APKLIB/$file
                 mvn install -e $MVN_OPT -Papklib
                 if [ $? -ne 0 ]; then
                       echo "build $file error!"
