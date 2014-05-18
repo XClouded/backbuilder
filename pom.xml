@@ -599,7 +599,7 @@
                     <!-- release = true means will set BuildConfig.java debuggable = true,
            no need to set it in AndroidManifest any more -->
                     <release>${app.releasemode}</release>
-                    <extractDuplicates>true</extractDuplicates>
+                    <extractDuplicates>false</extractDuplicates>
                     <!--<isResIDDependency>false</isResIDDependency> <customPackageID>127</customPackageID> -->
                     <dex>
                         <jvmArguments>
