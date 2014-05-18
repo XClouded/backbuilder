@@ -62,7 +62,7 @@ function prepare_builder(){
 function copy_proguard_file(){
   prepare_builder
   export PROGUARD_CFG="$ROOT_PATH/taobao_builder/proguard.cfg"
-  export PROGUARD_MAPPING="$ROOT_PATH/taobao_builder/mapping_merged.txt"
+  export PROGUARD_MAPPING="$ROOT_PATH/taobao_builder/mapping.txt"
   echo "PROGUARD_CFG:$PROGUARD_CFG"
   echo "PROGUARD_MAPPING:$PROGUARD_MAPPING"
 }
