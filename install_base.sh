@@ -101,12 +101,12 @@ function build_taobaocompat(){
   git clone git@gitlab.alibaba-inc.com:taobao-android/taobaocompat.git -b $BRANCH
   cd "$ROOT_PATH/taobaocompat"
   pwd
-  mvn install -U -e -Papklib "$MVN_OPT"
+  mvn install -U -e -Papklib $MVN_OPT -Dproguard.skip=true
   if [ $? -ne 0 ]; then
         echo "build compat error!"
         exit $?
   fi
-  mvn install -U -e -Paar "$MVN_OPT"
+  mvn install -U -e -Paar $MVN_OPT -Dproguard.skip=true
   if [ $? -ne 0 ]; then
         echo "build compat error!"
         exit $?
@@ -230,7 +230,7 @@ function do_awb_build(){
               cd "$BUILD_PATH_AWB/$file"
               pwd
               echo "mvn install -e $MVN_OPT -Pawb"
-              mvn install -e -Pawb "$MVN_OPT"
+              mvn install -e -Pawb $MVN_OPT
               if [ $? -ne 0 ]; then
                     echo "build $file error!"
                     ##exit $?
@@ -256,7 +256,7 @@ function do_awb_svn(){
       ls -l
       cd "$BUILD_PATH_SVN_AWB/$file"
       pwd
-      mvn install -e "$MVN_OPT" -Pawb
+      mvn install -e $MVN_OPT -Pawb
       if [ $? -ne 0 ]; then
             echo "build $file error!"
             ##exit $?
@@ -270,28 +270,28 @@ function do_builder(){
   echo "start to builder apk main"
   cd $ROOT_PATH
   pwd
-  mvn clean package -e "$MVN_OPT_BUILD"
+  mvn clean package -e $MVN_OPT_BUILD
 }
 
 ##编译本工程
 function build_self_awb(){
 	cd $ROOT_PATH
   pwd
-	mvn clean install -e -Pawb "$MVN_OPT"
+	mvn clean install -e -Pawb $MVN_OPT
 }
 
 ##编译本工程
 function build_self_apk(){
   cd $ROOT_PATH
   pwd
-  mvn clean install -e -Papk "$MVN_OPT_BUILD"
+  mvn clean install -e -Papk $MVN_OPT_BUILD
 }
 
 ##编译本工程
 function build_self(){
   cd $ROOT_PATH
   pwd
-  mvn clean install -e "$MVN_OPT_BUILD"
+  mvn clean install -e $MVN_OPT_BUILD
 }
 
 init_path;
