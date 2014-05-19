@@ -28,6 +28,8 @@ MVN_REPO_LOCAL="$ROOT_PATH/build-repo"
 ERR_RET=`mvn -v|awk '{print $3}'`
 MVN_OPT="-Dmaven.repo.local=$MVN_REPO_LOCAL"
 MVN_OPT_BUILD="-Dmaven.repo.local=$MVN_REPO_LOCAL"
+PROGUARD_BIN="$ROOT_PATH/proguard/proguard5/proguard.jar"
+
 if [  "$MVN_HOME_PRJ" ]; then
   export MAVEN_HOME=$MVN_HOME_PRJ
   export PATH=$MAVEN_HOME/bin:$PATH
@@ -47,6 +49,9 @@ fi
 if [ "$MVN_OPT_INPUT_FOR_BUILD" ]; then
   export MVN_OPT_BUILD="$MVN_OPT_INPUT_FOR_BUILD $MVN_OPT_BUILD"
 fi
+
+export MVN_OPT="-Dproguard.proguardJarPath=$PROGUARD_BIN $MVN_OPT"
+export MVN_OPT_BUILD="-Dproguard.proguardJarPath=$PROGUARD_BIN $MVN_OPT_BUILD"
 
 echo "MAVEN OPT IS: $MVN_OPT"
 echo "MAVEN OPT FOR BUILD IS: $MVN_OPT_BUILD"
