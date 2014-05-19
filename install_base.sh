@@ -168,7 +168,7 @@ function do_apklib_build(){
                 mvn install -e $MVN_OPT -Papklib
                 if [ $? -ne 0 ]; then
                       echo "build $file error!"
-                      exit $?
+                      ##exit $?
                 fi
             fi
         done
@@ -202,7 +202,7 @@ function do_aar_build(){
                 mvn install -e $MVN_OPT -Paar
                 if [ $? -ne 0 ]; then
                       echo "build $file error!"
-                      exit $?
+                      ##exit $?
                 fi
             fi
         done
@@ -233,7 +233,7 @@ function do_awb_build(){
               mvn install -e -Pawb "$MVN_OPT"
               if [ $? -ne 0 ]; then
                     echo "build $file error!"
-                    exit $?
+                    ##exit $?
               fi
             fi
         done
@@ -259,7 +259,7 @@ function do_awb_svn(){
       mvn install -e "$MVN_OPT" -Pawb
       if [ $? -ne 0 ]; then
             echo "build $file error!"
-            exit $?
+            ##exit $?
       fi
     fi
   done
