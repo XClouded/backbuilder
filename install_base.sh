@@ -57,10 +57,13 @@ echo "MAVEN OPT IS: $MVN_OPT"
 echo "MAVEN OPT FOR BUILD IS: $MVN_OPT_BUILD"
 
 ## 从builder里拉出proguard.cfg 和mapping.txt
+## 并且从build中copy install脚本和proguard.cfg过来到当前root更新确保配置是对的
 function prepare_builder(){
   echo ">> start to get builder project"
   rm -rf $ROOT_PATH/taobao_builder
   git clone git@gitlab.alibaba-inc.com:build/taobao_builder.git -b $BRANCH
+  cp "$ROOT_PATH/taobao_builder/proguard.cfg" "$ROOT_PATH/"
+  cp "$ROOT_PATH/taobao_builder/install_base.sh" "$ROOT_PATH/"
 }
 
 ##定义proguard和mapping文件
@@ -98,12 +101,12 @@ function build_taobaocompat(){
   git clone git@gitlab.alibaba-inc.com:taobao-android/taobaocompat.git -b $BRANCH
   cd "$ROOT_PATH/taobaocompat"
   pwd
-  mvn install -U -e $MVN_OPT -Papklib
+  mvn install -U -e -Papklib "$MVN_OPT"
   if [ $? -ne 0 ]; then
         echo "build compat error!"
         exit $?
   fi
-  mvn install -U -e $MVN_OPT -Paar
+  mvn install -U -e -Paar "$MVN_OPT"
   if [ $? -ne 0 ]; then
         echo "build compat error!"
         exit $?
@@ -227,7 +230,7 @@ function do_awb_build(){
               cd "$BUILD_PATH_AWB/$file"
               pwd
               echo "mvn install -e $MVN_OPT -Pawb"
-              mvn install -e $MVN_OPT -Pawb
+              mvn install -e -Pawb "$MVN_OPT"
               if [ $? -ne 0 ]; then
                     echo "build $file error!"
                     exit $?
@@ -253,10 +256,10 @@ function do_awb_svn(){
       ls -l
       cd "$BUILD_PATH_SVN_AWB/$file"
       pwd
-      mvn install -e $MVN_OPT -Pawb
+      mvn install -e "$MVN_OPT" -Pawb
       if [ $? -ne 0 ]; then
             echo "build $file error!"
-            ##exit $?
+            exit $?
       fi
     fi
   done
@@ -267,28 +270,28 @@ function do_builder(){
   echo "start to builder apk main"
   cd $ROOT_PATH
   pwd
-  mvn clean package -e $MVN_OPT_BUILD
+  mvn clean package -e "$MVN_OPT_BUILD"
 }
 
 ##编译本工程
 function build_self_awb(){
 	cd $ROOT_PATH
   pwd
-	mvn clean install -e -Pawb $MVN_OPT
+	mvn clean install -e -Pawb "$MVN_OPT"
 }
 
 ##编译本工程
 function build_self_apk(){
   cd $ROOT_PATH
   pwd
-  mvn clean install -e -Papk $MVN_OPT_BUILD
+  mvn clean install -e -Papk "$MVN_OPT_BUILD"
 }
 
 ##编译本工程
 function build_self(){
   cd $ROOT_PATH
   pwd
-  mvn clean install -e  $MVN_OPT_BUILD
+  mvn clean install -e "$MVN_OPT_BUILD"
 }
 
 init_path;
