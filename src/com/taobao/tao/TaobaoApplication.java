@@ -6,7 +6,9 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -48,6 +50,8 @@ public class TaobaoApplication extends PanguApplication {
     //doesn't delete used for online monitor
     static long START = 0;
     
+    private Map<String,Long> userTrackDataMap = new HashMap<String,Long>();
+    
     @Override
     public void onCreate() {
         super.onCreate();
@@ -59,9 +63,7 @@ public class TaobaoApplication extends PanguApplication {
         } catch (Exception e) {
             Log.e(TAG, "Could not init atlas framework !!!", e);
         }
-
         Log.d(TAG, "Atlas framework inited " + (System.currentTimeMillis() - START) + " ms");
-
         try {
             Field sApplication = Globals.class.getDeclaredField("sApplication");
             sApplication.setAccessible(true);
@@ -134,8 +136,9 @@ public class TaobaoApplication extends PanguApplication {
         }
 
         // enableComponents(this);
-
-        Log.d(TAG, "Atlas framework started in process " + processName + " " + (System.currentTimeMillis() - START)
+        long startupTime = System.currentTimeMillis() - START;
+        userTrackDataMap.put("atlas_startup_time", startupTime);
+        Log.d(TAG, "Atlas framework started in process " + processName + " " + (startupTime)
                    + " ms");
 
         final PackageInfo fpackageInfo = packageInfo;
@@ -176,8 +179,9 @@ public class TaobaoApplication extends PanguApplication {
 
                     Log.d(TAG, "sendBroadcast: com.taobao.taobao.action.BUNDLES_INSTALLED");
                     TaobaoApplication.this.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
-
-                    Log.d(TAG, "Updated bundles in process " + processName + " " + (System.currentTimeMillis() - start)
+                    long updateTime = System.currentTimeMillis() - start;
+                    userTrackDataMap.put("atlas_update_time", updateTime);
+                    Log.d(TAG, "Updated bundles in process " + processName + " " + (updateTime)
                                + " ms");
                 }
             });
@@ -456,6 +460,19 @@ public class TaobaoApplication extends PanguApplication {
                 }
             }
         }
+    }
+    
+    /**
+     * 保存Atals启动、更新花费时间，欢迎页埋点用到这些数据，不要删除
+     */
+    private void saveUserTrackData(){
+        SharedPreferences prefs = TaobaoApplication.this.getSharedPreferences("atlas_configs",
+                                                                              MODE_PRIVATE);
+        Editor editor = prefs.edit();
+        for(String entry : userTrackDataMap.keySet()){
+            editor.putLong(entry,userTrackDataMap.get(entry));
+        }
+        editor.commit();
     }
 
 }
