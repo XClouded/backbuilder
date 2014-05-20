@@ -187,6 +187,9 @@ public class TaobaoApplication extends PanguApplication {
             });
         } else if (!updated) {
             System.setProperty("BUNDLES_INSTALLED", "true");
+            if (this.getPackageName().equals(processName)) {
+                sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
+            }
         }
 
     }
