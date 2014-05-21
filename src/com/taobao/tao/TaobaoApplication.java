@@ -45,7 +45,7 @@ public class TaobaoApplication extends PanguApplication {
             "com.taobao.mytaobao", "com.taobao.shop" };
 
     final static String[] AUTOSTART_PACKAGES = new String[] { "com.taobao.mytaobao", "com.taobao.wangxin",
-            "com.taobao.passivelocation" };
+            "com.taobao.passivelocation", "com.taobao.allspark" };
 
     //doesn't delete used for online monitor
     static long START = 0;
