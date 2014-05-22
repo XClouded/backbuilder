@@ -120,8 +120,8 @@ function build_taobaocompat(){
         echo "build compat error!"
         exit $?
   fi
-  build_skt;
   wait
+  build_skt;
 }
 
 ##编译jar或者无package配置的包
