@@ -14,6 +14,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -41,11 +42,11 @@ public class TaobaoApplication extends PanguApplication {
     /**
      * 指定Bundle包的处理顺序；程序首先按照这里的顺序来处理Bundle包，然后再乱序处理剩下的Bundle包。
      */
-    final static String[] SORTED_PACKAGES    = new String[] { "com.taobao.browser", "com.taobao.android.trade",
-            "com.taobao.mytaobao", "com.taobao.shop" };
+    final static String[] SORTED_PACKAGES = new String[]{"com.taobao.browser", "com.taobao.passivelocation",
+            "com.taobao.mytaobao", "com.taobao.wangxin", "com.taobao.shop"};
 
-    final static String[] AUTOSTART_PACKAGES = new String[] { "com.taobao.mytaobao", "com.taobao.wangxin",
-            "com.taobao.passivelocation", "com.taobao.allspark" };
+    final static String[] AUTOSTART_PACKAGES = new String[]{"com.taobao.mytaobao", "com.taobao.wangxin",
+            "com.taobao.passivelocation", "com.taobao.allspark"};
 
     //doesn't delete used for online monitor
     static long START = 0;
@@ -208,6 +209,16 @@ public class TaobaoApplication extends PanguApplication {
         for (String entryName : entryNames) {
             processLibsBundle(zipFile, entryName);
         }
+        // 根据需要自动启动Bundle
+        for (Bundle bundle : Atlas.getInstance().getBundles()) {
+            if (bundle != null && contains(AUTOSTART_PACKAGES, bundle.getLocation())) {
+                try {
+                    bundle.start();
+                } catch (Exception e) {
+                    Log.e(TAG, "Could not auto start bundle: " + bundle.getLocation(), e);
+                }
+            }
+        }
     }
 
     private boolean processLibsBundle(ZipFile zipFile, String entryName) {
@@ -228,9 +239,6 @@ public class TaobaoApplication extends PanguApplication {
                 } else {
                     inputStream = zipFile.getInputStream(zipFile.getEntry(entryName));
                     bundle = Atlas.getInstance().installBundle(packageName, inputStream);
-                }
-                if (bundle != null && contains(AUTOSTART_PACKAGES, packageName)) {
-                    bundle.start();
                 }
                 Log.d(TAG, "Succeed to install bundle " + packageName);
                 return true;
