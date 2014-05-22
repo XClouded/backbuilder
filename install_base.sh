@@ -77,6 +77,12 @@ function copy_proguard_file(){
   echo "PROGUARD_MAPPING:$PROGUARD_MAPPING"
 }
 
+function build_skt(){
+  cd "$ROOT_PATH/taobao_builder"
+  mvn install -e -Pskt $MVN_OPT -Dproguard.skip=true
+  mvn install -e -Paar $MVN_OPT -Dproguard.skip=true
+}
+
 
 ##初始化目录
 function init_path(){
@@ -104,16 +110,18 @@ function build_taobaocompat(){
   git clone git@gitlab.alibaba-inc.com:taobao-android/taobaocompat.git -b $BRANCH
   cd "$ROOT_PATH/taobaocompat"
   pwd
-  mvn install -U -e -Papklib $MVN_OPT -Dproguard.skip=true
+  mvn install -U -e -Papklib $MVN_OPT -Dproguard.skip=true &
   if [ $? -ne 0 ]; then
         echo "build compat error!"
         exit $?
   fi
-  mvn install -U -e -Paar $MVN_OPT -Dproguard.skip=true
+  mvn install -U -e -Paar $MVN_OPT -Dproguard.skip=true &
   if [ $? -ne 0 ]; then
         echo "build compat error!"
         exit $?
   fi
+  build_skt;
+  wait
 }
 
 ##编译jar或者无package配置的包
