@@ -99,6 +99,7 @@ function init_path(){
 ## taobaocompat是所有工程的基础
 function build_taobaocompat(){
   echo ">> start to build taobaocompat"
+  cd $ROOT_PATH
   rm -rf $ROOT_PATH/taobaocompat
   git clone git@gitlab.alibaba-inc.com:taobao-android/taobaocompat.git
   cd "$ROOT_PATH/taobaocompat"
