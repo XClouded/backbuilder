@@ -62,8 +62,8 @@ function prepare_builder(){
   echo ">> start to get builder project"
   rm -rf $ROOT_PATH/taobao_builder
   git clone git@gitlab.alibaba-inc.com:build/taobao_builder.git -b $BRANCH
-  cd "$ROOT_PATH/taobao_builder"
-  git checkout $BRANCH
+#  cd "$ROOT_PATH/taobao_builder"
+#  git checkout $BRANCH
   cp "$ROOT_PATH/taobao_builder/proguard.cfg" "$ROOT_PATH/"
   cp "$ROOT_PATH/taobao_builder/install_base.sh" "$ROOT_PATH/"
 }
@@ -101,10 +101,9 @@ function build_taobaocompat(){
   echo ">> start to build taobaocompat"
   cd $ROOT_PATH
   rm -rf $ROOT_PATH/taobaocompat
-  git clone git@gitlab.alibaba-inc.com:taobao-android/taobaocompat.git
+  git clone git@gitlab.alibaba-inc.com:taobao-android/taobaocompat.git -b $BRANCH
   cd "$ROOT_PATH/taobaocompat"
   pwd
-  git checkout $BRANCH
   mvn install -U -e -Papklib $MVN_OPT -Dproguard.skip=true
   if [ $? -ne 0 ]; then
         echo "build compat error!"
@@ -137,7 +136,7 @@ function do_jar_build(){
       if  test -d $file ; then
         echo ">>start to install in $file"
         cd $BUILD_PATH/$file
-        git checkout $BRANCH
+        #git checkout $BRANCH
         cp $PROGUARD_CFG $BUILD_PATH/$file
         cp $PROGUARD_MAPPING $BUILD_PATH/$file
         mvn install -e $MVN_OPT
@@ -160,6 +159,8 @@ function do_apklib_build(){
                         git clone $line
                 else
                         git clone $line -b $BRANCH
+                        #cd $BUILD_PATH_APKLIB/$file
+                        #git checkout $BRANCH
                 fi
         done < $BUILD_GIT_CONF_FILE_APKLIB
 
@@ -168,7 +169,6 @@ function do_apklib_build(){
             if  test -d $file ; then
                 echo ">>start to install in $file"
                 cd $BUILD_PATH_APKLIB/$file
-                git checkout $BRANCH
                 cp $PROGUARD_CFG $BUILD_PATH_APKLIB/$file
                 cp $PROGUARD_MAPPING $BUILD_PATH_APKLIB/$file
                 mvn install -e $MVN_OPT -Papklib
@@ -193,6 +193,8 @@ function do_aar_build(){
                         git clone $line
                 else
                         git clone $line -b $BRANCH
+                        #cd "$BUILD_PATH_AAR/$file"
+                        #git checkout $BRANCH
                 fi
         done < $BUILD_GIT_CONF_FILE_AAR
 
@@ -205,7 +207,6 @@ function do_aar_build(){
                 ls -l
                 cd "$BUILD_PATH_AAR/$file"
                 pwd
-                git checkout $BRANCH
                 mvn install -e $MVN_OPT -Paar
                 if [ $? -ne 0 ]; then
                       echo "build $file error!"
@@ -225,6 +226,8 @@ function do_awb_build(){
                         git clone $line
                 else
                         git clone $line -b $BRANCH
+                        #cd "$BUILD_PATH_AWB/$file"
+                        #git checkout $BRANCH
                 fi
         done < $BUILD_GIT_CONF_FILE_AWB
         for file in `ls $BUILD_PATH_AWB`
@@ -236,7 +239,6 @@ function do_awb_build(){
               ls -l
               cd "$BUILD_PATH_AWB/$file"
               pwd
-              git checkout $BRANCH
               echo "mvn install -e $MVN_OPT -Pawb"
               mvn install -e -Pawb $MVN_OPT
               if [ $? -ne 0 ]; then
@@ -278,7 +280,7 @@ function do_builder(){
   echo "start to builder apk main"
   cd $ROOT_PATH
   pwd
-  git checkout $BRANCH
+  #git checkout $BRANCH
   mvn clean package -e $MVN_OPT_BUILD
   if [ $? -ne 0 ]; then
         exit $?
@@ -289,7 +291,7 @@ function do_builder(){
 function build_self_awb(){
 	cd $ROOT_PATH
   pwd
-  git checkout $BRANCH
+  #git checkout $BRANCH
 	mvn clean install -e -Pawb $MVN_OPT
   if [ $? -ne 0 ]; then
         exit $?
@@ -300,7 +302,7 @@ function build_self_awb(){
 function build_self_apk(){
   cd $ROOT_PATH
   pwd
-  git checkout $BRANCH
+  #git checkout $BRANCH
   mvn clean install -e -Papk $MVN_OPT_BUILD
   if [ $? -ne 0 ]; then
         exit $?
@@ -311,7 +313,7 @@ function build_self_apk(){
 function build_self(){
   cd $ROOT_PATH
   pwd
-  git checkout $BRANCH
+  #git checkout $BRANCH
   mvn clean install -e $MVN_OPT_BUILD
   if [ $? -ne 0 ]; then
         exit $?
