@@ -37,6 +37,8 @@ else
   THREAD_NUM=3
 fi
 
+echo $THREAD_NUM
+exit
 
 if [  "$MVN_HOME_PRJ" ]; then
   export MAVEN_HOME=$MVN_HOME_PRJ
@@ -259,12 +261,12 @@ function do_awb_build_multithread(){
             i=$((i+1))
             param_b=`echo $line | grep  -o ' \-b '`
             if [ $param_b ]; then
-              git clone $line &
+              git clone $line
             else
-              git clone $line -b $BRANCH &
+              git clone $line -b $BRANCH
               #cd "$BUILD_PATH_AWB/$file"
               #git checkout $BRANCH
-            fi
+            fi &
             if [ $((i%THREAD_NUM)) == 0 ]; then
               wait
             fi
@@ -282,9 +284,9 @@ function do_awb_build_multithread(){
               cd "$BUILD_PATH_AWB/$file"
               pwd
               echo "mvn install -e $MVN_OPT -Pawb"
-              mvn install -e -Pawb $MVN_OPT &
+              mvn install -e -Pawb $MVN_OPT
 
-            fi
+            fi &
             if [ $((i%THREAD_NUM)) == 0 ]; then
               echo "wait"
               wait
