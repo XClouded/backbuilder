@@ -31,10 +31,10 @@ MVN_OPT_BUILD="-Dmaven.repo.local=$MVN_REPO_LOCAL"
 PROGUARD_BIN="$ROOT_PATH/proguard/proguard5/proguard.jar"
 THREAD_NUM=`cat /proc/cpuinfo | grep "core id" | uniq | wc -l`
 
-if [ $THREAD_NUM >= 8 ]; then
-  THREAD_NUM=$((THREAD_NUM-2))
+if [ $THREAD_NUM > 8 ]; then
+  THREAD_NUM=$((THREAD_NUM/2))
 else
-  THREAD_NUM=4
+  THREAD_NUM=3
 fi
 
 
@@ -133,17 +133,24 @@ function do_jar_build(){
   cd $BUILD_PATH
   pwd
   git_list=$(cat $BUILD_GIT_CONF_FILE)
+  i=0
   while read line ; do
+    i=$((i+1))
     param_b=`echo $line | grep  -o ' \-b '`
     if [ $param_b ]; then
       git clone $line
     else
       git clone $line -b $BRANCH
+    fi &
+    if [ $((i%THREAD_NUM)) == 0 ]; then
+      wait
     fi
   done < $BUILD_GIT_CONF_FILE
-
+  wait
+  i=0
   for file in `ls $BUILD_PATH`
   do
+      i=$((i+1))
       if  test -d $file ; then
         echo ">>start to install in $file"
         cd $BUILD_PATH/$file
@@ -155,6 +162,9 @@ function do_jar_build(){
               echo "build $file error!"
               exit $?
         fi
+      fi &
+      if [ $((i%THREAD_NUM)) == 0 ]; then
+        wait
       fi
   done
 }
@@ -164,17 +174,23 @@ function do_apklib_build(){
         cd $BUILD_PATH_APKLIB
         pwd
         git_list=$(cat $BUILD_GIT_CONF_FILE_APKLIB)
+        i=0
         while read line ; do
-                param_b=`echo $line | grep  -o ' \-b '`
-                if [ $param_b ]; then
-                        git clone $line
-                else
-                        git clone $line -b $BRANCH
-                        #cd $BUILD_PATH_APKLIB/$file
-                        #git checkout $BRANCH
-                fi
+          i=$((i+1))
+          param_b=`echo $line | grep  -o ' \-b '`
+          if [ $param_b ]; then
+            git clone $line
+          else
+            git clone $line -b $BRANCH
+            #cd $BUILD_PATH_APKLIB/$file
+            #git checkout $BRANCH
+          fi &
+          if [ $((i%THREAD_NUM)) == 0 ]; then
+            wait
+          fi
         done < $BUILD_GIT_CONF_FILE_APKLIB
-
+        wait
+        i=0
         for file in `ls $BUILD_PATH_APKLIB`
         do
             if  test -d $file ; then
@@ -187,8 +203,12 @@ function do_apklib_build(){
                       echo "build $file error!"
                       exit $?
                 fi
+            fi &
+            if [ $((i%THREAD_NUM)) == 0 ]; then
+              wait
             fi
         done
+        wait
 }
 
 
@@ -316,11 +336,19 @@ function do_awb_svn(){
   echo ">>start to build bundle with svn"
   cd $BUILD_PATH_SVN_AWB
   git_list=$(cat $BUILD_SVN_CONF_FILE_AWB)
+  i=0
   while read line ; do
-    svn co $line
+    i=$((i+1))
+    svn co $line &
+    if [ $((i%THREAD_NUM)) == 0 ]; then
+      wait
+    fi
   done < $BUILD_SVN_CONF_FILE_AWB
+  wait
+  i=0
   for file in `ls $BUILD_PATH_SVN_AWB`
   do
+    i=$((i+1))
     if  test -d $BUILD_PATH_SVN_AWB/$file ; then
       echo ">>start to install in $file"
       cp $PROGUARD_CFG $BUILD_PATH_SVN_AWB/$file
@@ -333,8 +361,12 @@ function do_awb_svn(){
             echo "build $file error!"
             exit $?
       fi
+    fi &
+    if [ $((i%THREAD_NUM)) == 0 ]; then
+      wait
     fi
   done
+  wait
 }
 
 ##编译builder
