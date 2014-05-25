@@ -949,7 +949,7 @@
                             <skip>false</skip>
                             <versionName>${channel.version.name}</versionName>
                             <versionCode>${channel.version.code}</versionCode>
-                            <apkName>@{ttid}@${project.artifactId}_${channel.version.name}</apkName>
+                            <apkName>@{ttid}@taobao_android_${channel.version.name}</apkName>
                             <autoconfig>
                                 <copyFolders>
                                     <copyFolder>
