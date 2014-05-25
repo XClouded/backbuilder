@@ -29,7 +29,14 @@ ERR_RET=`mvn -v|awk '{print $3}'`
 MVN_OPT="-Dmaven.repo.local=$MVN_REPO_LOCAL"
 MVN_OPT_BUILD="-Dmaven.repo.local=$MVN_REPO_LOCAL"
 PROGUARD_BIN="$ROOT_PATH/proguard/proguard5/proguard.jar"
-THREAD_NUM=3
+THREAD_NUM=`cat /proc/cpuinfo | grep "core id" | uniq | wc -l`
+
+if [ $THREAD_NUM >= 8 ]; then
+  THREAD_NUM=$((THREAD_NUM-2))
+else
+  THREAD_NUM=4
+fi
+
 
 if [  "$MVN_HOME_PRJ" ]; then
   export MAVEN_HOME=$MVN_HOME_PRJ
@@ -238,7 +245,7 @@ function do_awb_build_multithread(){
               #cd "$BUILD_PATH_AWB/$file"
               #git checkout $BRANCH
             fi
-            if [ $((i%2)) == 0 ]; then
+            if [ $((i%THREAD_NUM)) == 0 ]; then
               wait
             fi
         done < $BUILD_GIT_CONF_FILE_AWB
@@ -258,7 +265,7 @@ function do_awb_build_multithread(){
               mvn install -e -Pawb $MVN_OPT &
 
             fi
-            if [ $((i%3)) == 0 ]; then
+            if [ $((i%THREAD_NUM)) == 0 ]; then
               echo "wait"
               wait
               if [ $? -ne 0 ]; then
