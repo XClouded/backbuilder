@@ -29,13 +29,7 @@ ERR_RET=`mvn -v|awk '{print $3}'`
 MVN_OPT="-Dmaven.repo.local=$MVN_REPO_LOCAL"
 MVN_OPT_BUILD="-Dmaven.repo.local=$MVN_REPO_LOCAL"
 PROGUARD_BIN="$ROOT_PATH/proguard/proguard5/proguard.jar"
-THREAD_NUM=`cat /proc/cpuinfo | grep "core id" | uniq | wc -l`
-
-if [ $THREAD_NUM > 8 ]; then
-  THREAD_NUM=$((THREAD_NUM/2))
-else
-  THREAD_NUM=3
-fi
+THREAD_NUM=3
 
 echo $THREAD_NUM
 exit
