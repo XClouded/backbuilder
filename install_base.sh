@@ -31,16 +31,13 @@ MVN_OPT_BUILD="-Dmaven.repo.local=$MVN_REPO_LOCAL"
 PROGUARD_BIN="$ROOT_PATH/proguard/proguard5/proguard.jar"
 THREAD_NUM=`cat /proc/cpuinfo | grep "core id" | uniq | wc -l`
 
-echo $THREAD_NUM
-
 if [ $THREAD_NUM -gt 8 ]; then
   THREAD_NUM=$((THREAD_NUM/2))
 else
   THREAD_NUM=3
 fi
 
-echo $THREAD_NUM
-exit
+echo "current thread is: $THREAD_NUM"
 
 if [  "$MVN_HOME_PRJ" ]; then
   export MAVEN_HOME=$MVN_HOME_PRJ
