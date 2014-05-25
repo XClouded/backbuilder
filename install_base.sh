@@ -29,6 +29,7 @@ ERR_RET=`mvn -v|awk '{print $3}'`
 MVN_OPT="-Dmaven.repo.local=$MVN_REPO_LOCAL"
 MVN_OPT_BUILD="-Dmaven.repo.local=$MVN_REPO_LOCAL"
 PROGUARD_BIN="$ROOT_PATH/proguard/proguard5/proguard.jar"
+THREAD_NUM=3
 
 if [  "$MVN_HOME_PRJ" ]; then
   export MAVEN_HOME=$MVN_HOME_PRJ
@@ -187,6 +188,49 @@ function do_apklib_build(){
             fi
         done
 }
+
+function do_aar_build_thread(){
+  tmp_fifofile="$$.fifo"
+  mkfifo $tmp_fifofile
+  exec 6<>$tmp_fifofile
+  rm $tmp_fifofile
+  cd $BUILD_PATH_AAR
+  git_list=$(cat $BUILD_GIT_CONF_FILE_AAR)
+  for ((idx=0;idx<$PROCESS_NUM;idx++));
+  do
+      echo
+  done >&6
+
+  #处理业务，可以使用while
+  for ((idx=0;idx<20;idx++));
+  do
+    read -u6
+    {
+      a_sub_process && {
+         echo "sub_process is finished"
+      } || {
+         echo "sub error"
+      }
+      echo >&6 # 当进程结束以后，再向fd6中加上一个回车符，即补上了read -u6减去的那个
+    } &
+  done
+  wait
+  exec 6>&-
+  echo ">>start to build bundle"
+
+
+  while read line ; do
+          param_b=`echo $line | grep  -o ' \-b '`
+          if [ $param_b ]; then
+                  git clone $line
+          else
+                  git clone $line -b $BRANCH
+                  #cd "$BUILD_PATH_AAR/$file"
+                  #git checkout $BRANCH
+          fi
+  done < $BUILD_GIT_CONF_FILE_AAR
+}
+
 ##编译aar包
 function do_aar_build(){
         echo ">>start to build bundle"
@@ -223,6 +267,52 @@ function do_aar_build(){
             fi
         done
 }
+
+##编译awb包
+function do_awb_build_multithread(){
+        echo ">>start to build bundle"
+        cd $BUILD_PATH_AWB
+        git_list=$(cat $BUILD_GIT_CONF_FILE_AWB)
+        i=0
+        while read line ; do
+            i=$((i+1))
+            param_b=`echo $line | grep  -o ' \-b '`
+            if [ $param_b ]; then
+              git clone $line &
+            else
+              git clone $line -b $BRANCH &
+              #cd "$BUILD_PATH_AWB/$file"
+              #git checkout $BRANCH
+            fi
+            if [ $((i%2)) == 0 ]; then
+              wait
+            fi
+        done < $BUILD_GIT_CONF_FILE_AWB
+        i=0
+        for file in `ls $BUILD_PATH_AWB`
+        do
+            i=$((i+1))
+            if  test -d $BUILD_PATH_AWB/$file ; then
+              echo ">>start to install in $file"
+              cp $PROGUARD_CFG $BUILD_PATH_AWB/$file
+              cp $PROGUARD_MAPPING $BUILD_PATH_AWB/$file
+              ls -l
+              cd "$BUILD_PATH_AWB/$file"
+              pwd
+              echo "mvn install -e $MVN_OPT -Pawb"
+              mvn install -e -Pawb $MVN_OPT &
+
+            fi
+            if [ $((i%2)) == 0 ]; then
+              wait
+              if [ $? -ne 0 ]; then
+                    echo "build $file error!"
+                    exit $?
+              fi
+            fi
+        done
+}
+
 ##编译awb包
 function do_awb_build(){
         echo ">>start to build bundle"
