@@ -33,7 +33,7 @@ THREAD_NUM=`cat /proc/cpuinfo | grep "core id" | uniq | wc -l`
 
 echo $THREAD_NUM
 
-if [ $THREAD_NUM > 8 ]; then
+if [ $THREAD_NUM -gt 8 ]; then
   THREAD_NUM=$((THREAD_NUM/2))
 else
   THREAD_NUM=3
