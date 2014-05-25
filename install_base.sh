@@ -81,7 +81,6 @@ function copy_proguard_file(){
 function build_skt(){
   cd "$ROOT_PATH/taobao_builder"
   mvn install -e -Pskt $MVN_OPT -Dproguard.skip=true
-  mvn install -e -Paar $MVN_OPT -Dproguard.skip=true
 }
 
 
@@ -112,16 +111,12 @@ function build_taobaocompat(){
   cd "$ROOT_PATH/taobaocompat"
   pwd
   mvn install -U -e -Papklib $MVN_OPT -Dproguard.skip=true &
-  if [ $? -ne 0 ]; then
-        echo "build compat error!"
-        exit $?
-  fi
   mvn install -U -e -Paar $MVN_OPT -Dproguard.skip=true &
+  wait
   if [ $? -ne 0 ]; then
         echo "build compat error!"
         exit $?
   fi
-  wait
   build_skt;
 }
 
@@ -189,47 +184,6 @@ function do_apklib_build(){
         done
 }
 
-function do_aar_build_thread(){
-  tmp_fifofile="$$.fifo"
-  mkfifo $tmp_fifofile
-  exec 6<>$tmp_fifofile
-  rm $tmp_fifofile
-  cd $BUILD_PATH_AAR
-  git_list=$(cat $BUILD_GIT_CONF_FILE_AAR)
-  for ((idx=0;idx<$PROCESS_NUM;idx++));
-  do
-      echo
-  done >&6
-
-  #处理业务，可以使用while
-  for ((idx=0;idx<20;idx++));
-  do
-    read -u6
-    {
-      a_sub_process && {
-         echo "sub_process is finished"
-      } || {
-         echo "sub error"
-      }
-      echo >&6 # 当进程结束以后，再向fd6中加上一个回车符，即补上了read -u6减去的那个
-    } &
-  done
-  wait
-  exec 6>&-
-  echo ">>start to build bundle"
-
-
-  while read line ; do
-          param_b=`echo $line | grep  -o ' \-b '`
-          if [ $param_b ]; then
-                  git clone $line
-          else
-                  git clone $line -b $BRANCH
-                  #cd "$BUILD_PATH_AAR/$file"
-                  #git checkout $BRANCH
-          fi
-  done < $BUILD_GIT_CONF_FILE_AAR
-}
 
 ##编译aar包
 function do_aar_build(){
@@ -288,6 +242,7 @@ function do_awb_build_multithread(){
               wait
             fi
         done < $BUILD_GIT_CONF_FILE_AWB
+        wait
         i=0
         for file in `ls $BUILD_PATH_AWB`
         do
@@ -303,7 +258,8 @@ function do_awb_build_multithread(){
               mvn install -e -Pawb $MVN_OPT &
 
             fi
-            if [ $((i%2)) == 0 ]; then
+            if [ $((i%3)) == 0 ]; then
+              echo "wait"
               wait
               if [ $? -ne 0 ]; then
                     echo "build $file error!"
@@ -311,6 +267,7 @@ function do_awb_build_multithread(){
               fi
             fi
         done
+        wait
 }
 
 ##编译awb包
