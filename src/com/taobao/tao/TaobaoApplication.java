@@ -1,5 +1,20 @@
 package com.taobao.tao;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.taobao.atlas.framework.Atlas;
+import android.text.TextUtils;
+import android.util.Log;
+
+import com.taobao.android.lifecycle.PanguApplication;
+import com.taobao.android.task.Coordinator;
+import com.taobao.android.task.Coordinator.TaggedRunnable;
+
+import org.osgi.framework.Bundle;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,28 +27,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleException;
-
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.ProviderInfo;
-import android.content.pm.ServiceInfo;
-import android.taobao.atlas.framework.Atlas;
-import android.text.TextUtils;
-import android.util.Log;
-
-import com.taobao.android.lifecycle.PanguApplication;
-import com.taobao.android.task.Coordinator;
-import com.taobao.android.task.Coordinator.TaggedRunnable;
 
 public class TaobaoApplication extends PanguApplication {
 
@@ -64,7 +57,9 @@ public class TaobaoApplication extends PanguApplication {
         } catch (Exception e) {
             Log.e(TAG, "Could not init atlas framework !!!", e);
         }
+
         Log.d(TAG, "Atlas framework inited " + (System.currentTimeMillis() - START) + " ms");
+
         try {
             Field sApplication = Globals.class.getDeclaredField("sApplication");
             sApplication.setAccessible(true);
@@ -84,7 +79,6 @@ public class TaobaoApplication extends PanguApplication {
         boolean updated = false;
         PackageInfo packageInfo = null;
 
-        final List<String> entryNames = new ArrayList<String>();
 
         final String processName = TaoApplication.getProcessName(Globals.getApplication());
         if (this.getPackageName().equals(processName)) {
@@ -110,19 +104,9 @@ public class TaobaoApplication extends PanguApplication {
                                                                                     lastVersionName))) {
 
                 updated = true;
-                // 找到安装包中所有的bundle名称，然后把磁盘上的对应bundle全部删除，以便后面重新安装新版本
-                entryNames.addAll(getBundleEntryNames("lib/armeabi/libcom_", ".so"));
-                StringBuffer stringBuffer = new StringBuffer();
-                for (String entryName : entryNames) {
-                    String packageName = getPackageNameFromEntryName(entryName);
-                    if (stringBuffer.length() > 0) {
-                        stringBuffer.append(",");
-                    }
-                    stringBuffer.append(packageName);
-                }
-                String autodelete = stringBuffer.toString();
-                props.put("android.taobao.atlas.autodelete", autodelete);
-                Log.d(TAG, "autodelete: " + autodelete);
+                // 把磁盘上的对应bundle全部删除，以便后面重新安装新版本
+                props.put("osgi.init", "true");
+                props.put("android.taobao.atlas.publickey", "30819f300d06092a864886f70d010101050003818d0030818902818100d863f4f3100ca2bc9d15503284e09b64cad4008144bc48f0bc7e5d0e097f07041e5a2e29520dfbd4e0746401438cb20819de56dc9cf26cdc6c5d1a9da4b32ffa80bc960e7d01c7b067167c5df676d64d916d09d37f9ccad935275dd2e480c360cd95a045263a298b2718a03217ea822c5cef78035cd2b114baac552a104e48670203010001");
             }
         }
 
@@ -151,6 +135,8 @@ public class TaobaoApplication extends PanguApplication {
                     ZipFile zipFile = null;
                     try {
                         zipFile = new ZipFile(TaobaoApplication.this.getApplicationInfo().sourceDir);
+
+                        final List<String> entryNames = getBundleEntryNames(zipFile, "lib/armeabi/libcom_", ".so");
                         processLibsBundles(zipFile, entryNames);
 
                         SharedPreferences prefs = TaobaoApplication.this.getSharedPreferences("atlas_configs",
@@ -183,6 +169,7 @@ public class TaobaoApplication extends PanguApplication {
 
                     Log.d(TAG, "sendBroadcast: com.taobao.taobao.action.BUNDLES_INSTALLED");
                     TaobaoApplication.this.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
+
                     long updateTime = System.currentTimeMillis() - start;
                     userTrackDataMap.put("atlas_update_time", updateTime);
                     Log.d(TAG, "Updated bundles in process " + processName + " " + (updateTime)
@@ -289,9 +276,8 @@ public class TaobaoApplication extends PanguApplication {
         return null;
     }
 
-    private List<String> getBundleEntryNames(String prefix, String suffix) {
+    private List<String> getBundleEntryNames(ZipFile zipFile, String prefix, String suffix) {
         List<String> entryNames = new ArrayList<String>();
-        ZipFile zipFile = null;
         try {
             zipFile = new ZipFile(this.getApplicationInfo().sourceDir);
             Enumeration<? extends ZipEntry> entries = zipFile.entries();
@@ -304,14 +290,6 @@ public class TaobaoApplication extends PanguApplication {
             }
         } catch (IOException e) {
             Log.e(TAG, "Exception while get bundles in assets or lib", e);
-        } finally {
-            if (zipFile != null) {
-                try {
-                    zipFile.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
         return entryNames;
     }
