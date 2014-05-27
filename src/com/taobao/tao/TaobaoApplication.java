@@ -9,6 +9,7 @@ import android.taobao.atlas.framework.Atlas;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.taobao.android.base.Versions;
 import com.taobao.android.lifecycle.PanguApplication;
 import com.taobao.android.task.Coordinator;
 import com.taobao.android.task.Coordinator.TaggedRunnable;
@@ -106,7 +107,10 @@ public class TaobaoApplication extends PanguApplication {
                 updated = true;
                 // 把磁盘上的对应bundle全部删除，以便后面重新安装新版本
                 props.put("osgi.init", "true");
-                props.put("android.taobao.atlas.publickey", "30819f300d06092a864886f70d010101050003818d0030818902818100d863f4f3100ca2bc9d15503284e09b64cad4008144bc48f0bc7e5d0e097f07041e5a2e29520dfbd4e0746401438cb20819de56dc9cf26cdc6c5d1a9da4b32ffa80bc960e7d01c7b067167c5df676d64d916d09d37f9ccad935275dd2e480c360cd95a045263a298b2718a03217ea822c5cef78035cd2b114baac552a104e48670203010001");
+                if (!Versions.isDebug()) {
+                    props.put("android.taobao.atlas.publickey", "30819f300d06092a864886f70d010101050003818d00308189028181008406125f369fde2720f7264923a63dc48e1243c1d9783ed44d8c276602d2d570073d92c155b81d5899e9a8a97e06353ac4b044d07ca3e2333677d199e0969c96489f6323ed5368e1760731704402d0112c002ccd09a06d27946269a438fe4b0216b718b658eed9d165023f24c6ddaec0af6f47ada8306ad0c4f0fcd80d9b69110203010001");
+                }
+
             }
         }
 
