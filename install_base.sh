@@ -118,8 +118,8 @@ function build_taobaocompat(){
   git clone git@gitlab.alibaba-inc.com:taobao-android/taobaocompat.git -b $BRANCH
   cd "$ROOT_PATH/taobaocompat"
   pwd
-  mvn install -U -e -Papklib $MVN_OPT -Dproguard.skip=true
-  mvn install -U -e -Paar $MVN_OPT -Dproguard.skip=true
+  mvn install -e -Papklib $MVN_OPT -Dproguard.skip=true
+  mvn install -e -Paar $MVN_OPT -Dproguard.skip=true
   wait
   if [ $? -ne 0 ]; then
         echo "build compat error!"
