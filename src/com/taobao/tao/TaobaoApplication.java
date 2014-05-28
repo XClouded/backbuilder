@@ -189,6 +189,7 @@ public class TaobaoApplication extends PanguApplication {
                 sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
             }
         }
+        saveUserTrackData();
 
     }
 
