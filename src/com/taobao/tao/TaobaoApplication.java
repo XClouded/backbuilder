@@ -163,6 +163,15 @@ public class TaobaoApplication extends PanguApplication {
                         }
                     }
 
+                    // 所有的Bundle都安装完成后尝试加载一个不存在的类会使所有的bundle完成dexopt
+                    // 最好优化成按需要完成dexopt?
+                    try {
+                        Thread.sleep(1000);//dexopt很耗时，等待1s以免ANR
+                        Atlas.getInstance().getDelegateClassLoader().loadClass("android.taobao.atlas.Dummy");
+                    } catch (Exception e) {
+                    }
+
+
                     System.setProperty("BUNDLES_INSTALLED", "true");
 
                     Log.d(TAG, "sendBroadcast: com.taobao.taobao.action.BUNDLES_INSTALLED");
