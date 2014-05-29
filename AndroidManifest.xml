@@ -3,7 +3,7 @@
           package="com.taobao.taobao"
           android:installLocation="auto"
           android:versionCode="98"
-          android:versionName="4.2.2.3.1" >
+          android:versionName="4.2.2.4" >
 
     <uses-sdk
             android:minSdkVersion="9"
