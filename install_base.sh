@@ -120,12 +120,10 @@ function build_taobaocompat(){
   pwd
   mvn install -e -Papklib $MVN_OPT -Dproguard.skip=true
   mvn install -e -Paar $MVN_OPT -Dproguard.skip=true
-  wait
   if [ $? -ne 0 ]; then
         echo "build compat error!"
         exit $?
   fi
-  build_skt;
 }
 
 ##编译jar或者无package配置的包
