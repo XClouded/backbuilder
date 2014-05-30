@@ -1,5 +1,5 @@
-git@gitlab.alibaba-inc.com:taobao-android/taobao_uikit.git -b dev
-git@gitlab.alibaba-inc.com:taobaoandroiduikit/core.git -b develop
+git@gitlab.alibaba-inc.com:taobao-android/taobao_uikit.git -b master
+git@gitlab.alibaba-inc.com:taobaoandroiduikit/core.git -b master
 git@gitlab.alibaba-inc.com:taobao-android/taobao_browser.git
 git@gitlab.alibaba-inc.com:taobao-android/taobao_android_homepage.git
 git@gitlab.alibaba-inc.com:taobao-android/login4android_sdk.git
