@@ -28,7 +28,8 @@
         <proguard.config>proguard.cfg</proguard.config>
         <proguard.outputDirectory>proguard_output</proguard.outputDirectory>
         <proguard.proguardJarPath>env.PROGUARD_HOME</proguard.proguardJarPath>
-	       <securityapk.skip>false</securityapk.skip>
+	<securityapk.skip>false</securityapk.skip>
+	<lint.skip>false</lint.skip>
     </properties>
     <dependencies>
         <dependency>
@@ -606,6 +607,9 @@
                             <jvmArgument>-Xmx2048M</jvmArgument>
                         </jvmArguments>
                     </dex>
+		    <lint>
+    			<skip>${lint.skip}</skip>
+		    </lint>
                 </configuration>
             </plugin>
 	    <plugin>
