@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.taobao.taobao"
           android:installLocation="auto"
-          android:versionCode="98"
-          android:versionName="4.2.2.5" >
+          android:versionCode="99"
+          android:versionName="4.3.0" >
 
     <uses-sdk
             android:minSdkVersion="9"
