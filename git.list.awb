@@ -21,3 +21,5 @@ git@gitlab.alibaba-inc.com:taobao-android/taobao_android_trade.git
 git@gitlab.alibaba-inc.com:taobao-android/taobao_wx.git
 git@gitlab.alibaba-inc.com:taobao-android/big-android.git
 git@gitlab.alibaba-inc.com:lianzhong.wlz/taobao_labs_manager.git -b master
+git@gitlab.alibaba-inc.com:taobao-android/rushpromotionactivity.git
+git@gitlab.alibaba-inc.com:jiajing.qianjj/encode4zxing.git
