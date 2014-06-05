@@ -267,9 +267,9 @@ function do_awb_build_multithread(){
             i=$((i+1))
             if  test -d $BUILD_PATH_AWB/$file ; then
               echo ">>start to install in $file"
-              cp $PROGUARD_CFG $BUILD_PATH_AWB/$file
-              cp $PROGUARD_MAPPING $BUILD_PATH_AWB/$file
-              cd $BUILD_PATH_AWB/$file && ls -l && pwd && mvn install -e -Pawb $MVN_OPT
+              cp $PROGUARD_CFG $BUILD_PATH_AWB/$file/
+              cp $PROGUARD_MAPPING $BUILD_PATH_AWB/$file/
+              cd $BUILD_PATH_AWB/$file && ls -l && pwd && mvn install -e -Pawb $MVN_OPT > $BUILD_PATH_AWB/$file/console.txt
               echo "mvn install -e $MVN_OPT -Pawb"
             fi &
             if [ $((i%THREAD_NUM)) == 0 ]; then
