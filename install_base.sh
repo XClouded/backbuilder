@@ -194,10 +194,10 @@ function do_apklib_build(){
         do
             if  test -d $file ; then
                 echo ">>start to install in $file"
-                cd $BUILD_PATH_APKLIB/$file
+
                 cp $PROGUARD_CFG $BUILD_PATH_APKLIB/$file
                 cp $PROGUARD_MAPPING $BUILD_PATH_APKLIB/$file
-                mvn install -e $MVN_OPT -Papklib
+                cd "$BUILD_PATH_APKLIB/$file" &&  mvn install -e "$MVN_OPT" -Papklib
                 if [ $? -ne 0 ]; then
                       echo "build $file error!"
                       exit $?
@@ -236,10 +236,7 @@ function do_aar_build(){
                 echo ">>start to install in $file"
                 cp $PROGUARD_CFG $BUILD_PATH_AAR/$file
                 cp $PROGUARD_MAPPING $BUILD_PATH_AAR/$file
-                ls -l
-                cd "$BUILD_PATH_AAR/$file"
-                pwd
-                mvn install -e $MVN_OPT -Paar
+                cd "$BUILD_PATH_AAR/$file" && ls-l && pwd && mvn install -e "$MVN_OPT" -Paar
                 if [ $? -ne 0 ]; then
                       echo "build $file error!"
                       exit $?
@@ -263,6 +260,7 @@ function do_awb_build_multithread(){
               #git checkout $BRANCH
             fi
         done < $BUILD_GIT_CONF_FILE_AWB
+        wait
         i=0
         for file in `ls $BUILD_PATH_AWB`
         do
@@ -271,9 +269,9 @@ function do_awb_build_multithread(){
               echo ">>start to install in $file"
               cp $PROGUARD_CFG $BUILD_PATH_AWB/$file
               cp $PROGUARD_MAPPING $BUILD_PATH_AWB/$file
-              `cd "$BUILD_PATH_AWB/$file" && ls -l && pwd && mvn install -e -Pawb "$MVN_OPT" &`
+              cd "$BUILD_PATH_AWB/$file" && ls -l && pwd && mvn install -e -Pawb "$MVN_OPT"
               echo "mvn install -e $MVN_OPT -Pawb"
-            fi
+            fi &
             if [ $((i%THREAD_NUM)) == 0 ]; then
               echo "wait..."
               wait
