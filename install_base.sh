@@ -32,7 +32,7 @@ PROGUARD_BIN="$ROOT_PATH/proguard/proguard5/proguard.jar"
 THREAD_NUM=`cat /proc/cpuinfo | grep "core id" | uniq | wc -l`
 
 if [ $THREAD_NUM -gt 8 ]; then
-  THREAD_NUM=$((THREAD_NUM/2))
+  THREAD_NUM=$((THREAD_NUM/2 + THREAD_NUM/4))
 else
   THREAD_NUM=3
 fi
