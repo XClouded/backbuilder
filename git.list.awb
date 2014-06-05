@@ -4,7 +4,7 @@ git@gitlab.alibaba-inc.com:weapp/android_weapp.git
 git@gitlab.alibaba-inc.com:taobao-android/taobao_android_alipay.git
 git@gitlab.alibaba-inc.com:taobao-android/allspark_android.git
 git@gitlab.alibaba-inc.com:taobao-android/arcticcircleplugin.git
-git@gitlab.alibaba-inc.com:tbw/big-android.git
+git@gitlab.alibaba-inc.com:taobao-android/big-android.git
 git@gitlab.alibaba-inc.com:taobao-android/taobao_android_coupon.git
 git@gitlab.alibaba-inc.com:diandian-android/ddtao.git -b feature_atlas_20140520
 git@gitlab.alibaba-inc.com:taobao-android/taobao_gamecenter.git
