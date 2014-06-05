@@ -4,6 +4,7 @@
 source install_base.sh
 
 build_taobaocompat;
+build_builder_aar
 do_jar_build;
 do_apklib_build;
 build_skt;

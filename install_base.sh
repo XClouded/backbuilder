@@ -75,7 +75,6 @@ function prepare_builder(){
 #  git checkout $BRANCH
   cp "$ROOT_PATH/taobao_builder/proguard.cfg" "$ROOT_PATH/"
   cp "$ROOT_PATH/taobao_builder/install_base.sh" "$ROOT_PATH/"
-  cd $ROOT_PATH/taobao_builder && pwd && mvn install -e $MVN_OPT -Dproguard.skip=true -Paar > $ROOT_PATH/taobao_builder/console.txt
 }
 
 ##定义proguard和mapping文件
@@ -88,8 +87,11 @@ function copy_proguard_file(){
 }
 
 function build_skt(){
-  cd "$ROOT_PATH/taobao_builder"
-  mvn install -e -Pskt $MVN_OPT -Dproguard.skip=true
+  cd "$ROOT_PATH/taobao_builder" && mvn install -e -Pskt $MVN_OPT -Dproguard.skip=true
+}
+
+function build_builder_aar(){
+  cd $ROOT_PATH/taobao_builder && pwd && mvn install -e $MVN_OPT -Dproguard.skip=true -Paar > $ROOT_PATH/taobao_builder/console.txt
 }
 
 
