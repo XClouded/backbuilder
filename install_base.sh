@@ -253,9 +253,7 @@ function do_awb_build_multithread(){
         echo ">>start to build bundle"
         cd $BUILD_PATH_AWB
         git_list=$(cat $BUILD_GIT_CONF_FILE_AWB)
-        i=0
         while read line ; do
-            i=$((i+1))
             param_b=`echo $line | grep  -o ' \-b '`
             if [ $param_b ]; then
               git clone $line
@@ -263,12 +261,8 @@ function do_awb_build_multithread(){
               git clone $line -b $BRANCH
               #cd "$BUILD_PATH_AWB/$file"
               #git checkout $BRANCH
-            fi &
-            if [ $((i%THREAD_NUM)) == 0 ]; then
-              wait
             fi
         done < $BUILD_GIT_CONF_FILE_AWB
-        wait
         i=0
         for file in `ls $BUILD_PATH_AWB`
         do
@@ -277,15 +271,11 @@ function do_awb_build_multithread(){
               echo ">>start to install in $file"
               cp $PROGUARD_CFG $BUILD_PATH_AWB/$file
               cp $PROGUARD_MAPPING $BUILD_PATH_AWB/$file
-              ls -l
-              cd "$BUILD_PATH_AWB/$file"
-              pwd
+              `cd "$BUILD_PATH_AWB/$file" && ls -l && pwd && mvn install -e -Pawb "$MVN_OPT" &`
               echo "mvn install -e $MVN_OPT -Pawb"
-              mvn install -e -Pawb $MVN_OPT
-
-            fi &
+            fi
             if [ $((i%THREAD_NUM)) == 0 ]; then
-              echo "wait"
+              echo "wait..."
               wait
               if [ $? -ne 0 ]; then
                     echo "build $file error!"
@@ -355,12 +345,12 @@ function do_awb_svn(){
       ls -l
       cd "$BUILD_PATH_SVN_AWB/$file"
       pwd
-      mvn install -e $MVN_OPT -Pawb
+      mvn install -e $MVN_OPT -Pawb &
       if [ $? -ne 0 ]; then
             echo "build $file error!"
             exit $?
       fi
-    fi &
+    fi
     if [ $((i%THREAD_NUM)) == 0 ]; then
       wait
     fi
