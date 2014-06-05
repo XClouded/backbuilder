@@ -197,7 +197,7 @@ function do_apklib_build(){
 
                 cp $PROGUARD_CFG $BUILD_PATH_APKLIB/$file
                 cp $PROGUARD_MAPPING $BUILD_PATH_APKLIB/$file
-                cd "$BUILD_PATH_APKLIB/$file" &&  mvn install -e "$MVN_OPT" -Papklib
+                cd "$BUILD_PATH_APKLIB/$file" &&  mvn install -e $MVN_OPT -Papklib
                 if [ $? -ne 0 ]; then
                       echo "build $file error!"
                       exit $?
@@ -269,7 +269,7 @@ function do_awb_build_multithread(){
               echo ">>start to install in $file"
               cp $PROGUARD_CFG $BUILD_PATH_AWB/$file
               cp $PROGUARD_MAPPING $BUILD_PATH_AWB/$file
-              cd "$BUILD_PATH_AWB/$file" && ls -l && pwd && mvn install -e -Pawb "$MVN_OPT"
+              cd $BUILD_PATH_AWB/$file && ls -l && pwd && mvn install -e -Pawb $MVN_OPT
               echo "mvn install -e $MVN_OPT -Pawb"
             fi &
             if [ $((i%THREAD_NUM)) == 0 ]; then
