@@ -75,6 +75,7 @@ function prepare_builder(){
 #  git checkout $BRANCH
   cp "$ROOT_PATH/taobao_builder/proguard.cfg" "$ROOT_PATH/"
   cp "$ROOT_PATH/taobao_builder/install_base.sh" "$ROOT_PATH/"
+  cd $ROOT_PATH/taobao_builder && pwd && mvn install -e $MVN_OPT -Dproguard.skip=true -Paar > $ROOT_PATH/taobao_builder/console.txt
 }
 
 ##定义proguard和mapping文件
@@ -197,7 +198,7 @@ function do_apklib_build(){
 
                 cp $PROGUARD_CFG $BUILD_PATH_APKLIB/$file
                 cp $PROGUARD_MAPPING $BUILD_PATH_APKLIB/$file
-                cd "$BUILD_PATH_APKLIB/$file" &&  mvn install -e $MVN_OPT -Papklib
+                cd "$BUILD_PATH_APKLIB/$file" &&  mvn install -e $MVN_OPT -Papklib > $BUILD_PATH_APKLIB/$file/console.txt
                 if [ $? -ne 0 ]; then
                       echo "build $file error!"
                       exit $?
@@ -234,9 +235,9 @@ function do_aar_build(){
         do
             if  test -d $BUILD_PATH_AAR/$file ; then
                 echo ">>start to install in $file"
-                cp $PROGUARD_CFG $BUILD_PATH_AAR/$file
-                cp $PROGUARD_MAPPING $BUILD_PATH_AAR/$file
-                cd "$BUILD_PATH_AAR/$file" && ls-l && pwd && mvn install -e "$MVN_OPT" -Paar
+                cp $PROGUARD_CFG $BUILD_PATH_AAR/$file/
+                cp $PROGUARD_MAPPING $BUILD_PATH_AAR/$file/
+                cd "$BUILD_PATH_AAR/$file" && ls-l && pwd && mvn install -e "$MVN_OPT" -Paar > $BUILD_PATH_AAR/$file/console.txt
                 if [ $? -ne 0 ]; then
                       echo "build $file error!"
                       exit $?
