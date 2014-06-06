@@ -7,7 +7,7 @@ no_softwaredownload::1::是否去掉软件及插件下载0(否)1(是)
 no_coolnavigation::1::是否去掉酷站导航0(否)1(是)
 detail_pic_num::4::商品详情图片的个数
 desktop_shortcut::1::是否打开桌面快捷方式0(否)1(是)
-traffic_prompt::1::是否提示资费提醒0(否)1(是)
+traffic_prompt::0::是否提示资费提醒0(否)1(是)
 backgroud_service_on::1::是否打开后台服务0(否)1(是)
 taobao_skip_wap_on::1::点击淘应用时，是否跳转wap0(否)1(是)
 isAppCenterSupported::0::点击显示淘应用图标0(否)1(是)
