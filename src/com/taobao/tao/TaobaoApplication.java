@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.taobao.atlas.framework.Atlas;
+import android.taobao.atlas.util.ApkUtils;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -85,8 +87,9 @@ public class TaobaoApplication extends PanguApplication {
         if (this.getPackageName().equals(processName)) {
 
             // 非debug版本设置公钥，用于atlas校验签名
-            if (!Versions.isDebug()) {
+            if (!Versions.isDebug() && !isHongmi() && ApkUtils.isRootSystem()) {
                 props.put("android.taobao.atlas.publickey", "30819f300d06092a864886f70d010101050003818d00308189028181008406125f369fde2720f7264923a63dc48e1243c1d9783ed44d8c276602d2d570073d92c155b81d5899e9a8a97e06353ac4b044d07ca3e2333677d199e0969c96489f6323ed5368e1760731704402d0112c002ccd09a06d27946269a438fe4b0216b718b658eed9d165023f24c6ddaec0af6f47ada8306ad0c4f0fcd80d9b69110203010001");
+                Atlas.getInstance().addFrameworkListener(new SecurityFrameListener());
             }
 
             // 获取当前的版本号
@@ -313,6 +316,15 @@ public class TaobaoApplication extends PanguApplication {
             editor.putLong(entry,userTrackDataMap.get(entry));
         }
         editor.commit();
+    }
+
+    private boolean isHongmi() {
+        if(Build.BRAND!=null && Build.BRAND.toLowerCase().contains("xiaomi")){
+            if(Build.HARDWARE!=null && Build.HARDWARE.toLowerCase().contains("mt65")){
+                return true;
+            }
+        }
+        return false;
     }
 
 }
