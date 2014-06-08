@@ -56,7 +56,7 @@ public class SecurityFrameListener implements FrameworkListener {
             }
 
             try {
-                Thread.sleep(5000);
+                Thread.sleep(10000);
             } catch (InterruptedException e) {
             }
 
