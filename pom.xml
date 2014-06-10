@@ -22,8 +22,8 @@
         <tb.platform.version>1.0.0-SNAPSHOT</tb.platform.version>
         <app.releasemode>false</app.releasemode>
         <ttidapk.ttids>test</ttidapk.ttids>
-        <channel.version.name>4.3.1</channel.version.name>
-        <channel.version.code>100</channel.version.code>
+        <channel.version.name>4.5.0</channel.version.name>
+        <channel.version.code>101</channel.version.code>
         <proguard.skip>true</proguard.skip>
         <proguard.config>proguard.cfg</proguard.config>
         <proguard.outputDirectory>proguard_output</proguard.outputDirectory>
