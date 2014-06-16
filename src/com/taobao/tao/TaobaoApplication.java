@@ -6,6 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Environment;
 import android.taobao.atlas.framework.Atlas;
 import android.taobao.atlas.util.ApkUtils;
 import android.text.TextUtils;
@@ -16,6 +17,7 @@ import com.taobao.android.lifecycle.PanguApplication;
 import com.taobao.android.task.Coordinator;
 import com.taobao.android.task.Coordinator.TaggedRunnable;
 
+import com.taobao.taobao.R;
 import org.osgi.framework.Bundle;
 
 import java.io.File;
@@ -44,17 +46,25 @@ public class TaobaoApplication extends PanguApplication {
     final static String[] AUTOSTART_PACKAGES = new String[]{"com.taobao.mytaobao", "com.taobao.wangxin",
             "com.taobao.passivelocation", "com.taobao.allspark"};
 
+    private final String EXTERNAL_DIR_FOR_DEUBG_AWB = Environment.getExternalStorageDirectory().getAbsolutePath()+"/awb-debug";
+
     //doesn't delete used for online monitor
     static long START = 0;
     
     private Map<String,Long> userTrackDataMap = new HashMap<String,Long>();
+
+    private ArrayList<String> awbFilePathForDebug = new ArrayList<String>();
+    /**
+     * 是否支持外部awb
+     */
+    private boolean awbDebug = false;
     
     @Override
     public void onCreate() {
         super.onCreate();
 
         START = System.currentTimeMillis();
-
+        awbDebug = this.getResources().getString(R.string.awb_debug).equals("1") ? true : false;
         try {
             Atlas.getInstance().init(this);
         } catch (Exception e) {
@@ -77,6 +87,25 @@ public class TaobaoApplication extends PanguApplication {
         Properties props = new Properties();
         props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
         props.put("android.taobao.atlas.debug.bundles", "true");
+
+        /*********************↓ ↓ ↓ ↓ For awb debug ↓ ↓ ↓ ↓***************************/
+        boolean supportExternalAwbDebug = false;
+        if(awbDebug){
+            File dir = new File(EXTERNAL_DIR_FOR_DEUBG_AWB);
+            if(dir.isDirectory()){
+                //StringBuffer filesStr = new StringBuffer();
+                File[] files = dir.listFiles();
+                for(File file : files){
+                    if(file.isFile() && file.getName().endsWith(".so")){
+                        awbFilePathForDebug.add(file.getAbsolutePath());
+                        Log.d(TAG,"found external awb "+file.getAbsolutePath());
+                        supportExternalAwbDebug = true;
+                        continue;
+                    }
+                }
+            }
+        }
+        /*********************↑ ↑ ↑ ↑ For awb debug ↑ ↑ ↑ ↑***************************/
 
         // 安装程序是否已经升级了
         boolean updated = false;
@@ -223,6 +252,31 @@ public class TaobaoApplication extends PanguApplication {
     }
 
     private boolean processLibsBundle(ZipFile zipFile, String entryName) {
+        Log.d(TAG,"processLibsBundle entryName " + entryName);
+        Log.d(TAG,"processLibsBundle  file_entryName" + getFileNameFromEntryName(entryName));
+
+        /****************For awb debug *********************/
+        if(awbDebug && awbFilePathForDebug.size()>0){
+            for(String filePath : awbFilePathForDebug){
+                Log.d(TAG,"processLibsBundle filePath " + filePath);
+                if(filePath.contains(getFileNameFromEntryName(entryName).substring(3))){
+                    File soFile = new File(filePath);
+                    String fileName = soFile.getName();
+                    String packageName = getBaseFileName(fileName).replace("_",".");
+                    Bundle bundle = Atlas.getInstance().getBundle(packageName);
+                    if(bundle==null){
+                        try {
+                            bundle = Atlas.getInstance().installBundle(packageName, soFile);
+                        }catch(Throwable e){
+                            Log.e(TAG, "Could not install external bundle.", e);
+                        }
+                        Log.d(TAG, "Succeed to install external bundle " + packageName);
+                    }
+                    return true;
+                }
+            }
+        }
+        /****************For awb debug *********************/
 
         String fileName = getFileNameFromEntryName(entryName);
         String packageName = getPackageNameFromEntryName(entryName);

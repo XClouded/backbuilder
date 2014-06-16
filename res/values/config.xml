@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- awb 调试开关，不要随意更改，以免引起线上问题，调试插件打包时会自动修改 -->
+    <string name="awb_debug">0</string>
+</resources>
