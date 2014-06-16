@@ -251,6 +251,19 @@ public class TaobaoApplication extends PanguApplication {
         }
     }
 
+    /**
+     * 获取文件名"."前面的部分
+     * @param fileName
+     * @return
+     */
+    private String getBaseFileName(String fileName){
+        int pos = fileName.lastIndexOf(".");
+        if (pos > 0) {
+            fileName = fileName.substring(0, pos);
+        }
+        return fileName;
+    }
+
     private boolean processLibsBundle(ZipFile zipFile, String entryName) {
         Log.d(TAG,"processLibsBundle entryName " + entryName);
         Log.d(TAG,"processLibsBundle  file_entryName" + getFileNameFromEntryName(entryName));
