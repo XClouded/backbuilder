@@ -357,7 +357,6 @@ public class TaobaoApplication extends PanguApplication {
     private List<String> getBundleEntryNames(ZipFile zipFile, String prefix, String suffix) {
         List<String> entryNames = new ArrayList<String>();
         try {
-            zipFile = new ZipFile(this.getApplicationInfo().sourceDir);
             Enumeration<? extends ZipEntry> entries = zipFile.entries();
             while (entries.hasMoreElements()) {
                 ZipEntry zipEntry = entries.nextElement();
@@ -366,7 +365,7 @@ public class TaobaoApplication extends PanguApplication {
                     entryNames.add(entryName);
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, "Exception while get bundles in assets or lib", e);
         }
         return entryNames;
