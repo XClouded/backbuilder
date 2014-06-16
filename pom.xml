@@ -485,7 +485,7 @@
         <dependency>
             <groupId>com.taobao.android</groupId>
             <artifactId>uikit_extends</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.1.0-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>*</groupId>
@@ -497,7 +497,7 @@
         <dependency>
             <groupId>com.taobao.android</groupId>
             <artifactId>uikit_core</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.1.0-SNAPSHOT</version>
             <type>apklib</type>
         </dependency>
         <dependency>
