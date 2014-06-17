@@ -77,9 +77,6 @@ public class TaobaoApplication extends PanguApplication {
             Field sApplication = Globals.class.getDeclaredField("sApplication");
             sApplication.setAccessible(true);
             sApplication.set(null, this);
-            Field sClassLoader = Globals.class.getDeclaredField("sClassLoader");
-            sClassLoader.setAccessible(true);
-            sClassLoader.set(null, Atlas.getInstance().getDelegateClassLoader());
         } catch (Exception e) {
             Log.e(TAG, "Could not set Globals.sApplication & Globals.sClassLoader !!!", e);
         }
@@ -194,15 +191,6 @@ public class TaobaoApplication extends PanguApplication {
                             }
                         }
                     }
-
-                    // 所有的Bundle都安装完成后尝试加载一个不存在的类会使所有的bundle完成dexopt
-                    // 最好优化成按需要完成dexopt?
-                    try {
-                        Thread.sleep(1000);//dexopt很耗时，等待1s以免ANR
-                        Atlas.getInstance().getDelegateClassLoader().loadClass("android.taobao.atlas.Dummy");
-                    } catch (Exception e) {
-                    }
-
 
                     System.setProperty("BUNDLES_INSTALLED", "true");
 
