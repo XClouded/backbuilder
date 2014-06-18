@@ -3,7 +3,7 @@
           package="com.taobao.taobao"
           android:installLocation="auto"
           android:versionCode="101"
-          android:versionName="4.5.0" >
+          android:versionName="4.5.0.1" >
 
     <uses-sdk
             android:minSdkVersion="9"
