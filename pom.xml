@@ -330,7 +330,7 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- dependency>
+        <dependency>
             <groupId>com.taobao.search</groupId>
             <artifactId>tbsearch_android</artifactId>
             <type>awb</type>
@@ -341,7 +341,7 @@
                 </exclusion>
             </exclusions>
             <version>feature_20140520-SNAPSHOT</version>
-        </dependency -->
+        </dependency>
 
         <dependency>
             <groupId>com.taobao.android</groupId>
