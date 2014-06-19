@@ -358,7 +358,7 @@
         </dependency>
 
 
-      <!--  <dependency>
+      <dependency>
             <groupId>com.taobao.android</groupId>
             <artifactId>cashdesk</artifactId>
             <version>1.0.0-SNAPSHOT</version>
@@ -369,7 +369,7 @@
                     <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>-->
+        </dependency>
 	<dependency>
   <groupId>com.taobao.android</groupId>
   <artifactId>antidecompile</artifactId>
