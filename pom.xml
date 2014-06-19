@@ -76,7 +76,7 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency -->
 
-        <dependency>
+        <!-- dependency>
             <groupId>com.taobao.plugin.ju</groupId>
             <artifactId>juplugin</artifactId>
             <type>awb</type>
@@ -87,7 +87,7 @@
                 </exclusion>
             </exclusions>
             <version>1.0.0-SNAPSHOT</version>
-        </dependency>
+        </dependency -->
 <!--
         <dependency>
             <groupId>com.taobao.android</groupId>
