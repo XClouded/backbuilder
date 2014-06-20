@@ -38,7 +38,7 @@
             <version>4.3.0</version>
             <scope>provided</scope>
         </dependency>
-	<!--<dependency>
+	<dependency>
     		<groupId>com.etao.feimagesearch</groupId>
     		<artifactId>feimagesearch_android</artifactId>
     		<version>0.0.1-SNAPSHOT</version>
@@ -49,7 +49,7 @@
                     <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
-	</dependency>-->
+	</dependency>
         <dependency>
             <groupId>com.taobao.android</groupId>
             <artifactId>big</artifactId>
@@ -100,7 +100,7 @@
             </exclusions>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
-<!--
+
         <dependency>
             <groupId>com.taobao.android</groupId>
             <artifactId>tongxue_android</artifactId>
@@ -114,7 +114,6 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
--->
         <dependency>
             <groupId>com.taobao.android</groupId>
             <artifactId>taobao_android_encode4zxing</artifactId>
