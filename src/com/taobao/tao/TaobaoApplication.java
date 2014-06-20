@@ -1,25 +1,5 @@
 package com.taobao.tao;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.os.Environment;
-import android.taobao.atlas.framework.Atlas;
-import android.taobao.atlas.util.ApkUtils;
-import android.text.TextUtils;
-import android.util.Log;
-
-import com.taobao.android.base.Versions;
-import com.taobao.android.lifecycle.PanguApplication;
-import com.taobao.android.task.Coordinator;
-import com.taobao.android.task.Coordinator.TaggedRunnable;
-
-import com.taobao.taobao.R;
-import org.osgi.framework.Bundle;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +13,27 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.osgi.framework.Bundle;
+
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Environment;
+import android.taobao.atlas.framework.Atlas;
+import android.taobao.atlas.framework.BundleImpl;
+import android.taobao.atlas.util.ApkUtils;
+import android.text.TextUtils;
+import android.util.Log;
+
+import com.taobao.android.base.Versions;
+import com.taobao.android.lifecycle.PanguApplication;
+import com.taobao.android.task.Coordinator;
+import com.taobao.android.task.Coordinator.TaggedRunnable;
+import com.taobao.taobao.R;
+
 public class TaobaoApplication extends PanguApplication {
 
     final static String   TAG                = "TaobaoApplication";
@@ -40,16 +41,19 @@ public class TaobaoApplication extends PanguApplication {
     /**
      * 指定Bundle包的处理顺序；程序首先按照这里的顺序来处理Bundle包，然后再乱序处理剩下的Bundle包。
      */
-    final static String[] SORTED_PACKAGES = new String[]{"com.taobao.browser", "com.taobao.passivelocation",
+    final static String[] SORTED_PACKAGES = new String[]{"com.taobao.login4android", "com.taobao.passivelocation",
             "com.taobao.mytaobao", "com.taobao.wangxin", "com.taobao.shop"};
 
-    final static String[] AUTOSTART_PACKAGES = new String[]{"com.taobao.mytaobao", "com.taobao.wangxin",
+    final static String[] AUTOSTART_PACKAGES = new String[]{"com.taobao.login4android", "com.taobao.mytaobao", "com.taobao.wangxin",
             "com.taobao.passivelocation", "com.taobao.allspark"};
-
+    
+    final static String[] LAZY_PACKAGES = new String[]{//"com.tmall.wireless.plugin", "com.taobao.android.ju", "com.taobao.mobile.dipei",
+		"com.taobao.android.gamecenter", "com.taobao.taobao.map", "com.taobao.taobao.zxing", "com.taobao.android.big", "com.taobao.tongxue", "com.taobao.labs"};
+    
     private final String EXTERNAL_DIR_FOR_DEUBG_AWB = Environment.getExternalStorageDirectory().getAbsolutePath()+"/awb-debug";
 
     //doesn't delete used for online monitor
-    static long START = 0;
+    private static long START = 0;
     
     private Map<String,Long> userTrackDataMap = new HashMap<String,Long>();
 
@@ -64,6 +68,7 @@ public class TaobaoApplication extends PanguApplication {
         super.onCreate();
 
         START = System.currentTimeMillis();
+        
         awbDebug = this.getResources().getString(R.string.awb_debug).equals("1") ? true : false;
         try {
             Atlas.getInstance().init(this);
@@ -77,6 +82,9 @@ public class TaobaoApplication extends PanguApplication {
             Field sApplication = Globals.class.getDeclaredField("sApplication");
             sApplication.setAccessible(true);
             sApplication.set(null, this);
+            Field sClassLoader = Globals.class.getDeclaredField("sClassLoader");
+            sClassLoader.setAccessible(true);
+            sClassLoader.set(null, Atlas.getInstance().getDelegateClassLoader());
         } catch (Exception e) {
             Log.e(TAG, "Could not set Globals.sApplication & Globals.sClassLoader !!!", e);
         }
@@ -191,16 +199,36 @@ public class TaobaoApplication extends PanguApplication {
                             }
                         }
                     }
-
+                    
+                    // 所有的Bundle都安装完成后尝试加载一个不存在的类会使所有的bundle完成dexopt
+                    for (Bundle bundle : Atlas.getInstance().getBundles()) {
+                        if (bundle != null && !contains(LAZY_PACKAGES, bundle.getLocation())) {
+                        	try {
+                        		((BundleImpl) bundle).getClassLoader().loadClass("android.taobao.atlas.dummy");
+                            } catch (Exception e) {
+                            }
+                        }
+                    }
+                    
                     System.setProperty("BUNDLES_INSTALLED", "true");
 
                     Log.d(TAG, "sendBroadcast: com.taobao.taobao.action.BUNDLES_INSTALLED");
                     TaobaoApplication.this.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
-
+                    
                     long updateTime = System.currentTimeMillis() - start;
                     userTrackDataMap.put("atlas_update_time", updateTime);
-                    Log.d(TAG, "Updated bundles in process " + processName + " " + (updateTime)
-                               + " ms");
+                    Log.d(TAG, "Updated bundles in process " + processName + " " + (updateTime) + " ms");
+                    
+                    for (Bundle bundle : Atlas.getInstance().getBundles()) {
+                    	if (bundle != null && contains(LAZY_PACKAGES, bundle.getLocation())) {
+                        	try {
+                        		Thread.sleep(200);
+                        		((BundleImpl) bundle).getClassLoader().loadClass("android.taobao.atlas.dummy");
+                            } catch (Exception e) {
+                            }
+                        }
+                    }
+                    
                 }
             });
         } else if (!updated) {
