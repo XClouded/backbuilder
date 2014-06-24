@@ -163,6 +163,7 @@ public class TaobaoApplication extends PanguApplication {
 
         long startupTime = System.currentTimeMillis() - START;
         userTrackDataMap.put("atlas_startup_time", startupTime);
+        saveUserTrackData();
         Log.d(TAG, "Atlas framework started in process " + processName + " " + (startupTime)
                    + " ms");
 
@@ -238,7 +239,7 @@ public class TaobaoApplication extends PanguApplication {
                 sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
             }
         }
-        saveUserTrackData();
+        
 
     }
 
