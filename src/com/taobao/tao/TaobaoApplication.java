@@ -217,6 +217,7 @@ public class TaobaoApplication extends PanguApplication {
                     
                     long updateTime = System.currentTimeMillis() - start;
                     userTrackDataMap.put("atlas_update_time", updateTime);
+                    saveUserTrackData();
                     Log.d(TAG, "Updated bundles in process " + processName + " " + (updateTime) + " ms");
                     
                     for (Bundle bundle : Atlas.getInstance().getBundles()) {
