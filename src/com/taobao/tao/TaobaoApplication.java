@@ -419,15 +419,15 @@ public class TaobaoApplication extends PanguApplication {
 
     /**************ATLAS覆盖父类方法***************/
     
-    ContextImplHook mContextImplHook = new ContextImplHook(getBaseContext(), null);
-    
     @Override
     public boolean bindService(Intent service, ServiceConnection conn, int flags) {
+    	ContextImplHook mContextImplHook = new ContextImplHook(getBaseContext(), null);
     	return mContextImplHook.bindService(service, conn, flags);
     }
     
     @Override
     public ComponentName startService(Intent service) {
+    	ContextImplHook mContextImplHook = new ContextImplHook(getBaseContext(), null);
     	return mContextImplHook.startService(service);
     }
 }
