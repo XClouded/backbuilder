@@ -47,11 +47,24 @@ public class TaobaoApplication extends PanguApplication {
     final static String[] SORTED_PACKAGES = new String[]{"com.taobao.login4android", "com.taobao.passivelocation",
             "com.taobao.mytaobao", "com.taobao.wangxin", "com.taobao.shop"};
 
+    /**
+     * 自动启动的bundle
+     */
     final static String[] AUTOSTART_PACKAGES = new String[]{"com.taobao.login4android", "com.taobao.mytaobao", "com.taobao.wangxin",
             "com.taobao.passivelocation", "com.taobao.allspark"};
     
-    final static String[] LAZY_PACKAGES = new String[]{//"com.tmall.wireless.plugin", "com.taobao.android.ju", "com.taobao.mobile.dipei",
-		"com.taobao.android.gamecenter", "com.taobao.taobao.map", "com.taobao.taobao.zxing", "com.taobao.android.big", "com.taobao.tongxue", "com.taobao.labs"};
+    /**
+     * 延迟dexopt的bundle
+     */
+    final static String[] DELAYED_PACKAGES = new String[]{"com.tmall.wireless.plugin", "com.taobao.mobile.dipei", "com.taobao.android.ju",
+		"com.taobao.taobao.alipay", "com.taobao.android.big"};
+    
+    /**
+     * 按需dexopt的bundle，这些bundle一般不对外提供服务，并且包比较小，这样可以保证dexopt的速度
+     */
+    final static String[] LAZY_PACKAGES = new String[]{"com.taobao.nearby", "com.taobao.coupon", "com.taobao.plugin.arcticcircleplugin", "com.taobao.rushpromotion", 
+    	"com.taobao.taobao.map", "com.taobao.android.gamecenter", "com.taobao.tongxue", "com.taobao.taobao.zxing", "com.taobao.labs"};
+    
     
     private final String EXTERNAL_DIR_FOR_DEUBG_AWB = Environment.getExternalStorageDirectory().getAbsolutePath()+"/awb-debug";
 
@@ -204,13 +217,9 @@ public class TaobaoApplication extends PanguApplication {
                         }
                     }
                     
-                    // 所有的Bundle都安装完成后尝试加载一个不存在的类会使所有的bundle完成dexopt
                     for (Bundle bundle : Atlas.getInstance().getBundles()) {
-                        if (bundle != null && !contains(LAZY_PACKAGES, bundle.getLocation())) {
-                        	try {
-                        		((BundleImpl) bundle).getClassLoader().loadClass("android.taobao.atlas.dummy");
-                            } catch (Exception e) {
-                            }
+                        if (bundle != null && !contains(DELAYED_PACKAGES, bundle.getLocation()) && !contains(LAZY_PACKAGES, bundle.getLocation())) {
+                        	((BundleImpl) bundle).optDexFile();
                         }
                     }
                     
@@ -225,7 +234,7 @@ public class TaobaoApplication extends PanguApplication {
                     Log.d(TAG, "Updated bundles in process " + processName + " " + (updateTime) + " ms");
                     
                     for (Bundle bundle : Atlas.getInstance().getBundles()) {
-                    	if (bundle != null && contains(LAZY_PACKAGES, bundle.getLocation())) {
+                    	if (bundle != null && contains(DELAYED_PACKAGES, bundle.getLocation())) {
                         	try {
                         		Thread.sleep(200);
                         		((BundleImpl) bundle).getClassLoader().loadClass("android.taobao.atlas.dummy");
