@@ -1,22 +1,20 @@
 package com.taobao.tao;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.taobao.atlas.framework.Atlas;
-import android.taobao.atlas.framework.Framework;
 import android.taobao.atlas.runtime.RuntimeVariables;
 import android.taobao.atlas.util.ApkUtils;
 import android.taobao.atlas.util.StringUtils;
 import android.util.Log;
 import android.widget.Toast;
-
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkListener;
-
 import java.io.File;
 import java.util.List;
 
@@ -25,7 +23,8 @@ public class SecurityFrameListener implements FrameworkListener {
 
     final static String TAG = "SecurityFrameListener";
 
-    @Override
+    @SuppressLint("NewApi")
+	@Override
     public void frameworkEvent(FrameworkEvent event) {
         switch (event.getType()) {
             case 0:/* STARTING */
@@ -88,7 +87,7 @@ public class SecurityFrameListener implements FrameworkListener {
         protected void onPostExecute(Boolean result) {
             if (result != null && !result.booleanValue()) {
                 Toast.makeText(RuntimeVariables.androidApplication, "检测到安装文件被损坏，请卸载后重新安装！", Toast.LENGTH_LONG).show();
-                //shutdownProcessHandler.sendEmptyMessageDelayed(0, 5000);
+                shutdownProcessHandler.sendEmptyMessageDelayed(0, 5000);
             }
         }
 
@@ -102,9 +101,9 @@ public class SecurityFrameListener implements FrameworkListener {
     }
 
 
-    //ShutdownProcessHandler shutdownProcessHandler = new ShutdownProcessHandler();
+    ShutdownProcessHandler shutdownProcessHandler = new ShutdownProcessHandler();
 
-    public class ShutdownProcessHandler extends Handler {
+    public static class ShutdownProcessHandler extends Handler {
 
         public void handleMessage(Message msg) {
             android.os.Process.killProcess(android.os.Process.myPid());

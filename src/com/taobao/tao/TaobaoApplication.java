@@ -15,7 +15,9 @@ import java.util.zip.ZipFile;
 
 import org.osgi.framework.Bundle;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
@@ -24,6 +26,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.taobao.atlas.framework.Atlas;
 import android.taobao.atlas.framework.BundleImpl;
+import android.taobao.atlas.runtime.ContextImplHook;
 import android.taobao.atlas.util.ApkUtils;
 import android.text.TextUtils;
 import android.util.Log;
@@ -414,4 +417,17 @@ public class TaobaoApplication extends PanguApplication {
         return false;
     }
 
+    /**************ATLAS覆盖父类方法***************/
+    
+    ContextImplHook mContextImplHook = new ContextImplHook(getBaseContext(), null);
+    
+    @Override
+    public boolean bindService(Intent service, ServiceConnection conn, int flags) {
+    	return mContextImplHook.bindService(service, conn, flags);
+    }
+    
+    @Override
+    public ComponentName startService(Intent service) {
+    	return mContextImplHook.startService(service);
+    }
 }
