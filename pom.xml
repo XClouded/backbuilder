@@ -499,13 +499,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- 统一SDK接入依赖 start -->
-        <dependency>
-            <groupId>com.ali.user.sdk</groupId>
-            <artifactId>aliusersdkui</artifactId>
-            <version>1.0.0_aliuser-SNAPSHOT</version>
-            <type>apklib</type>
-        </dependency>
         <dependency>
             <groupId>com.taobao.android</groupId>
             <artifactId>taobao_android_homepage</artifactId>
