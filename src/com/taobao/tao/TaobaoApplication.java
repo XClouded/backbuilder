@@ -217,6 +217,8 @@ public class TaobaoApplication extends PanguApplication {
                         }
                     }
                     
+                    Log.d(TAG, "Install bundles in process " + processName + " " + (System.currentTimeMillis() - start) + " ms");
+                    
                     for (Bundle bundle : Atlas.getInstance().getBundles()) {
                         if (bundle != null && !contains(DELAYED_PACKAGES, bundle.getLocation()) && !contains(LAZY_PACKAGES, bundle.getLocation())) {
                         	((BundleImpl) bundle).optDexFile();
@@ -231,13 +233,13 @@ public class TaobaoApplication extends PanguApplication {
                     long updateTime = System.currentTimeMillis() - start;
                     userTrackDataMap.put("atlas_update_time", updateTime);
                     saveUserTrackData();
-                    Log.d(TAG, "Updated bundles in process " + processName + " " + (updateTime) + " ms");
+                    Log.d(TAG, "Install & dexopt bundles in process " + processName + " " + (updateTime) + " ms");
                     
                     for (Bundle bundle : Atlas.getInstance().getBundles()) {
                     	if (bundle != null && contains(DELAYED_PACKAGES, bundle.getLocation())) {
                         	try {
                         		Thread.sleep(200);
-                        		((BundleImpl) bundle).getClassLoader().loadClass("android.taobao.atlas.dummy");
+                        		((BundleImpl) bundle).optDexFile();
                             } catch (Exception e) {
                             }
                         }
