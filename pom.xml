@@ -88,7 +88,7 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         
-       <dependency>
+       <!--<dependency>
             <groupId>com.taobao.android</groupId>
             <artifactId>minipay</artifactId>
             <type>awb</type>
@@ -100,7 +100,7 @@
             </exclusions>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>       
-        
+        -->
         <dependency>
             <groupId>com.taobao.plugin.ju</groupId>
             <artifactId>juplugin</artifactId>
