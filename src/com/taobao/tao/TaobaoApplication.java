@@ -62,7 +62,7 @@ public class TaobaoApplication extends PanguApplication {
     /**
      * 按需dexopt的bundle，这些bundle一般不对外提供服务，并且包比较小，这样可以保证dexopt的速度
      */
-    final static String[] LAZY_PACKAGES = new String[]{"com.taobao.search", "com.taobao.shop", "com.taobao.weapp", "com.taobao.taobao.pluginservice", 
+    final static String[] LAZY_PACKAGES = new String[]{"com.taobao.search", "com.taobao.shop", "com.taobao.weapp", 
     	"com.taobao.nearby", "com.taobao.coupon", "com.taobao.plugin.arcticcircleplugin", "com.taobao.rushpromotion", 
     	"com.taobao.taobao.map", "com.taobao.android.gamecenter", "com.taobao.tongxue", "com.taobao.taobao.zxing", "com.taobao.labs"};
     
