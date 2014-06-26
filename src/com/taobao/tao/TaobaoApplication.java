@@ -53,18 +53,24 @@ public class TaobaoApplication extends PanguApplication {
     final static String[] AUTOSTART_PACKAGES = new String[]{"com.taobao.login4android", "com.taobao.mytaobao", "com.taobao.wangxin",
             "com.taobao.passivelocation", "com.taobao.allspark"};
     
-    /**
-     * 延迟dexopt的bundle
-     */
-    final static String[] DELAYED_PACKAGES = new String[]{"com.tmall.wireless.plugin", "com.taobao.mobile.dipei", "com.taobao.android.ju",
-		"com.taobao.taobao.alipay", "com.taobao.android.big"};
-    
-    /**
-     * 按需dexopt的bundle，这些bundle一般不对外提供服务，并且包比较小，这样可以保证dexopt的速度
-     */
-    final static String[] LAZY_PACKAGES = new String[]{"com.taobao.search", "com.taobao.shop", "com.taobao.weapp", 
+//    /**
+//     * 延迟dexopt的bundle
+//     */
+//    final static String[] DELAYED_PACKAGES = new String[]{"com.tmall.wireless.plugin", "com.taobao.mobile.dipei", "com.taobao.android.ju",
+//		"com.taobao.taobao.alipay", "com.taobao.android.big"};
+
+    final static String[] DELAYED_PACKAGES = new String[]{"com.taobao.search", "com.taobao.shop", "com.taobao.weapp", 
     	"com.taobao.nearby", "com.taobao.coupon", "com.taobao.plugin.arcticcircleplugin", "com.taobao.rushpromotion", 
     	"com.taobao.taobao.map", "com.taobao.android.gamecenter", "com.taobao.tongxue", "com.taobao.taobao.zxing", "com.taobao.labs"};
+    
+//    /**
+//     * 按需dexopt的bundle，这些bundle一般不对外提供服务，并且包比较小，这样可以保证dexopt的速度
+//     */
+//    final static String[] LAZY_PACKAGES = new String[]{"com.taobao.search", "com.taobao.shop", "com.taobao.weapp", 
+//    	"com.taobao.nearby", "com.taobao.coupon", "com.taobao.plugin.arcticcircleplugin", "com.taobao.rushpromotion", 
+//    	"com.taobao.taobao.map", "com.taobao.android.gamecenter", "com.taobao.tongxue", "com.taobao.taobao.zxing", "com.taobao.labs"};
+    
+    final static String[] LAZY_PACKAGES = new String[]{};
     
     
     private final String EXTERNAL_DIR_FOR_DEUBG_AWB = Environment.getExternalStorageDirectory().getAbsolutePath()+"/awb-debug";
