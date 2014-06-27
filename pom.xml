@@ -225,7 +225,7 @@
             </exclusions>
             <type>awb</type>
         </dependency>
-        <!--<dependency>
+        <dependency>
             <groupId>com.taobao.android</groupId>
             <artifactId>taobao_passivelocation</artifactId>
             <type>awb</type>
@@ -236,7 +236,7 @@
                 </exclusion>
             </exclusions>
             <version>1.0.0-SNAPSHOT</version>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>com.taobao.android</groupId>
             <artifactId>tbnearby_android</artifactId>
@@ -314,7 +314,7 @@
             </exclusions>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
-        <!--<dependency>
+        <dependency>
             <groupId>com.taobao.android</groupId>
             <artifactId>taobao_allspark</artifactId>
             <type>awb</type>
@@ -325,7 +325,7 @@
                 </exclusion>
             </exclusions>
             <version>1.0.0-SNAPSHOT</version>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>com.taobao.android</groupId>
             <artifactId>taobao_android_rushpromotion</artifactId>
