@@ -4,5 +4,6 @@ bin
 build-project
 taobaocompat
 dev-adaptation
-target
+/target
 build-repo
+/.idea
