@@ -450,8 +450,8 @@
                     <artifactId>taobaobuilder</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>com.alipay.android.app</groupId>
-                    <artifactId>minipaysdk</artifactId>
+                    <groupId>com.taobao.android</groupId>
+                    <artifactId>minipay</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.json</groupId>
@@ -500,8 +500,8 @@
                     <artifactId>taobaobuilder</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>com.alipay.android.app</groupId>
-                    <artifactId>minipaysdk</artifactId>
+                    <groupId>com.taobao.android</groupId>
+                    <artifactId>minipay</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.json</groupId>
