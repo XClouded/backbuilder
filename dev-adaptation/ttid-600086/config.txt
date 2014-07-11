@@ -1,3 +1,0 @@
-no_softwaredownload::1::是否去掉软件及插件下载0(否)1(是)
-no_coolnavigation::1::是否去掉酷站导航0(否)1(是)
-isZhifubaoUpgradeSupported::0::是否支持支付宝控件升级0(否)1(是)

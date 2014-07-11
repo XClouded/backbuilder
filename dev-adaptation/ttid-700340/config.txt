@@ -1,2 +1,0 @@
-backgroud_service_on::0::是否打开后台服务0(否)1(是)
-packetInstallLocation::internalOnly::打包时包的安装地点internalOnly/preferExternal/auto

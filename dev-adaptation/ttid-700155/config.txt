@@ -1,1 +1,0 @@
-isLotterySupported::0::是否需要彩票0(否)1(是)

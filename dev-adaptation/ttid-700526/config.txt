@@ -1,2 +1,0 @@
-backgroud_service_on::0::是否打开后台服务0(否)1(是)
-isNormalDialogStyle::0::对话框风格是否正常    0（左边确定，右边取消）；1（左边取消，右边确定）

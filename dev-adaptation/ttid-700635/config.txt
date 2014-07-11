@@ -1,3 +1,0 @@
-desktop_shortcut::0::是否打开桌面快捷方式0(否)1(是)
-backgroud_service_on::0::是否打开后台服务0(否)1(是)
-preferencesAutoFocus::0::是否使用自动对焦，这是功能性对焦  0（否）；1（是）

@@ -1,2 +1,0 @@
-hide_barcodesech::1::是否屏蔽条码搜功能0(否)1(是)
-backgroud_service_on::0::是否打开后台服务0(否)1(是)

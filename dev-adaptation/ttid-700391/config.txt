@@ -1,1 +1,0 @@
-packetInstallLocation::internalOnly::打包时包的安装地点internalOnly/preferExternal/auto
