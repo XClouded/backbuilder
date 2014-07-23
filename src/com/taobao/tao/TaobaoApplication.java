@@ -115,6 +115,8 @@ public class TaobaoApplication extends PanguApplication {
         Properties props = new Properties();
         props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
         props.put("android.taobao.atlas.debug.bundles", "true");
+        props.put("osgi.auto.install.1", "com.taobao.libs");
+        props.put("osgi.auto.install.file", "libcom_taobao_libs.so");
 
         /*********************↓ ↓ ↓ ↓ For awb debug ↓ ↓ ↓ ↓***************************/
         boolean supportExternalAwbDebug = false;
