@@ -424,7 +424,7 @@ public class TaobaoApplication extends PanguApplication {
         for(String entry : userTrackDataMap.keySet()){
             editor.putLong(entry,userTrackDataMap.get(entry));
         }
-        editor.commit();
+        editor.apply();
     }
 
     private boolean isLowDevice() {
