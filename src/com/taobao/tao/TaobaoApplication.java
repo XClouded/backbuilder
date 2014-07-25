@@ -35,7 +35,8 @@ import com.taobao.android.base.Versions;
 import com.taobao.android.lifecycle.PanguApplication;
 import com.taobao.android.task.Coordinator;
 import com.taobao.android.task.Coordinator.TaggedRunnable;
-import com.taobao.taobao.R;
+import com.taobao.launch.R;
+
 
 public class TaobaoApplication extends PanguApplication {
 
