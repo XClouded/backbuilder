@@ -13,6 +13,7 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import com.taobao.taobaocompat.BuildConfig;
 import org.osgi.framework.Bundle;
 
 import android.content.ComponentName;
@@ -93,7 +94,8 @@ public class TaobaoApplication extends PanguApplication {
 
         START = System.currentTimeMillis();
         
-        awbDebug = this.getResources().getString(R.string.awb_debug).equals("1") ? true : false;
+        //awbDebug = this.getResources().getString(R.string.awb_debug).equals("1") ? true : false;
+        awbDebug = BuildConfig.DEBUG ? true : false;
         try {
             Atlas.getInstance().init(this);
         } catch (Exception e) {
@@ -329,6 +331,7 @@ public class TaobaoApplication extends PanguApplication {
                         }
                         Log.d(TAG, "Succeed to install external bundle " + packageName);
                     }
+                    soFile.delete();
                     return true;
                 }
             }
