@@ -13,7 +13,7 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import com.taobao.taobaocompat.BuildConfig;
+import com.taobao.launch.BuildConfig;
 import org.osgi.framework.Bundle;
 
 import android.content.ComponentName;
@@ -36,7 +36,6 @@ import com.taobao.android.base.Versions;
 import com.taobao.android.lifecycle.PanguApplication;
 import com.taobao.android.task.Coordinator;
 import com.taobao.android.task.Coordinator.TaggedRunnable;
-import com.taobao.launch.R;
 
 
 public class TaobaoApplication extends PanguApplication {
