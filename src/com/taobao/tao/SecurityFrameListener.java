@@ -1,5 +1,12 @@
 package com.taobao.tao;
 
+import java.io.File;
+import java.util.List;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkEvent;
+import org.osgi.framework.FrameworkListener;
+
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -12,11 +19,9 @@ import android.taobao.atlas.util.ApkUtils;
 import android.taobao.atlas.util.StringUtils;
 import android.util.Log;
 import android.widget.Toast;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkEvent;
-import org.osgi.framework.FrameworkListener;
-import java.io.File;
-import java.util.List;
+
+import com.taobao.wireless.security.sdk.SecurityGuardManager;
+import com.taobao.wireless.security.sdk.pkgvaliditycheck.IPkgValidityCheckComponent;
 
 
 public class SecurityFrameListener implements FrameworkListener {
@@ -63,19 +68,21 @@ public class SecurityFrameListener implements FrameworkListener {
             if (bundles != null) {
                 for (Bundle bundle : bundles) {
                     File file = Atlas.getInstance().getBundleFile(bundle.getLocation());
-                    String[] publicKeys = ApkUtils.getApkPublicKey(file.getAbsolutePath());
-                    if (!StringUtils.contains(publicKeys, PUBLIC_KEY)) {
-                        Log.e(TAG, "Security check failed. " + bundle.getLocation());
-                        if (publicKeys == null || publicKeys.length == 0) {
-                            saveSecurityData(bundle.getLocation() + ": NULL");
-                        } else {
-                            saveSecurityData(bundle.getLocation() + ": " + publicKeys[0]);
+                    if(!isBundleValid(file.getAbsolutePath())){
+                    	String[] publicKeys = ApkUtils.getApkPublicKey(file.getAbsolutePath());
+                        if (!StringUtils.contains(publicKeys, PUBLIC_KEY)) {
+                        	Log.e(TAG, "Security check failed. " + bundle.getLocation());
+                            if (publicKeys == null || publicKeys.length == 0) {
+                                saveSecurityData(bundle.getLocation() + ": NULL");
+                            } else {
+                                saveSecurityData(bundle.getLocation() + ": " + publicKeys[0]);
+                            }
+                            return false;
                         }
-                        return false;
-                    }
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                        }
                     }
                 }
             }
@@ -108,6 +115,17 @@ public class SecurityFrameListener implements FrameworkListener {
         public void handleMessage(Message msg) {
             android.os.Process.killProcess(android.os.Process.myPid());
         }
+    }
+    
+    private boolean isBundleValid(String path){
+    	SecurityGuardManager sgManager = SecurityGuardManager.getInstance(RuntimeVariables.androidApplication);
+    	if(sgManager !=null ){
+    		IPkgValidityCheckComponent pvcComp = sgManager.getPackageValidityCheckComp();
+    		if(pvcComp!=null){
+    			return pvcComp.isPackageValid(path);
+    		}
+    	}
+    	return false;
     }
 
 }
