@@ -169,7 +169,7 @@ public class TaobaoApplication extends PanguApplication {
             String lastVersionName = prefs.getString("last_version_name", "");
 
             // 判断版本是否更新了
-            if (packageInfo.versionCode > lastVersionCode
+            if (supportExternalAwbDebug || packageInfo.versionCode > lastVersionCode
                 || (packageInfo.versionCode == lastVersionCode && !TextUtils.equals(packageInfo.versionName,
                                                                                     lastVersionName))) {
 
