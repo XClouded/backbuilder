@@ -13,9 +13,9 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import com.taobao.launch.BuildConfig;
 import org.osgi.framework.Bundle;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -28,6 +28,7 @@ import android.os.Environment;
 import android.taobao.atlas.framework.Atlas;
 import android.taobao.atlas.framework.BundleImpl;
 import android.taobao.atlas.runtime.ContextImplHook;
+import android.taobao.atlas.runtime.PackageLite;
 import android.taobao.atlas.util.ApkUtils;
 import android.text.TextUtils;
 import android.util.Log;
@@ -36,6 +37,7 @@ import com.taobao.android.base.Versions;
 import com.taobao.android.lifecycle.PanguApplication;
 import com.taobao.android.task.Coordinator;
 import com.taobao.android.task.Coordinator.TaggedRunnable;
+import com.taobao.launch.BuildConfig;
 
 
 public class TaobaoApplication extends PanguApplication {
@@ -54,24 +56,18 @@ public class TaobaoApplication extends PanguApplication {
     final static String[] AUTOSTART_PACKAGES = new String[]{"com.taobao.login4android", "com.taobao.mytaobao", "com.taobao.wangxin",
             "com.taobao.passivelocation", "com.taobao.allspark"};
     
-//    /**
-//     * 延迟dexopt的bundle
-//     */
-//    final static String[] DELAYED_PACKAGES = new String[]{"com.tmall.wireless.plugin", "com.taobao.mobile.dipei", "com.taobao.android.ju",
-//		"com.taobao.taobao.alipay", "com.taobao.android.big"};
-
     final static String[] DELAYED_PACKAGES = new String[]{"com.taobao.search", "com.taobao.shop", "com.taobao.weapp", 
-    	"com.taobao.nearby", "com.taobao.coupon", "com.taobao.plugin.arcticcircleplugin", "com.taobao.rushpromotion", 
+    	"com.taobao.nearby", "com.taobao.coupon",
+    	"com.tmall.wireless.plugin", "com.taobao.mobile.dipei", "com.taobao.android.ju", 
+    	"com.taobao.plugin.arcticcircleplugin", "com.taobao.rushpromotion", "com.taobao.android.big",
     	"com.taobao.taobao.map", "com.taobao.android.gamecenter", "com.taobao.tongxue", "com.taobao.taobao.zxing", "com.taobao.labs"};
     
 //    /**
-//     * 按需dexopt的bundle，这些bundle一般不对外提供服务，并且包比较小，这样可以保证dexopt的速度
+//     * 按需dexopt的bundle，这些bundle一般不对外提供服务，并且包比较小，这样可以保证dexopt的速度. lazy模式还有问题不使用
 //     */
 //    final static String[] LAZY_PACKAGES = new String[]{"com.taobao.search", "com.taobao.shop", "com.taobao.weapp", 
 //    	"com.taobao.nearby", "com.taobao.coupon", "com.taobao.plugin.arcticcircleplugin", "com.taobao.rushpromotion", 
 //    	"com.taobao.taobao.map", "com.taobao.android.gamecenter", "com.taobao.tongxue", "com.taobao.taobao.zxing", "com.taobao.labs"};
-    
-    final static String[] LAZY_PACKAGES = new String[]{};
     
     
     private final String EXTERNAL_DIR_FOR_DEUBG_AWB = Environment.getExternalStorageDirectory().getAbsolutePath()+"/awb-debug";
@@ -177,7 +173,7 @@ public class TaobaoApplication extends PanguApplication {
                 // 把磁盘上的对应bundle全部删除，以便后面重新安装新版本
                 props.put("osgi.init", "true");
             }
-        } else if (processName.endsWith(":push") || processName.endsWith(":notify")) {
+        } else if (processName.endsWith(":push")) {
         	props.put("android.taobao.atlas.auto.load", "false");
         }
 
@@ -233,7 +229,7 @@ public class TaobaoApplication extends PanguApplication {
                     Log.d(TAG, "Install bundles in process " + processName + " " + (System.currentTimeMillis() - start) + " ms");
                     
                     for (Bundle bundle : Atlas.getInstance().getBundles()) {
-                        if (bundle != null && !contains(DELAYED_PACKAGES, bundle.getLocation()) && !contains(LAZY_PACKAGES, bundle.getLocation())) {
+                        if (bundle != null && !contains(DELAYED_PACKAGES, bundle.getLocation())) {
                         	((BundleImpl) bundle).optDexFile();
                         }
                     }
@@ -248,15 +244,36 @@ public class TaobaoApplication extends PanguApplication {
                     saveUserTrackData();
                     Log.d(TAG, "Install & dexopt bundles in process " + processName + " " + (updateTime) + " ms");
                     
-                    for (Bundle bundle : Atlas.getInstance().getBundles()) {
-                    	if (bundle != null && contains(DELAYED_PACKAGES, bundle.getLocation())) {
-                        	try {
-                        		Thread.sleep(200);
-                        		((BundleImpl) bundle).optDexFile();
-                            } catch (Exception e) {
-                            }
-                        }
-                    }
+					// 所有延迟dexopt的Activity都disable掉，以免导致主线程dexopt
+					for (String pkg : DELAYED_PACKAGES) {
+						PackageLite packageLite = Atlas.getInstance().getBundlePackageLite(pkg);
+						if (packageLite != null && packageLite.components != null) {
+							for (String component : packageLite.components) {
+								ComponentName componentName = new ComponentName(TaobaoApplication.this.getPackageName(), component);
+								disableComponent(componentName);
+							}
+						}
+					}
+
+					// 完成delayed bundle的dexopt，并且enable Activity
+					for (String pkg : DELAYED_PACKAGES) {
+						Bundle bundle = Atlas.getInstance().getBundle(pkg);
+						if (bundle != null) {
+							try {
+								Thread.sleep(100);
+								((BundleImpl) bundle).optDexFile();
+								PackageLite packageLite = Atlas.getInstance().getBundlePackageLite(bundle.getLocation());
+								if (packageLite != null && packageLite.components != null) {
+									for (String component : packageLite.components) {
+										ComponentName componentName = new ComponentName(TaobaoApplication.this.getPackageName(), component);
+										enableComponent(componentName);
+									}
+								}
+							} catch (Exception e) {
+								Log.e(TAG, "Error while dexopt >>>", e);
+							}
+						}
+					}
                     
                 }
             });
@@ -416,6 +433,30 @@ public class TaobaoApplication extends PanguApplication {
         }
         return entryNames;
     }
+    
+    private void disableComponent(ComponentName componentName) {
+    	try {
+			getPackageManager().setComponentEnabledSetting(componentName,
+			        PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+			        PackageManager.DONT_KILL_APP);
+			Log.d(TAG, "@_@ disableComponent: " + componentName.getClassName());
+		} catch (Exception e) {
+			Log.w(TAG, e.getMessage());
+		}
+    }
+
+    private void enableComponent(ComponentName componentName) {
+    	try {
+			getPackageManager().setComponentEnabledSetting(componentName,
+					PackageManager.COMPONENT_ENABLED_STATE_DEFAULT,
+					PackageManager.DONT_KILL_APP);
+			Log.d(TAG, "@_@ enableComponent: " + componentName.getClassName());
+		} catch (Exception e) {
+			Log.w(TAG, e.getMessage());
+		}
+    }
+    
+    
 
     /**
      * 保存Atals启动、更新花费时间，欢迎页埋点用到这些数据，不要删除
@@ -430,7 +471,8 @@ public class TaobaoApplication extends PanguApplication {
         editor.apply();
     }
 
-    private boolean isLowDevice() {
+    @SuppressLint("DefaultLocale")
+	private boolean isLowDevice() {
         if(Build.BRAND!=null && Build.BRAND.toLowerCase().contains("xiaomi")){
             if(Build.HARDWARE!=null && Build.HARDWARE.toLowerCase().contains("mt65")){
                 return true;
