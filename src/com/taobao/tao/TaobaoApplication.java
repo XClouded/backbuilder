@@ -113,7 +113,7 @@ public class TaobaoApplication extends PanguApplication {
 
         START = System.currentTimeMillis();
 
-        String processName = getCurProcessName(this);
+        final String processName = TaoApplication.getProcessName(Globals.getApplication());
         //启动失败监控, 勿删
         if(processName.equals(this.getPackageManager())) {
         	startAlarm(this);
@@ -170,8 +170,6 @@ public class TaobaoApplication extends PanguApplication {
         boolean updated = false;
         PackageInfo packageInfo = null;
 
-
-        final String processName = TaoApplication.getProcessName(Globals.getApplication());
         if (this.getPackageName().equals(processName)) {
 
             // 非debug版本设置公钥，用于atlas校验签名
