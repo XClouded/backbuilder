@@ -17,6 +17,7 @@ import java.util.zip.ZipFile;
 import org.osgi.framework.Bundle;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -95,15 +96,29 @@ public class TaobaoApplication extends PanguApplication {
     	} catch(Exception e) { }
     }
     
+    private String getCurProcessName(Context context) {
+        int pid = android.os.Process.myPid();
+        ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningAppProcessInfo appProcess : mActivityManager.getRunningAppProcesses()) {
+            if (appProcess.pid == pid) {
+                return appProcess.processName;
+            }
+        }
+        return "";
+    }
+    
     @Override
     public void onCreate() {
         super.onCreate();
 
         START = System.currentTimeMillis();
-        
+
+        String processName = getCurProcessName(this);
         //启动失败监控, 勿删
-        startAlarm(this);
-        Log.d(TAG, "Atlas framework start alarm" + (System.currentTimeMillis() - START) + " ms");
+        if(processName.equals(this.getPackageManager())) {
+        	startAlarm(this);
+        	Log.d(TAG, "Atlas framework start alarm" + (System.currentTimeMillis() - START) + " ms");
+        }
         
         //awbDebug = this.getResources().getString(R.string.awb_debug).equals("1") ? true : false;
         awbDebug = BuildConfig.DEBUG ? true : false;
