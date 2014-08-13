@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import org.osgi.framework.Bundle;
 
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -83,11 +85,25 @@ public class TaobaoApplication extends PanguApplication {
      */
     private boolean awbDebug = false;
     
+    private void startAlarm(Context context) {
+    	
+    	try {
+    		Class cls = Class.forName("com.taobao.tao.watchdog.WatchdogAlarm");
+    		Method med = cls.getMethod("start", Context.class);
+    		med.invoke(null, context);
+    		
+    	} catch(Exception e) { }
+    }
+    
     @Override
     public void onCreate() {
         super.onCreate();
 
         START = System.currentTimeMillis();
+        
+        //启动失败监控, 勿删
+        startAlarm(this);
+        Log.d(TAG, "Atlas framework start alarm" + (System.currentTimeMillis() - START) + " ms");
         
         //awbDebug = this.getResources().getString(R.string.awb_debug).equals("1") ? true : false;
         awbDebug = BuildConfig.DEBUG ? true : false;
