@@ -41,6 +41,7 @@ import com.taobao.android.lifecycle.PanguApplication;
 import com.taobao.android.task.Coordinator;
 import com.taobao.android.task.Coordinator.TaggedRunnable;
 import com.taobao.launch.BuildConfig;
+import com.taobao.tao.watchdog.WatchdogAlarm;
 
 
 public class TaobaoApplication extends PanguApplication {
@@ -86,16 +87,6 @@ public class TaobaoApplication extends PanguApplication {
      */
     private boolean awbDebug = false;
     
-    private void startAlarm(Context context) {
-    	
-    	try {
-    		Class cls = Class.forName("com.taobao.tao.watchdog.WatchdogAlarm");
-    		Method med = cls.getMethod("start", Context.class);
-    		med.invoke(null, context);
-    		
-    	} catch(Exception e) { }
-    }
-    
     private String getCurProcessName(Context context) {
         int pid = android.os.Process.myPid();
         ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -116,7 +107,7 @@ public class TaobaoApplication extends PanguApplication {
         final String processName = TaoApplication.getProcessName(Globals.getApplication());
         //启动失败监控, 勿删
         if(processName.equals(this.getPackageManager())) {
-        	startAlarm(this);
+        	WatchdogAlarm.start(this);
         	Log.d(TAG, "Atlas framework start alarm" + (System.currentTimeMillis() - START) + " ms");
         }
         
