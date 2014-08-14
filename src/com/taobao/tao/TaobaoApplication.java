@@ -105,6 +105,13 @@ public class TaobaoApplication extends PanguApplication {
         START = System.currentTimeMillis();
 
         final String processName = TaoApplication.getProcessName(Globals.getApplication());
+        
+        if(processName.contains(":watchdog")){
+        	//watchdog进程启动, 什么都不初始化了。进入安全模式
+        	Log.d(TAG, "watchdog process");
+        	return;
+        }
+        
         //启动失败监控, 勿删
         if(processName.equals(this.getPackageManager())) {
         	WatchdogAlarm.start(this);
