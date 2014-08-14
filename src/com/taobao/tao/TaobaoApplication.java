@@ -113,7 +113,7 @@ public class TaobaoApplication extends PanguApplication {
         }
         
         //启动失败监控, 勿删
-        if(processName.equals(this.getPackageManager())) {
+        if(processName.equals(this.getPackageName())) {
         	WatchdogAlarm.start(this);
         	Log.d(TAG, "Atlas framework start alarm" + (System.currentTimeMillis() - START) + " ms");
         }
