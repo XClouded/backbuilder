@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -51,27 +50,14 @@ public class TaobaoApplication extends PanguApplication {
     /**
      * 指定Bundle包的处理顺序；程序首先按照这里的顺序来处理Bundle包，然后再乱序处理剩下的Bundle包。
      */
-    final static String[] SORTED_PACKAGES = new String[]{"com.taobao.login4android", "com.taobao.passivelocation",
-            "com.taobao.mytaobao", "com.taobao.wangxin", "com.taobao.shop"};
+    final static String[] SORTED_PACKAGES = new String[]{"com.taobao.login4android", "com.taobao.passivelocation", "com.taobao.mytaobao", "com.taobao.wangxin", "com.taobao.allspark", 
+    	"com.taobao.search", "com.taobao.android.scancode", "com.taobao.android.trade", "com.taobao.taobao.cashdesk", "com.taobao.taobao.alipay", "com.taobao.shop"};
 
     /**
      * 自动启动的bundle
      */
     final static String[] AUTOSTART_PACKAGES = new String[]{"com.taobao.login4android", "com.taobao.mytaobao", "com.taobao.wangxin",
             "com.taobao.passivelocation", "com.taobao.allspark"};
-    
-    final static String[] DELAYED_PACKAGES = new String[]{"com.taobao.search", "com.taobao.shop", "com.taobao.weapp", 
-    	"com.taobao.nearby", "com.taobao.coupon",
-    	"com.tmall.wireless.plugin", "com.taobao.mobile.dipei", "com.taobao.android.ju", 
-    	"com.taobao.plugin.arcticcircleplugin", "com.taobao.rushpromotion", "com.taobao.android.big",
-    	"com.taobao.taobao.map", "com.taobao.android.gamecenter", "com.taobao.tongxue", "com.taobao.taobao.zxing", "com.taobao.labs"};
-    
-//    /**
-//     * 按需dexopt的bundle，这些bundle一般不对外提供服务，并且包比较小，这样可以保证dexopt的速度. lazy模式还有问题不使用
-//     */
-//    final static String[] LAZY_PACKAGES = new String[]{"com.taobao.search", "com.taobao.shop", "com.taobao.weapp", 
-//    	"com.taobao.nearby", "com.taobao.coupon", "com.taobao.plugin.arcticcircleplugin", "com.taobao.rushpromotion", 
-//    	"com.taobao.taobao.map", "com.taobao.android.gamecenter", "com.taobao.tongxue", "com.taobao.taobao.zxing", "com.taobao.labs"};
     
     
     private final String EXTERNAL_DIR_FOR_DEUBG_AWB = Environment.getExternalStorageDirectory().getAbsolutePath()+"/awb-debug";
@@ -87,16 +73,6 @@ public class TaobaoApplication extends PanguApplication {
      */
     private boolean awbDebug = false;
     
-    private String getCurProcessName(Context context) {
-        int pid = android.os.Process.myPid();
-        ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningAppProcessInfo appProcess : mActivityManager.getRunningAppProcesses()) {
-            if (appProcess.pid == pid) {
-                return appProcess.processName;
-            }
-        }
-        return "";
-    }
     
     @Override
     public void onCreate() {
@@ -255,14 +231,7 @@ public class TaobaoApplication extends PanguApplication {
                     
                     Log.d(TAG, "Install bundles in process " + processName + " " + (System.currentTimeMillis() - start) + " ms");
                     
-                    for (Bundle bundle : Atlas.getInstance().getBundles()) {
-                        if (bundle != null && !contains(DELAYED_PACKAGES, bundle.getLocation())) {
-                        	((BundleImpl) bundle).optDexFile();
-                        }
-                    }
-                    
                     System.setProperty("BUNDLES_INSTALLED", "true");
-
                     Log.d(TAG, "sendBroadcast: com.taobao.taobao.action.BUNDLES_INSTALLED");
                     TaobaoApplication.this.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
                     
@@ -271,23 +240,23 @@ public class TaobaoApplication extends PanguApplication {
                     saveUserTrackData();
                     Log.d(TAG, "Install & dexopt bundles in process " + processName + " " + (updateTime) + " ms");
                     
-					// 所有延迟dexopt的Activity都disable掉，以免导致主线程dexopt
-					for (String pkg : DELAYED_PACKAGES) {
-						PackageLite packageLite = Atlas.getInstance().getBundlePackageLite(pkg);
-						if (packageLite != null && packageLite.components != null) {
-							for (String component : packageLite.components) {
-								ComponentName componentName = new ComponentName(TaobaoApplication.this.getPackageName(), component);
-								disableComponent(componentName);
-							}
-						}
-					}
+					// 所有没dexopt的Activity都disable掉，以免导致主线程dexopt
+                    for(Bundle bundle: Atlas.getInstance().getBundles()){
+                    	if(!contains(AUTOSTART_PACKAGES, bundle.getLocation())){
+    						PackageLite packageLite = Atlas.getInstance().getBundlePackageLite(bundle.getLocation());
+    						if (packageLite != null && packageLite.components != null) {
+    							for (String component : packageLite.components) {
+    								ComponentName componentName = new ComponentName(TaobaoApplication.this.getPackageName(), component);
+    								disableComponent(componentName);
+    							}
+    						}
+                    	}
+                    }
 
 					// 完成delayed bundle的dexopt，并且enable Activity
-					for (String pkg : DELAYED_PACKAGES) {
-						Bundle bundle = Atlas.getInstance().getBundle(pkg);
-						if (bundle != null) {
+                    for(Bundle bundle: Atlas.getInstance().getBundles()){
+                    	if(!contains(AUTOSTART_PACKAGES, bundle.getLocation())){
 							try {
-								Thread.sleep(100);
 								((BundleImpl) bundle).optDexFile();
 								PackageLite packageLite = Atlas.getInstance().getBundlePackageLite(bundle.getLocation());
 								if (packageLite != null && packageLite.components != null) {
@@ -355,7 +324,6 @@ public class TaobaoApplication extends PanguApplication {
 
     private boolean processLibsBundle(ZipFile zipFile, String entryName) {
         Log.d(TAG,"processLibsBundle entryName " + entryName);
-        Log.d(TAG,"processLibsBundle  file_entryName" + getFileNameFromEntryName(entryName));
 
         /****************For awb debug *********************/
         if(awbDebug && awbFilePathForDebug.size()>0){
