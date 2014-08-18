@@ -25,15 +25,19 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.taobao.atlas.framework.Atlas;
 import android.taobao.atlas.framework.BundleImpl;
 import android.taobao.atlas.runtime.ContextImplHook;
 import android.taobao.atlas.runtime.PackageLite;
+import android.taobao.atlas.runtime.RuntimeVariables;
 import android.taobao.atlas.util.ApkUtils;
+import android.taobao.atlas.util.StringUtils;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.taobao.android.base.Versions;
 import com.taobao.android.lifecycle.PanguApplication;
@@ -240,36 +244,18 @@ public class TaobaoApplication extends PanguApplication {
                     saveUserTrackData();
                     Log.d(TAG, "Install & dexopt bundles in process " + processName + " " + (updateTime) + " ms");
                     
-					// 所有没dexopt的Activity都disable掉，以免导致主线程dexopt
-                    for(Bundle bundle: Atlas.getInstance().getBundles()){
-                    	if(!contains(AUTOSTART_PACKAGES, bundle.getLocation())){
-    						PackageLite packageLite = Atlas.getInstance().getBundlePackageLite(bundle.getLocation());
-    						if (packageLite != null && packageLite.components != null) {
-    							for (String component : packageLite.components) {
-    								ComponentName componentName = new ComponentName(TaobaoApplication.this.getPackageName(), component);
-    								disableComponent(componentName);
-    							}
-    						}
-                    	}
-                    }
-
 					// 完成delayed bundle的dexopt，并且enable Activity
+                    long dexoptTime = System.currentTimeMillis();
                     for(Bundle bundle: Atlas.getInstance().getBundles()){
                     	if(!contains(AUTOSTART_PACKAGES, bundle.getLocation())){
 							try {
 								((BundleImpl) bundle).optDexFile();
-								PackageLite packageLite = Atlas.getInstance().getBundlePackageLite(bundle.getLocation());
-								if (packageLite != null && packageLite.components != null) {
-									for (String component : packageLite.components) {
-										ComponentName componentName = new ComponentName(TaobaoApplication.this.getPackageName(), component);
-										enableComponent(componentName);
-									}
-								}
 							} catch (Exception e) {
 								Log.e(TAG, "Error while dexopt >>>", e);
 							}
 						}
 					}
+                    Log.d(TAG, "DexOpt delayed bundles in " + (System.currentTimeMillis() - dexoptTime) + " ms");
                     
                 }
             });
@@ -428,30 +414,6 @@ public class TaobaoApplication extends PanguApplication {
         }
         return entryNames;
     }
-    
-    private void disableComponent(ComponentName componentName) {
-    	try {
-			getPackageManager().setComponentEnabledSetting(componentName,
-			        PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-			        PackageManager.DONT_KILL_APP);
-			Log.d(TAG, "@_@ disableComponent: " + componentName.getClassName());
-		} catch (Exception e) {
-			Log.w(TAG, e.getMessage());
-		}
-    }
-
-    private void enableComponent(ComponentName componentName) {
-    	try {
-			getPackageManager().setComponentEnabledSetting(componentName,
-					PackageManager.COMPONENT_ENABLED_STATE_DEFAULT,
-					PackageManager.DONT_KILL_APP);
-			Log.d(TAG, "@_@ enableComponent: " + componentName.getClassName());
-		} catch (Exception e) {
-			Log.w(TAG, e.getMessage());
-		}
-    }
-    
-    
 
     /**
      * 保存Atals启动、更新花费时间，欢迎页埋点用到这些数据，不要删除
