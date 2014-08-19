@@ -146,6 +146,7 @@ public class TaobaoApplication extends PanguApplication {
 
         // 安装程序是否已经升级了
         boolean updated = false;
+        boolean dexopted = false;
         PackageInfo packageInfo = null;
 
         if (this.getPackageName().equals(processName)) {
@@ -170,6 +171,7 @@ public class TaobaoApplication extends PanguApplication {
             SharedPreferences prefs = this.getSharedPreferences("atlas_configs", MODE_PRIVATE);
             int lastVersionCode = prefs.getInt("last_version_code", 0);
             String lastVersionName = prefs.getString("last_version_name", "");
+            dexopted = prefs.getBoolean("dexopted", false);
 
             // 判断版本是否更新了
             if (supportExternalAwbDebug || packageInfo.versionCode > lastVersionCode
@@ -208,14 +210,14 @@ public class TaobaoApplication extends PanguApplication {
                     long start = System.currentTimeMillis();
 
                     ZipFile zipFile = null;
+                    SharedPreferences prefs = null;
                     try {
                         zipFile = new ZipFile(TaobaoApplication.this.getApplicationInfo().sourceDir);
 
                         final List<String> entryNames = getBundleEntryNames(zipFile, "lib/armeabi/libcom_", ".so");
                         processLibsBundles(zipFile, entryNames);
 
-                        SharedPreferences prefs = TaobaoApplication.this.getSharedPreferences("atlas_configs",
-                                                                                              MODE_PRIVATE);
+                        prefs = TaobaoApplication.this.getSharedPreferences("atlas_configs", MODE_PRIVATE);
                         Editor editor = prefs.edit();
                         editor.putInt("last_version_code", fpackageInfo.versionCode);
                         editor.putString("last_version_name", fpackageInfo.versionName);
@@ -257,12 +259,45 @@ public class TaobaoApplication extends PanguApplication {
 					}
                     Log.d(TAG, "DexOpt delayed bundles in " + (System.currentTimeMillis() - dexoptTime) + " ms");
                     
+					if (prefs != null) {
+						Editor editor = prefs.edit();
+						editor.putBoolean("dexopted", true);
+						editor.commit();
+					}
+
                 }
             });
         } else if (!updated) {
             System.setProperty("BUNDLES_INSTALLED", "true");
             if (this.getPackageName().equals(processName)) {
                 sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
+                
+                if(!dexopted){//如果首次启动dexopt没有完全做完，这里重新做一次
+	                Coordinator.postTask(new TaggedRunnable("ProcessBundles") {
+						@Override
+						public void run() {
+			                    long dexoptTime = System.currentTimeMillis();
+			                    for(Bundle b: Atlas.getInstance().getBundles()){
+			                    	BundleImpl bundle = (BundleImpl) b;
+			                    	if(!bundle.getArchive().isDexOpted()){
+										try {
+											bundle.optDexFile();
+										} catch (Exception e) {
+											Log.e(TAG, "Error while dexopt >>>", e);
+										}
+			                    	}
+								}
+			                    Log.d(TAG, "DexOpt delayed bundles in " + (System.currentTimeMillis() - dexoptTime) + " ms");
+			                    
+			                    SharedPreferences prefs = TaobaoApplication.this.getSharedPreferences("atlas_configs", MODE_PRIVATE);
+								if (prefs != null) {
+									Editor editor = prefs.edit();
+									editor.putBoolean("dexopted", true);
+									editor.commit();
+								}
+			                }						
+	                });
+                }
             }
         }
         
