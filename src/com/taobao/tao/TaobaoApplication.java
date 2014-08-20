@@ -55,13 +55,18 @@ public class TaobaoApplication extends PanguApplication {
      * 指定Bundle包的处理顺序；程序首先按照这里的顺序来处理Bundle包，然后再乱序处理剩下的Bundle包。
      */
     final static String[] SORTED_PACKAGES = new String[]{"com.taobao.login4android", "com.taobao.passivelocation", "com.taobao.mytaobao", "com.taobao.wangxin", "com.taobao.allspark", 
-    	"com.taobao.search", "com.taobao.android.scancode", "com.taobao.android.trade", "com.taobao.taobao.cashdesk", "com.taobao.taobao.alipay", "com.taobao.shop"};
+    	"com.taobao.search", "com.taobao.android.scancode", "com.taobao.android.trade", "com.taobao.taobao.cashdesk", "com.taobao.shop", "com.taobao.taobao.alipay"};
 
     /**
      * 自动启动的bundle
      */
     final static String[] AUTOSTART_PACKAGES = new String[]{"com.taobao.login4android", "com.taobao.mytaobao", "com.taobao.wangxin",
             "com.taobao.passivelocation", "com.taobao.allspark"};
+    
+    final static String[] DELAYED_PACKAGES = new String[]{
+    	"com.taobao.cainiao", "com.taobao.fmagazine","com_taobao_taobao_pluginservice", "com.taobao.legacy", "com.ut.share",
+    	"com.taobao.taobao.map", "com.taobao.android.gamecenter", "com.taobao.tongxue", "com.taobao.taobao.zxing", "com.taobao.labs"};
+
     
     
     private final String EXTERNAL_DIR_FOR_DEUBG_AWB = Environment.getExternalStorageDirectory().getAbsolutePath()+"/awb-debug";
@@ -235,6 +240,12 @@ public class TaobaoApplication extends PanguApplication {
                         }
                     }
                     
+                    for (Bundle bundle : Atlas.getInstance().getBundles()) {
+                        if (bundle != null && !contains(DELAYED_PACKAGES, bundle.getLocation())) {
+                        	((BundleImpl) bundle).optDexFile();
+                        }
+                    }
+                    
                     Log.d(TAG, "Install bundles in process " + processName + " " + (System.currentTimeMillis() - start) + " ms");
                     
                     System.setProperty("BUNDLES_INSTALLED", "true");
@@ -248,8 +259,9 @@ public class TaobaoApplication extends PanguApplication {
                     
 					// 完成delayed bundle的dexopt，并且enable Activity
                     long dexoptTime = System.currentTimeMillis();
-                    for(Bundle bundle: Atlas.getInstance().getBundles()){
-                    	if(!contains(AUTOSTART_PACKAGES, bundle.getLocation())){
+					for (String pkg : DELAYED_PACKAGES) {
+						Bundle bundle = Atlas.getInstance().getBundle(pkg);
+						if (bundle != null) {
 							try {
 								((BundleImpl) bundle).optDexFile();
 							} catch (Exception e) {
@@ -319,8 +331,9 @@ public class TaobaoApplication extends PanguApplication {
             processLibsBundle(zipFile, entryName);
         }
         // 根据需要自动启动Bundle
-        for (Bundle bundle : Atlas.getInstance().getBundles()) {
-            if (bundle != null && contains(AUTOSTART_PACKAGES, bundle.getLocation())) {
+        for (String pkg : AUTOSTART_PACKAGES) {
+        	Bundle bundle = Atlas.getInstance().getBundle(pkg);
+            if (bundle != null) {
                 try {
                     bundle.start();
                 } catch (Exception e) {
