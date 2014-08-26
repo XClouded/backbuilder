@@ -54,17 +54,17 @@ public class TaobaoApplication extends PanguApplication {
     /**
      * 指定Bundle包的处理顺序；程序首先按照这里的顺序来处理Bundle包，然后再乱序处理剩下的Bundle包。
      */
-    final static String[] SORTED_PACKAGES = new String[]{"com.taobao.login4android", "com.taobao.passivelocation", "com.taobao.mytaobao", "com.taobao.wangxin", "com.taobao.allspark", 
+    final static String[] SORTED_PACKAGES = new String[]{"com.taobao.login4android", "com.taobao.taobao.home", "com.taobao.passivelocation", "com.taobao.mytaobao", "com.taobao.wangxin", "com.taobao.allspark", 
     	"com.taobao.search", "com.taobao.android.scancode", "com.taobao.android.trade", "com.taobao.taobao.cashdesk", "com.taobao.shop", "com.taobao.taobao.alipay"};
 
     /**
      * 自动启动的bundle
      */
-    final static String[] AUTOSTART_PACKAGES = new String[]{"com.taobao.login4android", "com.taobao.mytaobao", "com.taobao.wangxin",
+    final static String[] AUTOSTART_PACKAGES = new String[]{"com.taobao.login4android", "com.taobao.taobao.home", "com.taobao.mytaobao", "com.taobao.wangxin",
             "com.taobao.passivelocation", "com.taobao.allspark"};
     
     final static String[] DELAYED_PACKAGES = new String[]{
-    	"com.taobao.cainiao", "com.taobao.fmagazine","com_taobao_taobao_pluginservice", "com.taobao.legacy", "com.ut.share",
+    	"com.taobao.cainiao", "com.taobao.fmagazine","com.taobao.taobao.pluginservice", "com.taobao.legacy", "com.ut.share",
     	"com.taobao.taobao.map", "com.taobao.android.gamecenter", "com.taobao.tongxue", "com.taobao.taobao.zxing", "com.taobao.labs"};
 
     
@@ -281,6 +281,9 @@ public class TaobaoApplication extends PanguApplication {
             });
         } else if (!updated) {
             System.setProperty("BUNDLES_INSTALLED", "true");
+            
+            Log.d(TAG, "@_@ set property BUNDLES_INSTALLED = true");
+            
             if (this.getPackageName().equals(processName)) {
                 sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
                 
