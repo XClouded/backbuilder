@@ -89,7 +89,7 @@ public class TaobaoApplication extends PanguApplication {
 
         START = System.currentTimeMillis();
 
-        final String processName = TaoApplication.getProcessName(Globals.getApplication());
+        final String processName = TaoApplication.getProcessName(this);
         
         if(processName.contains(":watchdog")){
         	//watchdog进程启动, 什么都不初始化了。进入安全模式
