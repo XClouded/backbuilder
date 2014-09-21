@@ -16,35 +16,27 @@ import java.util.zip.ZipFile;
 import org.osgi.framework.Bundle;
 
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.taobao.atlas.framework.Atlas;
 import android.taobao.atlas.framework.BundleImpl;
 import android.taobao.atlas.runtime.ContextImplHook;
-import android.taobao.atlas.runtime.PackageLite;
-import android.taobao.atlas.runtime.RuntimeVariables;
 import android.taobao.atlas.util.ApkUtils;
-import android.taobao.atlas.util.StringUtils;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.taobao.android.base.Versions;
 import com.taobao.android.lifecycle.PanguApplication;
 import com.taobao.android.task.Coordinator;
 import com.taobao.android.task.Coordinator.TaggedRunnable;
 import com.taobao.launch.BuildConfig;
-import com.taobao.tao.watchdog.WatchdogAlarm;
 
 
 public class TaobaoApplication extends PanguApplication {
@@ -95,12 +87,6 @@ public class TaobaoApplication extends PanguApplication {
         	//watchdog进程启动, 什么都不初始化了。进入安全模式
         	Log.d(TAG, "watchdog process");
         	return;
-        }
-        
-        //启动失败监控, 勿删
-        if(processName.equals(this.getPackageName())) {
-        	WatchdogAlarm.start(this);
-        	Log.d(TAG, "Atlas framework start alarm" + (System.currentTimeMillis() - START) + " ms");
         }
         
         //awbDebug = this.getResources().getString(R.string.awb_debug).equals("1") ? true : false;
