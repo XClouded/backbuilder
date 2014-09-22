@@ -27,6 +27,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
+import android.taobao.apirequest.SecurityManager;
 import android.taobao.atlas.framework.Atlas;
 import android.taobao.atlas.framework.BundleImpl;
 import android.taobao.atlas.runtime.ContextImplHook;
@@ -95,6 +96,7 @@ public class TaobaoApplication extends PanguApplication {
         boolean isSafeMode = false;
         if(processName.equals(getPackageName() + ":safemode")){
             isSafeMode = true;
+            Log.d(TAG, "safemode process");
         }
         
         int uid = android.os.Process.myUid();
@@ -111,6 +113,13 @@ public class TaobaoApplication extends PanguApplication {
             }
         }
         TBS.CrashHandler.turnOff();
+        
+        try {
+			SecurityManager.getInstance().init(Globals.getApplication());
+		} catch(Exception e){
+			Log.e(TAG, "SecurityManager:", e);
+		}
+        
         String appkey = GetAppKeyFromSecurity.getAppKey(0);
         if(StringUtils.isEmpty(appkey)){
             appkey = Constants.appkey;
@@ -122,11 +131,7 @@ public class TaobaoApplication extends PanguApplication {
             return;
         }
         
-        if(processName.contains(":watchdog")){
-        	//watchdog进程启动, 什么都不初始化了。进入安全模式
-        	Log.d(TAG, "watchdog process");
-        	return;
-        }
+        Log.d(TAG, "Atlas safemode inited " + (System.currentTimeMillis() - START) + " ms");
         
         //awbDebug = this.getResources().getString(R.string.awb_debug).equals("1") ? true : false;
         awbDebug = BuildConfig.DEBUG ? true : false;
