@@ -131,6 +131,12 @@ public class TaobaoApplication extends PanguApplication {
             return;
         }
         
+        if(processName.contains(":watchdog")){
+        	//watchdog进程启动, 什么都不初始化了。进入安全模式
+        	Log.d(TAG, "watchdog process");
+        	return;
+        }
+        
         Log.d(TAG, "Atlas safemode inited " + (System.currentTimeMillis() - START) + " ms");
         
         //awbDebug = this.getResources().getString(R.string.awb_debug).equals("1") ? true : false;
