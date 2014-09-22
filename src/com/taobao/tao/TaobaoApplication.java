@@ -83,36 +83,37 @@ public class TaobaoApplication extends PanguApplication {
      */
     private boolean awbDebug = false;
     
-    
+    private String processName;
     @Override
     public void onCreate() {
         super.onCreate();
 
         START = System.currentTimeMillis();
 
-        final String processName = TaoApplication.getProcessName(this);
-        
-        
+        int uid = android.os.Process.myUid();
+        int pid = android.os.Process.myPid();
+        ArrayList<Integer> pidList = new ArrayList<Integer>();
+        ActivityManager activityManager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningAppProcessInfo appProcess : activityManager.getRunningAppProcesses()) {
+            if(appProcess.pid == pid){
+                processName = appProcess.processName;
+            }
+            if(appProcess.uid == uid && appProcess.pid != pid){
+                if(appProcess.processName.equals(getPackageName() + ":safemode")){
+                    android.os.Process.killProcess(pid);
+                    return;
+                }
+                pidList.add(appProcess.pid);
+            }
+            
+        }
         boolean isSafeMode = false;
         if(processName.equals(getPackageName() + ":safemode")){
             isSafeMode = true;
-            Log.d(TAG, "safemode process");
-        }
-        
-        int uid = android.os.Process.myUid();
-        int pid = android.os.Process.myPid();
-        ActivityManager activityManager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningAppProcessInfo appProcess : activityManager.getRunningAppProcesses()) {
-            if (appProcess.uid == uid) {
-                if(isSafeMode && appProcess.pid != pid){
-                    android.os.Process.killProcess(appProcess.pid);
-                }else if(!isSafeMode && appProcess.processName.equals(getPackageName() + ":safemode")){
-                    android.os.Process.killProcess(pid);
-                }
-                
+            for (Integer integer : pidList) {
+                android.os.Process.killProcess(integer);
             }
         }
-        TBS.CrashHandler.turnOff();
         
         try {
 			SecurityManager.getInstance().init(Globals.getApplication());
@@ -125,7 +126,7 @@ public class TaobaoApplication extends PanguApplication {
             appkey = Constants.appkey;
         }
         UTCrashHandler.getInstance().setCrashCaughtListener(new UTCrashCaughtListner(getApplicationContext()));
-        UTCrashHandler.getInstance().enable(getApplicationContext(), "");
+        UTCrashHandler.getInstance().enable(getApplicationContext(), appkey);
         
         if(isSafeMode){
             return;

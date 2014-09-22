@@ -32,7 +32,6 @@
             <type>aar</type>
             <scope>${scope.value}</scope>
         </dependency>
-
     </dependencies>
      <build>
         <finalName>${project.artifactId}</finalName>
