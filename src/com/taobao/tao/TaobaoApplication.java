@@ -16,7 +16,9 @@ import java.util.zip.ZipFile;
 import org.osgi.framework.Bundle;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -29,6 +31,8 @@ import android.taobao.atlas.framework.Atlas;
 import android.taobao.atlas.framework.BundleImpl;
 import android.taobao.atlas.runtime.ContextImplHook;
 import android.taobao.atlas.util.ApkUtils;
+import android.taobao.safemode.UTCrashCaughtListner;
+import android.taobao.util.StringUtils;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -37,6 +41,10 @@ import com.taobao.android.lifecycle.PanguApplication;
 import com.taobao.android.task.Coordinator;
 import com.taobao.android.task.Coordinator.TaggedRunnable;
 import com.taobao.launch.BuildConfig;
+import com.taobao.statistic.TBS;
+import com.taobao.tao.util.Constants;
+import com.taobao.tao.util.GetAppKeyFromSecurity;
+import com.ut.mini.crashhandler.UTCrashHandler;
 
 
 public class TaobaoApplication extends PanguApplication {
@@ -82,6 +90,37 @@ public class TaobaoApplication extends PanguApplication {
         START = System.currentTimeMillis();
 
         final String processName = TaoApplication.getProcessName(this);
+        
+        
+        boolean isSafeMode = false;
+        if(processName.equals(getPackageName() + ":safemode")){
+            isSafeMode = true;
+        }
+        
+        int uid = android.os.Process.myUid();
+        int pid = android.os.Process.myPid();
+        ActivityManager activityManager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningAppProcessInfo appProcess : activityManager.getRunningAppProcesses()) {
+            if (appProcess.uid == uid) {
+                if(isSafeMode && appProcess.pid != pid){
+                    android.os.Process.killProcess(appProcess.pid);
+                }else if(!isSafeMode && appProcess.processName.equals(getPackageName() + ":safemode")){
+                    android.os.Process.killProcess(pid);
+                }
+                
+            }
+        }
+        TBS.CrashHandler.turnOff();
+        String appkey = GetAppKeyFromSecurity.getAppKey(0);
+        if(StringUtils.isEmpty(appkey)){
+            appkey = Constants.appkey;
+        }
+        UTCrashHandler.getInstance().setCrashCaughtListener(new UTCrashCaughtListner(getApplicationContext()));
+        UTCrashHandler.getInstance().enable(getApplicationContext(), "");
+        
+        if(isSafeMode){
+            return;
+        }
         
         if(processName.contains(":watchdog")){
         	//watchdog进程启动, 什么都不初始化了。进入安全模式
