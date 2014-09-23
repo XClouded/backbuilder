@@ -133,6 +133,9 @@ public class TaobaoApplication extends PanguApplication {
         
         Log.d(TAG, "Atlas appkey :" + appkey);
         
+        if(Versions.isDebug()){
+        	UTCrashHandler.getInstance().turnOnDebug();
+        }
         UTCrashHandler.getInstance().setCrashCaughtListener(new UTCrashCaughtListner(getApplicationContext()));
         UTCrashHandler.getInstance().enable(getApplicationContext(), appkey);
         
