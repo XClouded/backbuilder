@@ -27,22 +27,27 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.StatFs;
 import android.taobao.apirequest.SecurityManager;
 import android.taobao.atlas.framework.Atlas;
 import android.taobao.atlas.framework.BundleImpl;
 import android.taobao.atlas.runtime.ContextImplHook;
+import android.taobao.atlas.runtime.RuntimeVariables;
 import android.taobao.atlas.util.ApkUtils;
 import android.taobao.safemode.UTCrashCaughtListner;
 import android.taobao.util.StringUtils;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.taobao.android.base.Versions;
 import com.taobao.android.lifecycle.PanguApplication;
 import com.taobao.android.task.Coordinator;
 import com.taobao.android.task.Coordinator.TaggedRunnable;
 import com.taobao.launch.BuildConfig;
-import com.taobao.statistic.TBS;
+import com.taobao.lightapk.BundleInfoManager;
 import com.taobao.tao.util.Constants;
 import com.taobao.tao.util.GetAppKeyFromSecurity;
 import com.ut.mini.crashhandler.UTCrashHandler;
@@ -160,13 +165,20 @@ public class TaobaoApplication extends PanguApplication {
         } catch (Exception e) {
             Log.e(TAG, "Could not set Globals.sApplication & Globals.sClassLoader !!!", e);
         }
-
+		ClassNotFundInterceptor calssNotFoundCallback = new ClassNotFundInterceptor();
+        Atlas.getInstance().setClassNotFoundInterceptorCallback(calssNotFoundCallback);
         Properties props = new Properties();
         props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
         props.put("android.taobao.atlas.debug.bundles", "true");
         props.put("osgi.auto.install.1", "com.taobao.libs");
         props.put("osgi.auto.install.file", "libcom_taobao_libs.so");
-
+		if(Globals.isMiniPackage()){
+        	String versionName = getPackageInfo().versionName;
+        	File path = new File(this.getFilesDir(),"storage"+File.separatorChar+versionName+File.separatorChar);
+        	props.put("android.taobao.atlas.storage", path.getAbsolutePath());
+        	Log.d(TAG, "miniPackage storage path "+path.getAbsolutePath());
+        }
+		
         /*********************↓ ↓ ↓ ↓ For awb debug ↓ ↓ ↓ ↓***************************/
         boolean supportExternalAwbDebug = false;
         if(awbDebug){
@@ -241,7 +253,7 @@ public class TaobaoApplication extends PanguApplication {
         Log.d(TAG, "Atlas framework started in process " + processName + " " + (startupTime)
                    + " ms");
 
-        final PackageInfo fpackageInfo = packageInfo;
+        final PackageInfo fpackageInfo = getPackageInfo();
         if (this.getPackageName().equals(processName) && updated) {
             Coordinator.postTask(new TaggedRunnable("ProcessBundles") {
 
@@ -255,9 +267,57 @@ public class TaobaoApplication extends PanguApplication {
                         zipFile = new ZipFile(TaobaoApplication.this.getApplicationInfo().sourceDir);
 
                         final List<String> entryNames = getBundleEntryNames(zipFile, "lib/armeabi/libcom_", ".so");
+						if(entryNames!=null && entryNames.size()>0){
+                        	if(getAvailableInternalMemorySize() < (entryNames.size()*2*1024*1024 )){
+                        		Handler h = new Handler(Looper.getMainLooper());
+                        		h.post(new Runnable(){
+									@Override
+									public void run() {
+										Toast.makeText(RuntimeVariables.androidApplication, "检测到手机存储空间不足，为不影响您的使用请清理！", Toast.LENGTH_LONG).show();
+									}
+                        			
+                        		});
+                        	}
+                        }
                         processLibsBundles(zipFile, entryNames);
-
+						//执行未变化的bundle安装
                         prefs = TaobaoApplication.this.getSharedPreferences("atlas_configs", MODE_PRIVATE);
+                        if(Globals.isMiniPackage()){
+                        	String lastVersionName = prefs.getString("last_version_name", "");
+                        	File path = new File(TaobaoApplication.this.getFilesDir(),"storage"+File.separatorChar+lastVersionName+File.separatorChar);
+                        	List<ParseAtlasMetaUtil.AtlasMetaInfo> metaInfoList = ParseAtlasMetaUtil.parseAtlasMetaInfo(path);
+                        	String[] installedBundles = new String[metaInfoList.size()];
+                        	Map<String,File> bundleMap = new HashMap<String,File>();
+                        	Map<String,Boolean> bundlePersistent = new HashMap<String,Boolean>();
+                        	for(int i=0; i<metaInfoList.size();i++){
+                        		String pkgName = metaInfoList.get(i).getPackageName();
+                        		File file = metaInfoList.get(i).getBundleFile();
+                        		Boolean isPersistent = metaInfoList.get(i).isPersistently();
+                        		bundleMap.put(pkgName, file);
+                        		bundlePersistent.put(pkgName, isPersistent);
+                        		installedBundles[i] = pkgName;
+                        	}
+                        	List<String> pkgList = BundleInfoManager.instance().resolveSameVersionBundle(installedBundles,lastVersionName,fpackageInfo.versionName, true);
+                        	if(pkgList !=null && pkgList.size() >0){
+                        		for(String pkg:pkgList){
+                        			if(Atlas.getInstance().getBundle(pkg)==null){
+                        				try {
+											Bundle bundle = Atlas.getInstance().installBundle(pkg,bundleMap.get(pkg));
+											if(bundle!=null){
+												if(bundlePersistent.get(pkg)){
+													bundle.start();
+												}							
+											}
+										} catch (Exception e) {
+											e.printStackTrace();
+											Log.e(TAG, "Could not install bundle.", e);
+										}
+                        			}
+                        		}
+                        	}
+                        	BundleInfoManager.instance().removeBundleListingByVersion(lastVersionName);
+                        	clearPath(path);//TODO:
+                        }
                         Editor editor = prefs.edit();
                         editor.putInt("last_version_code", fpackageInfo.versionCode);
                         editor.putString("last_version_name", fpackageInfo.versionName);
@@ -277,7 +337,17 @@ public class TaobaoApplication extends PanguApplication {
                     
                     for (Bundle bundle : Atlas.getInstance().getBundles()) {
                         if (bundle != null && !contains(DELAYED_PACKAGES, bundle.getLocation())) {
-                        	((BundleImpl) bundle).optDexFile();
+                            try {
+                                ((BundleImpl) bundle).optDexFile();
+                                //Atlas.getInstance().enableComponent(bundle.getLocation());
+                            } catch (Exception e) {
+                                try {
+                                    ((BundleImpl) bundle).optDexFile();
+                                    //Atlas.getInstance().enableComponent(bundle.getLocation());
+                                } catch (Exception e1) {
+                                    Log.e(TAG, "Error while dexopt >>>", e1);
+                                }
+                            }
                         }
                     }
                     
@@ -299,12 +369,14 @@ public class TaobaoApplication extends PanguApplication {
 						if (bundle != null) {
 							try {
 								((BundleImpl) bundle).optDexFile();
+								//Atlas.getInstance().enableComponent(bundle.getLocation());
 							} catch (Exception e) {
-								try {
-									((BundleImpl) bundle).optDexFile();
-								} catch (Exception e2) {
-									Log.e(TAG, "Error while dexopt >>>", e2);
-								}
+							    try {
+	                                ((BundleImpl) bundle).optDexFile();
+	                                //Atlas.getInstance().enableComponent(bundle.getLocation());
+	                            } catch (Exception e1) {
+	                                Log.e(TAG, "Error while dexopt >>>", e1);
+	                            }
 							}
 						}
 					}
@@ -313,14 +385,7 @@ public class TaobaoApplication extends PanguApplication {
                 }
             });
         } else if (!updated) {
-            System.setProperty("BUNDLES_INSTALLED", "true");
-            
-            Log.d(TAG, "@_@ set property BUNDLES_INSTALLED = true");
-            
-            if (this.getPackageName().equals(processName)) {
-                sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
-                
-                //如果首次启动dexopt没有完全做完，这里重新做一次
+             if (this.getPackageName().equals(processName)) {
                 Coordinator.postTask(new TaggedRunnable("ProcessBundles") {
 					@Override
 					public void run() {
@@ -330,16 +395,22 @@ public class TaobaoApplication extends PanguApplication {
 		                    	if(!bundle.getArchive().isDexOpted()){
 									try {
 										bundle.optDexFile();
+										//Atlas.getInstance().enableComponent(bundle.getLocation());
 									} catch (Exception e) {
-										try {
-											bundle.optDexFile();
-										} catch (Exception e2) {
-											Log.e(TAG, "Error while dexopt >>>", e2);
-										}										
+									    try{
+									        bundle.optDexFile();  
+									        //Atlas.getInstance().enableComponent(bundle.getLocation());
+									    }catch(Exception e1){
+									        Log.e(TAG, "Error while dexopt >>>", e1);
+									    }
+									    
 									}
 		                    	}
 							}
-		                    Log.d(TAG, "DexOpt delayed bundles in " + (System.currentTimeMillis() - dexoptTime) + " ms");
+		                    Log.d(TAG, "DexOpt delayed bundles in " + (System.currentTimeMillis() - dexoptTime) + " ms");  
+		                    System.setProperty("BUNDLES_INSTALLED", "true");
+		                    Log.d(TAG, "@_@ set property BUNDLES_INSTALLED = true");
+		                    sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
 		                }						
                 });
             }
@@ -533,5 +604,38 @@ public class TaobaoApplication extends PanguApplication {
     public ComponentName startService(Intent service) {
     	ContextImplHook mContextImplHook = new ContextImplHook(getBaseContext(), null);
     	return mContextImplHook.startService(service);
+    }
+	private long getAvailableInternalMemorySize(){  
+        File path = Environment.getDataDirectory();    
+        StatFs stat = new StatFs(path.getPath());  
+        long blockSize = stat.getBlockSize();  
+        long availableBlocks = stat.getAvailableBlocks();  
+        return availableBlocks*blockSize;  
+    }
+    private PackageInfo getPackageInfo(){
+    	PackageInfo packageInfo = null;
+    	// 获取当前的版本号
+        try {
+            PackageManager packageManager = this.getPackageManager();
+            packageInfo = packageManager.getPackageInfo(this.getPackageName(), 0);
+        } catch (Exception e) {
+            // 不可能发生
+            Log.e(TAG, "Error to get PackageInfo >>>", e);
+            packageInfo = new PackageInfo();
+        }
+        return packageInfo;
+    }
+    private void clearPath(File path){
+        if(path.exists()){
+            File[] files = path.listFiles();
+            for(File file:files){
+                if(file.isDirectory()){
+                	clearPath(file);
+                }else{
+                    file.delete();
+                }
+            }
+            //path.delete();
+        }
     }
 }
