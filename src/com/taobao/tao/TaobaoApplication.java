@@ -171,8 +171,8 @@ public class TaobaoApplication extends PanguApplication {
         } catch (Exception e) {
             Log.e(TAG, "Could not set Globals.sApplication & Globals.sClassLoader !!!", e);
         }
-		//ClassNotFundInterceptor calssNotFoundCallback = new ClassNotFundInterceptor();
-        //Atlas.getInstance().setClassNotFoundInterceptorCallback(calssNotFoundCallback);
+		ClassNotFundInterceptor calssNotFoundCallback = new ClassNotFundInterceptor();
+        Atlas.getInstance().setClassNotFoundInterceptorCallback(calssNotFoundCallback);
         Properties props = new Properties();
         props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
         props.put("android.taobao.atlas.debug.bundles", "true");
