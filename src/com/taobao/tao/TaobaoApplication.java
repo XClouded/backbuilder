@@ -121,7 +121,7 @@ public class TaobaoApplication extends PanguApplication {
         }
         
         try {
-			SecurityManager.getInstance().init(Globals.getApplication());
+			SecurityManager.getInstance().init(this);
 		} catch(Exception e){
 			Log.e(TAG, "SecurityManager:", e);
 		}
@@ -130,6 +130,9 @@ public class TaobaoApplication extends PanguApplication {
         if(StringUtils.isEmpty(appkey)){
             appkey = Constants.appkey;
         }
+        
+        Log.d(TAG, "Atlas appkey :" + appkey);
+        
         UTCrashHandler.getInstance().setCrashCaughtListener(new UTCrashCaughtListner(getApplicationContext()));
         UTCrashHandler.getInstance().enable(getApplicationContext(), appkey);
         
@@ -415,8 +418,6 @@ public class TaobaoApplication extends PanguApplication {
                 });
             }
         }
-        
-
     }
 
     private void processLibsBundles(ZipFile zipFile, List<String> entryNames) {
