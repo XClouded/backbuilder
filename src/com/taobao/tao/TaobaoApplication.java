@@ -139,6 +139,10 @@ public class TaobaoApplication extends PanguApplication {
         UTCrashHandler.getInstance().setCrashCaughtListener(new UTCrashCaughtListner(getApplicationContext()));
         UTCrashHandler.getInstance().enable(getApplicationContext(), appkey);
         
+        TaoPackageInfo.init();
+        
+        UTCrashHandler.getInstance().setChannel(TaoPackageInfo.sTTID);
+        
         if(isSafeMode){
             return;
         }
