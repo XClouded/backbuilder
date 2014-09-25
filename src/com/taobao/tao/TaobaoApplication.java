@@ -175,14 +175,15 @@ public class TaobaoApplication extends PanguApplication {
         } catch (Exception e) {
             Log.e(TAG, "Could not set Globals.sApplication & Globals.sClassLoader !!!", e);
         }
-		ClassNotFundInterceptor calssNotFoundCallback = new ClassNotFundInterceptor();
-        Atlas.getInstance().setClassNotFoundInterceptorCallback(calssNotFoundCallback);
+		
         Properties props = new Properties();
         props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
         props.put("android.taobao.atlas.debug.bundles", "true");
         props.put("osgi.auto.install.1", "com.taobao.libs");
         props.put("osgi.auto.install.file", "libcom_taobao_libs.so");
 		if(Globals.isMiniPackage()){
+			ClassNotFundInterceptor calssNotFoundCallback = new ClassNotFundInterceptor();
+	        Atlas.getInstance().setClassNotFoundInterceptorCallback(calssNotFoundCallback);
         	String versionName = getPackageInfo().versionName;
         	File path = new File(this.getFilesDir(),"storage"+File.separatorChar+versionName+File.separatorChar);
         	props.put("android.taobao.atlas.storage", path.getAbsolutePath());
