@@ -181,9 +181,9 @@ public class TaobaoApplication extends PanguApplication {
         props.put("android.taobao.atlas.debug.bundles", "true");
         props.put("osgi.auto.install.1", "com.taobao.libs");
         props.put("osgi.auto.install.file", "libcom_taobao_libs.so");
+        ClassNotFundInterceptor calssNotFoundCallback = new ClassNotFundInterceptor();
+        Atlas.getInstance().setClassNotFoundInterceptorCallback(calssNotFoundCallback);
 		if(Globals.isMiniPackage()){
-			ClassNotFundInterceptor calssNotFoundCallback = new ClassNotFundInterceptor();
-	        Atlas.getInstance().setClassNotFoundInterceptorCallback(calssNotFoundCallback);
         	String versionName = getPackageInfo().versionName;
         	File path = new File(this.getFilesDir(),"storage"+File.separatorChar+versionName+File.separatorChar);
         	props.put("android.taobao.atlas.storage", path.getAbsolutePath());
@@ -350,11 +350,11 @@ public class TaobaoApplication extends PanguApplication {
                         if (bundle != null && !contains(DELAYED_PACKAGES, bundle.getLocation())) {
                             try {
                                 ((BundleImpl) bundle).optDexFile();
-                                //Atlas.getInstance().enableComponent(bundle.getLocation());
+                                Atlas.getInstance().enableComponent(bundle.getLocation());
                             } catch (Exception e) {
                                 try {
                                     ((BundleImpl) bundle).optDexFile();
-                                    //Atlas.getInstance().enableComponent(bundle.getLocation());
+                                    Atlas.getInstance().enableComponent(bundle.getLocation());
                                 } catch (Exception e1) {
                                     Log.e(TAG, "Error while dexopt >>>", e1);
                                 }
@@ -380,11 +380,11 @@ public class TaobaoApplication extends PanguApplication {
 						if (bundle != null) {
 							try {
 								((BundleImpl) bundle).optDexFile();
-								//Atlas.getInstance().enableComponent(bundle.getLocation());
+								Atlas.getInstance().enableComponent(bundle.getLocation());
 							} catch (Exception e) {
 							    try {
 	                                ((BundleImpl) bundle).optDexFile();
-	                                //Atlas.getInstance().enableComponent(bundle.getLocation());
+	                                Atlas.getInstance().enableComponent(bundle.getLocation());
 	                            } catch (Exception e1) {
 	                                Log.e(TAG, "Error while dexopt >>>", e1);
 	                            }
@@ -406,11 +406,11 @@ public class TaobaoApplication extends PanguApplication {
 		                    	if(!bundle.getArchive().isDexOpted()){
 									try {
 										bundle.optDexFile();
-										//Atlas.getInstance().enableComponent(bundle.getLocation());
+										Atlas.getInstance().enableComponent(bundle.getLocation());
 									} catch (Exception e) {
 									    try{
 									        bundle.optDexFile();  
-									        //Atlas.getInstance().enableComponent(bundle.getLocation());
+									        Atlas.getInstance().enableComponent(bundle.getLocation());
 									    }catch(Exception e1){
 									        Log.e(TAG, "Error while dexopt >>>", e1);
 									    }
