@@ -181,7 +181,7 @@ public class TaobaoApplication extends PanguApplication {
         props.put("android.taobao.atlas.debug.bundles", "true");
         props.put("osgi.auto.install.1", "com.taobao.libs");
         props.put("osgi.auto.install.file", "libcom_taobao_libs.so");
-        ClassNotFundInterceptor calssNotFoundCallback = new ClassNotFundInterceptor();
+        ClassNotFoundInterceptor calssNotFoundCallback = new ClassNotFoundInterceptor();
         Atlas.getInstance().setClassNotFoundInterceptorCallback(calssNotFoundCallback);
 		if(Globals.isMiniPackage()){
         	String versionName = getPackageInfo().versionName;
