@@ -120,24 +120,11 @@ public class TaobaoApplication extends PanguApplication {
             }
         }
         
-        try {
-			SecurityManager.getInstance().init(this);
-		} catch(Exception e){
-			Log.e(TAG, "SecurityManager:", e);
-		}
-        
-        String appkey = GetAppKeyFromSecurity.getAppKey(0);
-        if(StringUtils.isEmpty(appkey)){
-            appkey = Constants.appkey;
-        }
-        
-        Log.d(TAG, "Atlas appkey :" + appkey);
-        
         if(Versions.isDebug()){
         	UTCrashHandler.getInstance().turnOnDebug();
         }
         UTCrashHandler.getInstance().setCrashCaughtListener(new UTCrashCaughtListner(getApplicationContext()));
-        UTCrashHandler.getInstance().enable(getApplicationContext(), appkey);
+        UTCrashHandler.getInstance().enable(getApplicationContext(), Constants.appkey);
         
         TaoPackageInfo.init();
         
