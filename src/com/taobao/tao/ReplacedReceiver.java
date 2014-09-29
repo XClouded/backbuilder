@@ -1,5 +1,8 @@
 package com.taobao.tao;
 
+import com.taobao.tao.update.Updater;
+
+import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +17,7 @@ public class ReplacedReceiver extends BroadcastReceiver {
         // 应用覆盖安装时，接收消息启动TaobaoApplication，自动完成Bundle安装
         Log.d(TAG, "onReceive: " + intent == null ? "null" : intent.getAction());
         //尝试更新
-        //Updater.getInstance((Application)context).update(true);
+        Updater.getInstance((Application)context).update(true);
     }
 
 }
