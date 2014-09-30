@@ -113,6 +113,9 @@ public class TaobaoApplication extends PanguApplication {
             
         }
         boolean isSafeMode = false;
+        if (processName == null) {
+        	processName = "";
+        }
         if(processName.equals(getPackageName() + ":safemode")){
             isSafeMode = true;
             for (Integer integer : pidList) {
