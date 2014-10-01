@@ -25,6 +25,9 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.database.sqlite.SQLiteException;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -637,4 +640,55 @@ public class TaobaoApplication extends PanguApplication {
             //path.delete();
         }
     }
+    
+    
+	/**
+	 * 为了解决多进程访问同一个webview.db的lock问题。
+	 * 对不同进程做db名重载处理。   baiyi-2013-8-6
+	 */
+	@Override
+	public SQLiteDatabase openOrCreateDatabase(String name, int mode,
+			CursorFactory factory) {
+		
+		String processName = TaoApplication.getProcessName(this);
+		if(!TextUtils.isEmpty(processName)){
+			
+			Log.i("SQLiteDatabase", processName);
+			if(!processName.equals(this.getPackageName())){
+				
+				String[] pname = processName.split(":");
+				if(pname != null && pname.length > 1){
+					String dbname = pname[1] + "_" + name;
+					Log.i("SQLiteDatabase", "openOrCreateDatabase:"+dbname);
+					return hookDatabase(dbname, mode, factory);
+				}
+			}
+
+		}
+
+		return hookDatabase(name, mode, factory);
+	}
+	
+	//对3.0以下版本增加一次db创建失败后的retry。
+	public SQLiteDatabase hookDatabase(String name, int mode,
+			CursorFactory factory) {
+		
+		if(Build.VERSION.SDK_INT < 11) {
+		
+			SQLiteDatabase database = null;
+			try {
+				database = super.openOrCreateDatabase(name, mode, factory);
+			} catch (SQLiteException e) {
+				// try again by deleting the old db and create a new one
+				Log.d("SQLiteDatabase", "fail to openOrCreateDatabase:"+name);
+				if (Globals.getApplication().deleteDatabase(name)) {
+					database = super.openOrCreateDatabase(name, mode, factory);
+				}
+			}
+			return database;
+		} else {
+			return super.openOrCreateDatabase(name, mode, factory);
+		}
+	}
+    
 }
