@@ -259,12 +259,12 @@ public class TaobaoApplication extends PanguApplication {
         }
 
         long startupTime = System.currentTimeMillis() - START;
-        userTrackDataMap.put("atlas_startup_time", startupTime);
-        saveUserTrackData();
+        //userTrackDataMap.put("atlas_startup_time", startupTime);
+        //saveUserTrackData();
         Log.d(TAG, "Atlas framework started in process " + processName + " " + (startupTime)
                    + " ms");
 
-        final PackageInfo fpackageInfo = getPackageInfo();
+        //final PackageInfo fpackageInfo = getPackageInfo();
         if (this.getPackageName().equals(processName) && updated) {
             Coordinator.postTask(new TaggedRunnable("ProcessBundles") {
 
@@ -273,7 +273,7 @@ public class TaobaoApplication extends PanguApplication {
                     long start = System.currentTimeMillis();
 
                     ZipFile zipFile = null;
-                    SharedPreferences prefs = null;
+                    SharedPreferences sharePrefs = null;
                     try {
                         zipFile = new ZipFile(TaobaoApplication.this.getApplicationInfo().sourceDir);
 
@@ -292,46 +292,52 @@ public class TaobaoApplication extends PanguApplication {
                         }
                         processLibsBundles(zipFile, entryNames);
 						//执行未变化的bundle安装
-                        prefs = TaobaoApplication.this.getSharedPreferences("atlas_configs", MODE_PRIVATE);
+                        sharePrefs = TaobaoApplication.this.getSharedPreferences("atlas_configs", MODE_PRIVATE);
                         if(Globals.isMiniPackage()){
-                        	String lastVersionName = prefs.getString("last_version_name", "");
-                        	File path = new File(TaobaoApplication.this.getFilesDir(),"storage"+File.separatorChar+lastVersionName+File.separatorChar);
-                        	List<ParseAtlasMetaUtil.AtlasMetaInfo> metaInfoList = ParseAtlasMetaUtil.parseAtlasMetaInfo(path);
-                        	String[] installedBundles = new String[metaInfoList.size()];
-                        	Map<String,File> bundleMap = new HashMap<String,File>();
-                        	Map<String,Boolean> bundlePersistent = new HashMap<String,Boolean>();
-                        	for(int i=0; i<metaInfoList.size();i++){
-                        		String pkgName = metaInfoList.get(i).getPackageName();
-                        		File file = metaInfoList.get(i).getBundleFile();
-                        		Boolean isPersistent = metaInfoList.get(i).isPersistently();
-                        		bundleMap.put(pkgName, file);
-                        		bundlePersistent.put(pkgName, isPersistent);
-                        		installedBundles[i] = pkgName;
-                        	}
-                        	List<String> pkgList = BundleInfoManager.instance().resolveSameVersionBundle(installedBundles,lastVersionName,fpackageInfo.versionName, true);
-                        	if(pkgList !=null && pkgList.size() >0){
-                        		for(String pkg:pkgList){
-                        			if(Atlas.getInstance().getBundle(pkg)==null){
-                        				try {
-											Bundle bundle = Atlas.getInstance().installBundle(pkg,bundleMap.get(pkg));
-											if(bundle!=null){
-												if(bundlePersistent.get(pkg)){
-													bundle.start();
-												}							
-											}
-										} catch (Exception e) {
-											e.printStackTrace();
-											Log.e(TAG, "Could not install bundle.", e);
-										}
-                        			}
+                        	try{
+                        		String lastVersionName = sharePrefs.getString("last_version_name", "");
+                        		if(!StringUtils.isEmpty(lastVersionName)){
+                        			File path = new File(TaobaoApplication.this.getFilesDir(),"storage"+File.separatorChar+lastVersionName+File.separatorChar);
+                                	List<ParseAtlasMetaUtil.AtlasMetaInfo> metaInfoList = ParseAtlasMetaUtil.parseAtlasMetaInfo(path);
+                                	String[] installedBundles = new String[metaInfoList.size()];
+                                	Map<String,File> bundleMap = new HashMap<String,File>();
+                                	Map<String,Boolean> bundlePersistent = new HashMap<String,Boolean>();
+                                	for(int i=0; i<metaInfoList.size();i++){
+                                		String pkgName = metaInfoList.get(i).getPackageName();
+                                		File file = metaInfoList.get(i).getBundleFile();
+                                		Boolean isPersistent = metaInfoList.get(i).isPersistently();
+                                		bundleMap.put(pkgName, file);
+                                		bundlePersistent.put(pkgName, isPersistent);
+                                		installedBundles[i] = pkgName;
+                                	}
+                                	List<String> pkgList = BundleInfoManager.instance().resolveSameVersionBundle(installedBundles,lastVersionName,getPackageInfo().versionName, true);
+                                	if(pkgList !=null && pkgList.size() >0){
+                                		for(String pkg:pkgList){
+                                			if(Atlas.getInstance().getBundle(pkg)==null){
+                                				try {
+        											Bundle bundle = Atlas.getInstance().installBundle(pkg,bundleMap.get(pkg));
+        											if(bundle!=null){
+        												if(bundlePersistent.get(pkg)){
+        													bundle.start();
+        												}							
+        											}
+        										} catch (Exception e) {
+        											e.printStackTrace();
+        											Log.e(TAG, "Could not install bundle.", e);
+        										}
+                                			}
+                                		}
+                                	}
+                                	BundleInfoManager.instance().removeBundleListingByVersion(lastVersionName);
+                                	clearPath(path);
                         		}
+                        	}catch(Exception e){
+                        		Log.e(TAG, "Could not merge packageLight.",e);
                         	}
-                        	BundleInfoManager.instance().removeBundleListingByVersion(lastVersionName);
-                        	clearPath(path);//TODO:
                         }
-                        Editor editor = prefs.edit();
-                        editor.putInt("last_version_code", fpackageInfo.versionCode);
-                        editor.putString("last_version_name", fpackageInfo.versionName);
+                        Editor editor = sharePrefs.edit();
+                        editor.putInt("last_version_code", getPackageInfo().versionCode);
+                        editor.putString("last_version_name", getPackageInfo().versionName);
                         editor.commit();
 
                     } catch (IOException e) {
@@ -369,8 +375,8 @@ public class TaobaoApplication extends PanguApplication {
                     TaobaoApplication.this.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
                     
                     long updateTime = System.currentTimeMillis() - start;
-                    userTrackDataMap.put("atlas_update_time", updateTime);
-                    saveUserTrackData();
+                    //userTrackDataMap.put("atlas_update_time", updateTime);
+                    //saveUserTrackData();
                     Log.d(TAG, "Install & dexopt bundles in process " + processName + " " + (updateTime) + " ms");
                     
 					// 完成delayed bundle的dexopt，并且enable Activity
@@ -644,7 +650,7 @@ public class TaobaoApplication extends PanguApplication {
                     file.delete();
                 }
             }
-            //path.delete();
+            path.delete();
         }
     }
 }
