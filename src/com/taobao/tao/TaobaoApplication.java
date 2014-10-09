@@ -293,8 +293,9 @@ public class TaobaoApplication extends PanguApplication {
                         processLibsBundles(zipFile, entryNames);
 						//执行未变化的bundle安装
                         sharePrefs = TaobaoApplication.this.getSharedPreferences("atlas_configs", MODE_PRIVATE);
+                        Log.d(TAG, "packageLight 0.");
                         if(Globals.isMiniPackage()){
-                        	Log.e(TAG, "packageLight 1.");
+                        	Log.d(TAG, "packageLight 1.");
                         	try{
                         		String lastVersionName = sharePrefs.getString("last_version_name", "");
                         		if(!StringUtils.isEmpty(lastVersionName)){
@@ -311,7 +312,7 @@ public class TaobaoApplication extends PanguApplication {
                                 		bundlePersistent.put(pkgName, isPersistent);
                                 		installedBundles[i] = pkgName;
                                 	}
-                                	Log.e(TAG, "packageLight 2.");
+                                	Log.d(TAG, "packageLight 2.");
                                 	List<String> pkgList = BundleInfoManager.instance().resolveSameVersionBundle(installedBundles,lastVersionName,getPackageInfo().versionName, true);
                                 	if(pkgList !=null && pkgList.size() >0){
                                 		for(String pkg:pkgList){
@@ -330,7 +331,7 @@ public class TaobaoApplication extends PanguApplication {
                                 			}
                                 		}
                                 	}
-                                	Log.e(TAG, "packageLight 3.");
+                                	Log.d(TAG, "packageLight 3.");
                                 	BundleInfoManager.instance().removeBundleListingByVersion(lastVersionName);
                                 	clearPath(path);
                         		}
