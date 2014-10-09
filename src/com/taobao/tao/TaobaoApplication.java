@@ -298,6 +298,7 @@ public class TaobaoApplication extends PanguApplication {
                         	Log.d(TAG, "packageLight 1.");
                         	try{
                         		String lastVersionName = sharePrefs.getString("last_version_name", "");
+                        		Log.d(TAG, "versionName. "+lastVersionName);
                         		if(!StringUtils.isEmpty(lastVersionName)){
                         			File path = new File(TaobaoApplication.this.getFilesDir(),"storage"+File.separatorChar+lastVersionName+File.separatorChar);
                                 	List<ParseAtlasMetaUtil.AtlasMetaInfo> metaInfoList = ParseAtlasMetaUtil.parseAtlasMetaInfo(path);
