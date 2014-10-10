@@ -297,14 +297,14 @@ public class TaobaoApplication extends PanguApplication {
                         if(Globals.isMiniPackage()){
                         	Log.d(TAG, "packageLight 1.");
                         	try{
-                        		String lastVersionName = sharePrefs.getString("last_version_name", "");
+                        		final String lastVersionName = sharePrefs.getString("last_version_name", "");
                         		Log.d(TAG, "versionName. "+lastVersionName);
                         		if(!StringUtils.isEmpty(lastVersionName)){
                         			File path = new File(TaobaoApplication.this.getFilesDir(),"storage"+File.separatorChar+lastVersionName+File.separatorChar);
                                 	List<ParseAtlasMetaUtil.AtlasMetaInfo> metaInfoList = ParseAtlasMetaUtil.parseAtlasMetaInfo(path);
-                                	String[] installedBundles = new String[metaInfoList.size()];
-                                	Map<String,File> bundleMap = new HashMap<String,File>();
-                                	Map<String,Boolean> bundlePersistent = new HashMap<String,Boolean>();
+                                	final String[] installedBundles = new String[metaInfoList.size()];
+                                	final Map<String,File> bundleMap = new HashMap<String,File>();
+                                	final Map<String,Boolean> bundlePersistent = new HashMap<String,Boolean>();
                                 	for(int i=0; i<metaInfoList.size();i++){
                                 		String pkgName = metaInfoList.get(i).getPackageName();
                                 		File file = metaInfoList.get(i).getBundleFile();
@@ -314,26 +314,33 @@ public class TaobaoApplication extends PanguApplication {
                                 		installedBundles[i] = pkgName;
                                 	}
                                 	Log.d(TAG, "packageLight 2.");
-                                	List<String> pkgList = BundleInfoManager.instance().resolveSameVersionBundle(installedBundles,lastVersionName,getPackageInfo().versionName, true);
-                                	if(pkgList !=null && pkgList.size() >0){
-                                		for(String pkg:pkgList){
-                                			if(Atlas.getInstance().getBundle(pkg)==null){
-                                				try {
-        											Bundle bundle = Atlas.getInstance().installBundle(pkg,bundleMap.get(pkg));
-        											if(bundle!=null){
-        												if(bundlePersistent.get(pkg)){
-        													bundle.start();
-        												}							
-        											}
-        										} catch (Exception e) {
-        											e.printStackTrace();
-        											Log.e(TAG, "Could not install bundle.", e);
-        										}
-                                			}
-                                		}
-                                	}
-                                	Log.d(TAG, "packageLight 3.");
-                                	BundleInfoManager.instance().removeBundleListingByVersion(lastVersionName);
+                                	Handler h = new Handler(Looper.getMainLooper());
+                            		h.post(new Runnable(){
+    									@Override
+    									public void run() {
+    										List<String> pkgList = BundleInfoManager.instance().resolveSameVersionBundle(installedBundles,lastVersionName,getPackageInfo().versionName, true);
+    	                                	if(pkgList !=null && pkgList.size() >0){
+    	                                		for(String pkg:pkgList){
+    	                                			if(Atlas.getInstance().getBundle(pkg)==null){
+    	                                				try {
+    	        											Bundle bundle = Atlas.getInstance().installBundle(pkg,bundleMap.get(pkg));
+    	        											if(bundle!=null){
+    	        												if(bundlePersistent.get(pkg)){
+    	        													bundle.start();
+    	        												}							
+    	        											}
+    	        										} catch (Exception e) {
+    	        											e.printStackTrace();
+    	        											Log.e(TAG, "Could not install bundle.", e);
+    	        										}
+    	                                			}
+    	                                		}
+    	                                	}
+    	                                	Log.d(TAG, "packageLight 3.");
+    	                                	BundleInfoManager.instance().removeBundleListingByVersion(lastVersionName);
+    									}
+                            			
+                            		});                                	
                                 	clearPath(path);
                         		}
                         	}catch(Exception e){
