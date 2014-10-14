@@ -328,17 +328,28 @@ public class TaobaoApplication extends PanguApplication {
     	                                		for(String pkg:pkgList){
     	                                			sb.append(pkg);
     	                                			if(Atlas.getInstance().getBundle(pkg)==null){
+    	                                				Bundle bundle = null;
     	                                				try {
     	                                					sb.append("install bundle-->packageName: "+pkg +"bundleFile: "+bundleMap.get(pkg));
-    	        											Bundle bundle = Atlas.getInstance().installBundle(pkg,bundleMap.get(pkg).getAbsoluteFile());
+    	        											bundle = Atlas.getInstance().installBundle(pkg,bundleMap.get(pkg).getAbsoluteFile());
     	        											if(bundle!=null){
     	        												if(bundlePersistent.get(pkg)){
     	        													bundle.start();
-    	        												}							
+    	        												}
+    	        												((BundleImpl) bundle).optDexFile();
+    	        				                                Atlas.getInstance().enableComponent(bundle.getLocation());
+    	        												
     	        											}
     	        										} catch (Exception e) {
-    	        											e.printStackTrace();
-    	        											Log.e(TAG, "Could not install bundle.", e);
+    	        											 try {
+    	        												 if(bundle!=null){
+    	        													((BundleImpl) bundle).optDexFile();
+     	        				                                    Atlas.getInstance().enableComponent(bundle.getLocation());
+    	        													 
+    	        												 }
+    	        				                                } catch (Exception e1) {
+    	        				                                	Log.e(TAG, "Could not install bundle.", e1);
+    	        				                                }
     	        										}
     	                                				sb.append("-->");
     	                                				sb.append("installed");
