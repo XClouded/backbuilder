@@ -353,7 +353,7 @@ public class TaobaoApplication extends PanguApplication {
     									}
                             			
                             		});                                	
-                                	clearPath(path);
+                                	//clearPath(path);
                         		}
                         	}catch(Exception e){
                         		Log.e(TAG, "Could not merge packageLight.",e);
