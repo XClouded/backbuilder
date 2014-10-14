@@ -329,7 +329,8 @@ public class TaobaoApplication extends PanguApplication {
     	                                			sb.append(pkg);
     	                                			if(Atlas.getInstance().getBundle(pkg)==null){
     	                                				try {
-    	        											Bundle bundle = Atlas.getInstance().installBundle(pkg,bundleMap.get(pkg));
+    	                                					sb.append("install bundle-->packageName: "+pkg +"bundleFile: "+bundleMap.get(pkg));
+    	        											Bundle bundle = Atlas.getInstance().installBundle(pkg,bundleMap.get(pkg).getAbsoluteFile());
     	        											if(bundle!=null){
     	        												if(bundlePersistent.get(pkg)){
     	        													bundle.start();
