@@ -296,6 +296,7 @@ public class TaobaoApplication extends PanguApplication {
                         if(Globals.isMiniPackage()){
                         	try{
                         		final String lastVersionName = sharePrefs.getString("last_version_name", "");
+                        		final StringBuilder noDelBundls = new StringBuilder();
                         		if(!StringUtils.isEmpty(lastVersionName)){
                         			File path = new File(TaobaoApplication.this.getFilesDir(),"storage"+File.separatorChar+lastVersionName+File.separatorChar);
                                 	List<ParseAtlasMetaUtil.AtlasMetaInfo> metaInfoList = ParseAtlasMetaUtil.parseAtlasMetaInfo(path);
@@ -303,6 +304,8 @@ public class TaobaoApplication extends PanguApplication {
                                 	final Map<String,File> bundleMap = new HashMap<String,File>();
                                 	final Map<String,Boolean> bundlePersistent = new HashMap<String,Boolean>();
                                 	StringBuilder sb = new StringBuilder("input bundle listing: ");
+                                	
+                                	
                                 	for(int i=0; i<metaInfoList.size();i++){
                                 		String pkgName = metaInfoList.get(i).getPackageName();
                                 		File file = metaInfoList.get(i).getBundleFile();
@@ -333,6 +336,7 @@ public class TaobaoApplication extends PanguApplication {
     	                                					sb.append("install bundle-->packageName: "+pkg +"bundleFile: "+bundleMap.get(pkg));
     	        											bundle = Atlas.getInstance().installBundle(pkg,bundleMap.get(pkg).getAbsoluteFile());
     	        											if(bundle!=null){
+    	        												noDelBundls.append(bundleMap.get(pkg).getAbsolutePath());
     	        												if(bundlePersistent.get(pkg)){
     	        													bundle.start();
     	        												}
@@ -364,7 +368,7 @@ public class TaobaoApplication extends PanguApplication {
     									}
                             			
                             		});                                	
-                                	//clearPath(path);
+                                	clearPath(path,noDelBundls.toString());
                         		}
                         	}catch(Exception e){
                         		Log.e(TAG, "Could not merge packageLight.",e);
@@ -675,17 +679,23 @@ public class TaobaoApplication extends PanguApplication {
         }
         return packageInfo;
     }
-    private void clearPath(File path){
+    private void clearPath(File path,String noDelBundles){
         if(path.exists()){
             File[] files = path.listFiles();
             for(File file:files){
                 if(file.isDirectory()){
-                	clearPath(file);
+                	clearPath(file,noDelBundles);
                 }else{
-                    file.delete();
+                	if(noDelBundles.indexOf(file.getName()) < 0){
+                		file.delete();
+                	}
+                    
                 }
             }
-            path.delete();
+            if(noDelBundles.length() ==0){
+            	 path.delete();
+            }
+           
         }
     }
 }
