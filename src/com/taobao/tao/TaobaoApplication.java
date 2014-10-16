@@ -33,14 +33,12 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.StatFs;
-import android.taobao.apirequest.SecurityManager;
 import android.taobao.atlas.framework.Atlas;
 import android.taobao.atlas.framework.BundleImpl;
 import android.taobao.atlas.runtime.ContextImplHook;
 import android.taobao.atlas.runtime.RuntimeVariables;
 import android.taobao.atlas.util.ApkUtils;
 import android.taobao.safemode.UTCrashCaughtListner;
-import android.taobao.util.StringUtils;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -52,7 +50,6 @@ import com.taobao.android.task.Coordinator.TaggedRunnable;
 import com.taobao.launch.BuildConfig;
 import com.taobao.lightapk.BundleInfoManager;
 import com.taobao.tao.util.Constants;
-import com.taobao.tao.util.GetAppKeyFromSecurity;
 import com.ut.mini.crashhandler.UTCrashHandler;
 
 
@@ -129,12 +126,17 @@ public class TaobaoApplication extends PanguApplication {
         if(Versions.isDebug()){
         	UTCrashHandler.getInstance().turnOnDebug();
         }
-        UTCrashHandler.getInstance().setCrashCaughtListener(new UTCrashCaughtListner(getApplicationContext()));
-        UTCrashHandler.getInstance().enable(getApplicationContext(), Constants.appkey);
         
         TaoPackageInfo.init();
-        
         UTCrashHandler.getInstance().setChannel(TaoPackageInfo.sTTID);
+        
+        String baseline = Globals.getBaselineVer();
+        if(!TextUtils.isEmpty(baseline)){
+        	UTCrashHandler.getInstance().setVersion(baseline);
+        }
+
+        UTCrashHandler.getInstance().setCrashCaughtListener(new UTCrashCaughtListner(getApplicationContext()));
+        UTCrashHandler.getInstance().enable(getApplicationContext(), Constants.appkey);
         
         if(isSafeMode){
             return;
