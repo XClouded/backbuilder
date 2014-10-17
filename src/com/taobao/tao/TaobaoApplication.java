@@ -127,12 +127,16 @@ public class TaobaoApplication extends PanguApplication {
         	UTCrashHandler.getInstance().turnOnDebug();
         }
         
-        TaoPackageInfo.init();
-        UTCrashHandler.getInstance().setChannel(TaoPackageInfo.sTTID);
-        
-        String baseline = Globals.getBaselineVer();
-        if(!TextUtils.isEmpty(baseline)){
-        	UTCrashHandler.getInstance().setVersion(baseline);
+        try {
+            TaoPackageInfo.init();
+            UTCrashHandler.getInstance().setChannel(TaoPackageInfo.sTTID);
+      
+            String baseline = Globals.getBaselineVer();
+            if(!TextUtils.isEmpty(baseline)){
+            	UTCrashHandler.getInstance().setVersion(baseline);
+            }
+        } catch(Exception e) {
+        	
         }
 
         UTCrashHandler.getInstance().setCrashCaughtListener(new UTCrashCaughtListner(getApplicationContext()));
