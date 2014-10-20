@@ -39,6 +39,7 @@ import android.taobao.atlas.framework.BundleImpl;
 import android.taobao.atlas.runtime.ContextImplHook;
 import android.taobao.atlas.runtime.RuntimeVariables;
 import android.taobao.atlas.util.ApkUtils;
+import android.taobao.atlas.util.StringUtils;
 import android.taobao.safemode.UTCrashCaughtListner;
 import android.text.TextUtils;
 import android.util.Log;
@@ -282,7 +283,7 @@ public class TaobaoApplication extends PanguApplication {
         Log.d(TAG, "Atlas framework started in process " + processName + " " + (startupTime)
                    + " ms");
 
-        //final PackageInfo fpackageInfo = getPackageInfo();
+        final PackageInfo fpackageInfo = getPackageInfo();
         if (this.getPackageName().equals(processName) && updated) {
             Coordinator.postTask(new TaggedRunnable("ProcessBundles") {
 
