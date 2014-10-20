@@ -730,12 +730,14 @@ public class TaobaoApplication extends PanguApplication {
                 	clearPath(file,noDelBundles);
                 }else{
                 	if(noDelBundles.indexOf(file.getName()) < 0){
+                		Log.d(TAG, "del file : "+file.getAbsolutePath());
                 		file.delete();
                 	}
                     
                 }
             }
             if(noDelBundles.length() ==0){
+            	 Log.d(TAG, "del file : "+path.getAbsolutePath());
             	 path.delete();
             }
            
