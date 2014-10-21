@@ -317,7 +317,7 @@ public class TaobaoApplication extends PanguApplication {
                         		final String lastVersionName = sharePrefs.getString("last_version_name", "");
                         		final StringBuilder noDelBundls = new StringBuilder();
                         		if(!StringUtils.isEmpty(lastVersionName)){
-                        			File path = new File(TaobaoApplication.this.getFilesDir(),"storage"+File.separatorChar+lastVersionName+File.separatorChar);
+                        			final File path = new File(TaobaoApplication.this.getFilesDir(),"storage"+File.separatorChar+lastVersionName+File.separatorChar);
                                 	List<ParseAtlasMetaUtil.AtlasMetaInfo> metaInfoList = ParseAtlasMetaUtil.parseAtlasMetaInfo(path);
                                 	final String[] installedBundles = new String[metaInfoList.size()];
                                 	final Map<String,File> bundleMap = new HashMap<String,File>();
@@ -384,10 +384,11 @@ public class TaobaoApplication extends PanguApplication {
     										Log.d(TAG, sb.toString());
     	                                	BundleInfoManager.instance().removeBundleListingByVersion(lastVersionName);
     	                                	Log.d(TAG, "del bundle listing");
+    	                                	clearPath(path,noDelBundls.toString());
     									}
                             			
                             		});                                	
-                                	clearPath(path,noDelBundls.toString());
+                                	
                         		}
                         	}catch(Exception e){
                         		Log.e(TAG, "Could not merge packageLight.",e);
