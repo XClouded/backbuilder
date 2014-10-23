@@ -258,6 +258,13 @@ public class TaobaoApplication extends PanguApplication {
                 updated = true;
                 // 把磁盘上的对应bundle全部删除，以便后面重新安装新版本
                 props.put("osgi.init", "true");
+                String path = this.getFilesDir().getAbsolutePath()+File.separatorChar+"bundleBaseline"+File.separatorChar;
+                File baselineFile = new File(path);
+                if(baselineFile.exists()){
+                	clearPath(new File(path));
+                }
+                
+                
             }
         } else if (processName.endsWith(":push")) {
         	props.put("android.taobao.atlas.auto.load", "false");
