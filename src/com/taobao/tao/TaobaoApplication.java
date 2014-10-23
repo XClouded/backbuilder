@@ -269,9 +269,7 @@ public class TaobaoApplication extends PanguApplication {
         try {
             Atlas.getInstance().startup(props);
         	Bundle bundle = Atlas.getInstance().getBundle("com.taobao.libs");
-            if(bundle ==null){
-            	throw new Exception("Could not install jar bundle ,please retart !!!");
-            }else{                	
+            if(bundle !=null){                	
             	if(!(((BundleImpl)bundle).getArchive().isDexOpted())){
             		throw new Exception("Could not dexopt jar bundle ,please retart !!!");
             	}
