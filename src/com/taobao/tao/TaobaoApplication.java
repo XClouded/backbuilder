@@ -157,15 +157,6 @@ public class TaobaoApplication extends PanguApplication {
         
         //awbDebug = this.getResources().getString(R.string.awb_debug).equals("1") ? true : false;
         awbDebug = BuildConfig.DEBUG ? true : false;
-        SharedPreferences atlasPrefs = this.getSharedPreferences("atlas_configs", MODE_PRIVATE);
-        if(atlasPrefs !=null){
-        	String launchError = atlasPrefs.getString("ATLAS_LAUNCH_ERROR", "");
-        	if(!android.taobao.atlas.util.StringUtils.isEmpty(launchError)){
-        		Editor editor = atlasPrefs.edit();
-        		editor.clear();	
-        		editor.commit();
-        	}
-        }
         try {
             Atlas.getInstance().init(this);
         } catch (Exception e) {
@@ -257,14 +248,7 @@ public class TaobaoApplication extends PanguApplication {
 
                 updated = true;
                 // 把磁盘上的对应bundle全部删除，以便后面重新安装新版本
-                props.put("osgi.init", "true");
-                String path = this.getFilesDir().getAbsolutePath()+File.separatorChar+"bundleBaseline"+File.separatorChar;
-                File baselineFile = new File(path);
-                if(baselineFile.exists()){
-                	clearPath(new File(path));
-                }
-                
-                
+                props.put("osgi.init", "true");                
             }
         } else if (processName.endsWith(":push")) {
         	props.put("android.taobao.atlas.auto.load", "false");
