@@ -268,12 +268,20 @@ public class TaobaoApplication extends PanguApplication {
 
         try {
             Atlas.getInstance().startup(props);
+        	Bundle bundle = Atlas.getInstance().getBundle("com.taobao.libs");
+            if(bundle ==null){
+            	throw new Exception("Could not install jar bundle ,please retart !!!");
+            }else{                	
+            	if(!(((BundleImpl)bundle).getArchive().isDexOpted())){
+            		throw new Exception("Could not dexopt jar bundle ,please retart !!!");
+            	}
+           }
         } catch (Exception e) {
             Log.e(TAG, "Could not start up atlas framework !!!", e);
             Map<String,String> atlasMap = new ConcurrentHashMap<String,String>();
             atlasMap.put("ATLAS_LAUNCH_ERROR", "Could not start up atlas framework !");
             saveAtlasInfoBySharedPreferences(atlasMap);
-            throw new RuntimeException("Could not start up atlas framework ,please restart !!!",e);
+            throw new RuntimeException("Could not start up atlas framework ,please reinstall !!!",e);
         }
 
         long startupTime = System.currentTimeMillis() - START;
