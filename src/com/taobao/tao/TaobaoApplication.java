@@ -158,15 +158,6 @@ public class TaobaoApplication extends PanguApplication {
         
         //awbDebug = this.getResources().getString(R.string.awb_debug).equals("1") ? true : false;
         awbDebug = BuildConfig.DEBUG ? true : false;
-        SharedPreferences atlasPrefs = this.getSharedPreferences("atlas_configs", MODE_PRIVATE);
-        if(atlasPrefs !=null){
-        	String launchError = atlasPrefs.getString("ATLAS_LAUNCH_ERROR", "");
-        	if(!android.taobao.atlas.util.StringUtils.isEmpty(launchError)){
-        		Editor editor = atlasPrefs.edit();
-        		editor.clear();	
-        		editor.commit();
-        	}
-        }
         try {
             Atlas.getInstance().init(this);
         } catch (Exception e) {
@@ -258,7 +249,7 @@ public class TaobaoApplication extends PanguApplication {
 
                 updated = true;
                 // 把磁盘上的对应bundle全部删除，以便后面重新安装新版本
-                props.put("osgi.init", "true");
+                props.put("osgi.init", "true");                
             }
         } else if (processName.endsWith(":push")) {
         	props.put("android.taobao.atlas.auto.load", "false");
@@ -269,12 +260,18 @@ public class TaobaoApplication extends PanguApplication {
 
         try {
             Atlas.getInstance().startup(props);
+        	Bundle bundle = Atlas.getInstance().getBundle("com.taobao.libs");
+            if(bundle !=null){                	
+            	if(!(((BundleImpl)bundle).getArchive().isDexOpted())){
+            		throw new Exception("Could not dexopt jar bundle ,please retart !!!");
+            	}
+           }
         } catch (Exception e) {
             Log.e(TAG, "Could not start up atlas framework !!!", e);
             Map<String,String> atlasMap = new ConcurrentHashMap<String,String>();
             atlasMap.put("ATLAS_LAUNCH_ERROR", "Could not start up atlas framework !");
             saveAtlasInfoBySharedPreferences(atlasMap);
-            throw new RuntimeException("Could not start up atlas framework ,please restart !!!",e);
+            throw new RuntimeException("Could not start up atlas framework ,please reinstall !!!",e);
         }
 
         long startupTime = System.currentTimeMillis() - START;
