@@ -165,7 +165,7 @@ public class TaobaoApplication extends PanguApplication {
             Map<String,String> atlasMap = new ConcurrentHashMap<String,String>();
             atlasMap.put("ATLAS_LAUNCH_ERROR", "Could not init atlas framework!");
             saveAtlasInfoBySharedPreferences(atlasMap);
-            throw new RuntimeException("Could not init atlas framework !!!",e);
+            //throw new RuntimeException("Could not init atlas framework !!!",e);
         }
 
         Log.d(TAG, "Atlas framework inited " + (System.currentTimeMillis() - START) + " ms");
@@ -260,18 +260,18 @@ public class TaobaoApplication extends PanguApplication {
 
         try {
             Atlas.getInstance().startup(props);
-        	Bundle bundle = Atlas.getInstance().getBundle("com.taobao.libs");
-            if(bundle !=null){                	
-            	if(!(((BundleImpl)bundle).getArchive().isDexOpted())){
-            		throw new Exception("Could not dexopt jar bundle ,please retart !!!");
-            	}
-           }
+//        	Bundle bundle = Atlas.getInstance().getBundle("com.taobao.libs");
+//            if(bundle !=null){                	
+//            	if(!(((BundleImpl)bundle).getArchive().isDexOpted())){
+//            		throw new Exception("Could not dexopt jar bundle ,please retart !!!");
+//            	}
+//           }
         } catch (Exception e) {
             Log.e(TAG, "Could not start up atlas framework !!!", e);
             Map<String,String> atlasMap = new ConcurrentHashMap<String,String>();
             atlasMap.put("ATLAS_LAUNCH_ERROR", "Could not start up atlas framework !");
             saveAtlasInfoBySharedPreferences(atlasMap);
-            throw new RuntimeException("Could not start up atlas framework ,please reinstall !!!",e);
+            //throw new RuntimeException("Could not start up atlas framework ,please reinstall !!!",e);
         }
 
         long startupTime = System.currentTimeMillis() - START;
