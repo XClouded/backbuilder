@@ -132,18 +132,21 @@ public class TaobaoApplication extends PanguApplication {
         try {
             TaoPackageInfo.init();
             UTCrashHandler.getInstance().setChannel(TaoPackageInfo.sTTID);
-      
-            String baseline = Globals.getBaselineVer();
-            
+
             StringBuilder sb = new StringBuilder(32);
             
+            String baseline = Globals.getBaselineVer();
             if(!TextUtils.isEmpty(baseline)){
             	sb.append("_bv=").append(baseline).append(",");
             }
             
-            String isMiniPackage = this.getResources().getString(R.id.isMiniPackage);
-            if(!TextUtils.isEmpty(isMiniPackage)){
-            	sb.append("_jjb=").append(isMiniPackage).append(",");
+            try {
+	            String isMiniPackage = this.getResources().getString(R.id.isMiniPackage);
+	            if(!TextUtils.isEmpty(isMiniPackage)){
+	            	sb.append("_jjb=").append(isMiniPackage).append(",");
+	            }
+            }catch(Exception e){
+            	
             }
             
             if(sb.length() > 0){
