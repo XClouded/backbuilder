@@ -140,13 +140,9 @@ public class TaobaoApplication extends PanguApplication {
             	sb.append("_bv=").append(baseline).append(",");
             }
             
-            try {
-	            String isMiniPackage = this.getResources().getString(R.id.isMiniPackage);
-	            if(!TextUtils.isEmpty(isMiniPackage)){
-	            	sb.append("_jjb=").append(isMiniPackage).append(",");
-	            }
-            }catch(Exception e){
-            	
+            String isMiniPackage = Globals.isMiniPackage(this);
+            if(!TextUtils.isEmpty(isMiniPackage)){
+            	sb.append("_jjb=").append(isMiniPackage).append(",");
             }
             
             if(sb.length() > 0){
