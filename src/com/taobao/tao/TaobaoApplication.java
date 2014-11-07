@@ -81,8 +81,6 @@ public class TaobaoApplication extends PanguApplication {
 
     //doesn't delete used for online monitor
     private static long START = 0;
-    
-    private Map<String,Long> userTrackDataMap = new HashMap<String,Long>();
 
     private ArrayList<String> awbFilePathForDebug = new ArrayList<String>();
     /**
@@ -177,10 +175,6 @@ public class TaobaoApplication extends PanguApplication {
             Atlas.getInstance().init(this);
         } catch (Exception e) {
             Log.e(TAG, "Could not init atlas framework !!!", e);
-            Map<String,String> atlasMap = new ConcurrentHashMap<String,String>();
-            atlasMap.put("ATLAS_LAUNCH_ERROR", "Could not init atlas framework!");
-            saveAtlasInfoBySharedPreferences(atlasMap);
-            //throw new RuntimeException("Could not init atlas framework !!!",e);
         }
 
         Log.d(TAG, "Atlas framework inited " + (System.currentTimeMillis() - START) + " ms");
@@ -200,11 +194,9 @@ public class TaobaoApplication extends PanguApplication {
         Properties props = new Properties();
         props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
         props.put("android.taobao.atlas.debug.bundles", "true");
-        props.put("osgi.auto.install.1", "com.taobao.libs");
-        props.put("osgi.auto.install.file", "libcom_taobao_libs.so");
-        ClassNotFoundInterceptor calssNotFoundCallback = new ClassNotFoundInterceptor();
-        Atlas.getInstance().setClassNotFoundInterceptorCallback(calssNotFoundCallback);
 		if(Globals.isMiniPackage()){
+			ClassNotFoundInterceptor calssNotFoundCallback = new ClassNotFoundInterceptor();
+	        Atlas.getInstance().setClassNotFoundInterceptorCallback(calssNotFoundCallback);
         	String versionName = getPackageInfo().versionName;
         	File path = new File(this.getFilesDir(),"storage"+File.separatorChar+versionName+File.separatorChar);
         	props.put("android.taobao.atlas.storage", path.getAbsolutePath());
@@ -275,23 +267,11 @@ public class TaobaoApplication extends PanguApplication {
 
         try {
             Atlas.getInstance().startup(props);
-//        	Bundle bundle = Atlas.getInstance().getBundle("com.taobao.libs");
-//            if(bundle !=null){                	
-//            	if(!(((BundleImpl)bundle).getArchive().isDexOpted())){
-//            		throw new Exception("Could not dexopt jar bundle ,please retart !!!");
-//            	}
-//           }
         } catch (Exception e) {
             Log.e(TAG, "Could not start up atlas framework !!!", e);
-            Map<String,String> atlasMap = new ConcurrentHashMap<String,String>();
-            atlasMap.put("ATLAS_LAUNCH_ERROR", "Could not start up atlas framework !");
-            saveAtlasInfoBySharedPreferences(atlasMap);
-            //throw new RuntimeException("Could not start up atlas framework ,please reinstall !!!",e);
         }
 
         long startupTime = System.currentTimeMillis() - START;
-        //userTrackDataMap.put("atlas_startup_time", startupTime);
-        //saveUserTrackData();
         Log.d(TAG, "Atlas framework started in process " + processName + " " + (startupTime)
                    + " ms");
 
@@ -448,8 +428,6 @@ public class TaobaoApplication extends PanguApplication {
                     TaobaoApplication.this.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
                     
                     long updateTime = System.currentTimeMillis() - start;
-                    //userTrackDataMap.put("atlas_update_time", updateTime);
-                    //saveUserTrackData();
                     Log.d(TAG, "Install & dexopt bundles in process " + processName + " " + (updateTime) + " ms");
                     
 					// 完成delayed bundle的dexopt，并且enable Activity
@@ -656,20 +634,7 @@ public class TaobaoApplication extends PanguApplication {
         }
         return entryNames;
     }
-
-    /**
-     * 保存Atals启动、更新花费时间，欢迎页埋点用到这些数据，不要删除
-     */
-    private void saveUserTrackData(){
-        SharedPreferences prefs = TaobaoApplication.this.getSharedPreferences("atlas_configs",
-                                                                              MODE_PRIVATE);
-        Editor editor = prefs.edit();
-        for(String entry : userTrackDataMap.keySet()){
-            editor.putLong(entry,userTrackDataMap.get(entry));
-        }
-        editor.apply();
-    }
-    
+   
     /**
      * 保存Atals启动、更新花费时间，欢迎页埋点用到这些数据，不要删除
      */
