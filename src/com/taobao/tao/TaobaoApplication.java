@@ -194,14 +194,14 @@ public class TaobaoApplication extends PanguApplication {
         Properties props = new Properties();
         props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
         props.put("android.taobao.atlas.debug.bundles", "true");
-		if(Globals.isMiniPackage()){
+//		if(Globals.isMiniPackage()){
 			ClassNotFoundInterceptor calssNotFoundCallback = new ClassNotFoundInterceptor();
 	        Atlas.getInstance().setClassNotFoundInterceptorCallback(calssNotFoundCallback);
         	String versionName = getPackageInfo().versionName;
         	File path = new File(this.getFilesDir(),"storage"+File.separatorChar+versionName+File.separatorChar);
         	props.put("android.taobao.atlas.storage", path.getAbsolutePath());
         	Log.d(TAG, "miniPackage storage path "+path.getAbsolutePath());
-        }
+//        }
 		
         /*********************↓ ↓ ↓ ↓ For awb debug ↓ ↓ ↓ ↓***************************/
         boolean supportExternalAwbDebug = false;
