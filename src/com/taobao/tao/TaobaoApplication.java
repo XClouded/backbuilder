@@ -89,6 +89,7 @@ public class TaobaoApplication extends PanguApplication {
     private boolean awbDebug = false;
     
     private String processName;
+    private boolean resetForOverrideInstall;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -227,7 +228,15 @@ public class TaobaoApplication extends PanguApplication {
         PackageInfo packageInfo = null;
 
         if (this.getPackageName().equals(processName)) {
-
+            // 检测之前的版本记录
+            SharedPreferences configPrefs = this.getSharedPreferences("atlas_configs", MODE_PRIVATE);
+            String isMiniPackageCache = configPrefs.getString("isMiniPackage","");
+            resetForOverrideInstall = !String.valueOf(Globals.isMiniPackage()).equals(isMiniPackageCache);
+            if(TextUtils.isEmpty(isMiniPackageCache)) {
+                Editor editor = configPrefs.edit();
+                editor.putString("isMiniPackage", String.valueOf(Globals.isMiniPackage()));
+                editor.apply();
+            }
             // 非debug版本设置公钥，用于atlas校验签名
             if (!Versions.isDebug() && !isLowDevice() && ApkUtils.isRootSystem()) {
                 props.put("android.taobao.atlas.publickey", "30819f300d06092a864886f70d010101050003818d00308189028181008406125f369fde2720f7264923a63dc48e1243c1d9783ed44d8c276602d2d570073d92c155b81d5899e9a8a97e06353ac4b044d07ca3e2333677d199e0969c96489f6323ed5368e1760731704402d0112c002ccd09a06d27946269a438fe4b0216b718b658eed9d165023f24c6ddaec0af6f47ada8306ad0c4f0fcd80d9b69110203010001");
@@ -252,7 +261,8 @@ public class TaobaoApplication extends PanguApplication {
             // 判断版本是否更新了
             if (supportExternalAwbDebug || packageInfo.versionCode > lastVersionCode
                 || (packageInfo.versionCode == lastVersionCode && !TextUtils.equals(packageInfo.versionName,
-                                                                                    lastVersionName))) {
+                                                                                    lastVersionName))
+                || resetForOverrideInstall) {
 
                 updated = true;
                 // 把磁盘上的对应bundle全部删除，以便后面重新安装新版本
@@ -332,54 +342,56 @@ public class TaobaoApplication extends PanguApplication {
                                 		sb.append("-->");
                                 	}
                                 	Log.d(TAG, sb.toString());
-                                	Handler h = new Handler(Looper.getMainLooper());
-                            		h.post(new Runnable(){
-    									@Override
-    									public void run() {
-    										List<String> pkgList = BundleInfoManager.instance().resolveSameVersionBundle(installedBundles,lastVersionName,getPackageInfo().versionName, true);
-    										StringBuilder sb = new StringBuilder("output bundle listing: ");
-    										if(pkgList !=null && pkgList.size() >0){
-    	                                		for(String pkg:pkgList){
-    	                                			sb.append(pkg);
-    	                                			if(Atlas.getInstance().getBundle(pkg)==null){
-    	                                				Bundle bundle = null;
-    	                                				try {
-    	                                					sb.append("install bundle-->packageName: "+pkg +"bundleFile: "+bundleMap.get(pkg));
-    	        											bundle = Atlas.getInstance().installBundle(pkg,bundleMap.get(pkg).getAbsoluteFile());
-    	        											if(bundle!=null){
-    	        												noDelBundls.append(bundleMap.get(pkg).getAbsolutePath());
-    	        												if(bundlePersistent.get(pkg)){
-    	        													bundle.start();
-    	        												}
-    	        												((BundleImpl) bundle).optDexFile();
-    	        				                                Atlas.getInstance().enableComponent(bundle.getLocation());
-    	        												
-    	        											}
-    	        										} catch (Exception e) {
-    	        											 try {
-    	        												 if(bundle!=null){
-    	        													((BundleImpl) bundle).optDexFile();
-     	        				                                    Atlas.getInstance().enableComponent(bundle.getLocation());
-    	        													 
-    	        												 }
-    	        				                                } catch (Exception e1) {
-    	        				                                	Log.e(TAG, "Could not install bundle.", e1);
-    	        				                                }
-    	        										}
-    	                                				sb.append("-->");
-    	                                				sb.append("installed");
-    	                                			}
-    	                                		}
-    	                                	}
-    										sb.append("-->");
-                            				sb.append("uninstall");
-    										Log.d(TAG, sb.toString());
-    	                                	BundleInfoManager.instance().removeBundleListingByVersion(lastVersionName);
-    	                                	Log.d(TAG, "del bundle listing");
-    	                                	clearPath(path,noDelBundls.toString());
-    									}
-                            			
-                            		});                                	
+                                    if(!resetForOverrideInstall) {
+                                        Handler h = new Handler(Looper.getMainLooper());
+                                        h.post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                List<String> pkgList = BundleInfoManager.instance().resolveSameVersionBundle(installedBundles, lastVersionName, getPackageInfo().versionName, true);
+                                                StringBuilder sb = new StringBuilder("output bundle listing: ");
+                                                if (pkgList != null && pkgList.size() > 0) {
+                                                    for (String pkg : pkgList) {
+                                                        sb.append(pkg);
+                                                        if (Atlas.getInstance().getBundle(pkg) == null) {
+                                                            Bundle bundle = null;
+                                                            try {
+                                                                sb.append("install bundle-->packageName: " + pkg + "bundleFile: " + bundleMap.get(pkg));
+                                                                bundle = Atlas.getInstance().installBundle(pkg, bundleMap.get(pkg).getAbsoluteFile());
+                                                                if (bundle != null) {
+                                                                    noDelBundls.append(bundleMap.get(pkg).getAbsolutePath());
+                                                                    if (bundlePersistent.get(pkg)) {
+                                                                        bundle.start();
+                                                                    }
+                                                                    ((BundleImpl) bundle).optDexFile();
+                                                                    Atlas.getInstance().enableComponent(bundle.getLocation());
+
+                                                                }
+                                                            } catch (Exception e) {
+                                                                try {
+                                                                    if (bundle != null) {
+                                                                        ((BundleImpl) bundle).optDexFile();
+                                                                        Atlas.getInstance().enableComponent(bundle.getLocation());
+
+                                                                    }
+                                                                } catch (Exception e1) {
+                                                                    Log.e(TAG, "Could not install bundle.", e1);
+                                                                }
+                                                            }
+                                                            sb.append("-->");
+                                                            sb.append("installed");
+                                                        }
+                                                    }
+                                                }
+                                                sb.append("-->");
+                                                sb.append("uninstall");
+                                                Log.d(TAG, sb.toString());
+                                                BundleInfoManager.instance().removeBundleListingByVersion(lastVersionName);
+                                                Log.d(TAG, "del bundle listing");
+                                                clearPath(path, noDelBundls.toString());
+                                            }
+
+                                        });
+                                    }
                                 	
                         		}
                         	}catch(Exception e){
@@ -463,11 +475,11 @@ public class TaobaoApplication extends PanguApplication {
 		                    	if(!bundle.getArchive().isDexOpted()){
 									try {
 										bundle.optDexFile();
-										Atlas.getInstance().enableComponent(bundle.getLocation());
+//										Atlas.getInstance().enableComponent(bundle.getLocation());
 									} catch (Exception e) {
 									    try{
 									        bundle.optDexFile();  
-									        Atlas.getInstance().enableComponent(bundle.getLocation());
+//									        Atlas.getInstance().enableComponent(bundle.getLocation());
 									    }catch(Exception e1){
 									        Log.e(TAG, "Error while dexopt >>>", e1);
 									    }
