@@ -196,8 +196,6 @@ public class TaobaoApplication extends PanguApplication {
         props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
         props.put("android.taobao.atlas.debug.bundles", "true");
 //		if(Globals.isMiniPackage()){
-			ClassNotFoundInterceptor calssNotFoundCallback = new ClassNotFoundInterceptor();
-	        Atlas.getInstance().setClassNotFoundInterceptorCallback(calssNotFoundCallback);
         	String versionName = getPackageInfo().versionName;
         	File path = new File(this.getFilesDir(),"storage"+File.separatorChar+versionName+File.separatorChar);
         	props.put("android.taobao.atlas.storage", path.getAbsolutePath());
@@ -232,10 +230,12 @@ public class TaobaoApplication extends PanguApplication {
             SharedPreferences configPrefs = this.getSharedPreferences("atlas_configs", MODE_PRIVATE);
             String isMiniPackageCache = configPrefs.getString("isMiniPackage","");
             resetForOverrideInstall = !String.valueOf(Globals.isMiniPackage()).equals(isMiniPackageCache);
-            if(TextUtils.isEmpty(isMiniPackageCache)) {
+            Log.d("TaobaoApplication","resetForOverrideInstall = " + resetForOverrideInstall);
+            if(TextUtils.isEmpty(isMiniPackageCache) || resetForOverrideInstall) {
                 Editor editor = configPrefs.edit();
+                editor.clear();
                 editor.putString("isMiniPackage", String.valueOf(Globals.isMiniPackage()));
-                editor.apply();
+                editor.commit();
             }
             // 非debug版本设置公钥，用于atlas校验签名
             if (!Versions.isDebug() && !isLowDevice() && ApkUtils.isRootSystem()) {
@@ -437,8 +437,7 @@ public class TaobaoApplication extends PanguApplication {
                     saveAtlasInfoBySharedPreferences(atlasMap);
                     System.setProperty("BUNDLES_INSTALLED", "true");
                     Log.d(TAG, "sendBroadcast: com.taobao.taobao.action.BUNDLES_INSTALLED");
-                    TaobaoApplication.this.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
-                    
+                    notifyBundleInstalled();
                     long updateTime = System.currentTimeMillis() - start;
                     Log.d(TAG, "Install & dexopt bundles in process " + processName + " " + (updateTime) + " ms");
                     
@@ -493,7 +492,7 @@ public class TaobaoApplication extends PanguApplication {
 		                    saveAtlasInfoBySharedPreferences(atlasMap);
 		                    System.setProperty("BUNDLES_INSTALLED", "true");
 		                    Log.d(TAG, "@_@ set property BUNDLES_INSTALLED = true");
-		                    sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
+		                    notifyBundleInstalled();
 		                }						
                 });
             }
@@ -732,6 +731,12 @@ public class TaobaoApplication extends PanguApplication {
             }
            
         }
+    }
+
+    private void notifyBundleInstalled(){
+        sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
+        ClassNotFoundInterceptor calssNotFoundCallback = new ClassNotFoundInterceptor();
+        Atlas.getInstance().setClassNotFoundInterceptorCallback(calssNotFoundCallback);
     }
     
     
