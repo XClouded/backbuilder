@@ -196,10 +196,12 @@ public class TaobaoApplication extends PanguApplication {
         props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
         props.put("android.taobao.atlas.debug.bundles", "true");
 //		if(Globals.isMiniPackage()){
-        	String versionName = getPackageInfo().versionName;
-        	File path = new File(this.getFilesDir(),"storage"+File.separatorChar+versionName+File.separatorChar);
-        	props.put("android.taobao.atlas.storage", path.getAbsolutePath());
-        	Log.d(TAG, "miniPackage storage path "+path.getAbsolutePath());
+//        	String versionName = getPackageInfo().versionName;
+////        	File path = new File(this.getFilesDir(),"storage"+File.separatorChar+versionName+File.separatorChar);
+//        File path = new File(this.getFilesDir(),"storage"+File.separatorChar);
+//
+//        props.put("android.taobao.atlas.storage", path.getAbsolutePath());
+//        	Log.d(TAG, "miniPackage storage path "+path.getAbsolutePath());
 //        }
 		
         /*********************↓ ↓ ↓ ↓ For awb debug ↓ ↓ ↓ ↓***************************/
@@ -314,90 +316,90 @@ public class TaobaoApplication extends PanguApplication {
                         processLibsBundles(zipFile, entryNames);
 						//执行未变化的bundle安装
                         sharePrefs = TaobaoApplication.this.getSharedPreferences("atlas_configs", MODE_PRIVATE);
-                        if(Globals.isMiniPackage()){
-                        	try{
-                        		final String lastVersionName = sharePrefs.getString("last_version_name", "");
-                        		final StringBuilder noDelBundls = new StringBuilder();
-                        		if(!StringUtils.isEmpty(lastVersionName)){
-                        			final File path = new File(TaobaoApplication.this.getFilesDir(),"storage"+File.separatorChar+lastVersionName+File.separatorChar);
-                                	List<ParseAtlasMetaUtil.AtlasMetaInfo> metaInfoList = ParseAtlasMetaUtil.parseAtlasMetaInfo(path);
-                                	final String[] installedBundles = new String[metaInfoList.size()];
-                                	final Map<String,File> bundleMap = new HashMap<String,File>();
-                                	final Map<String,Boolean> bundlePersistent = new HashMap<String,Boolean>();
-                                	StringBuilder sb = new StringBuilder("input bundle listing: ");
-                                	
-                                	
-                                	for(int i=0; i<metaInfoList.size();i++){
-                                		String pkgName = metaInfoList.get(i).getPackageName();
-                                		File file = metaInfoList.get(i).getBundleFile();
-                                		Boolean isPersistent = metaInfoList.get(i).isPersistently();
-                                		bundleMap.put(pkgName, file);
-                                		bundlePersistent.put(pkgName, isPersistent);
-                                		installedBundles[i] = pkgName;
-                                		sb.append(pkgName);
-                                		sb.append("-->");
-                                		sb.append(file.getAbsolutePath());
-                                		sb.append("-->");
-                                		sb.append(isPersistent);
-                                		sb.append("-->");
-                                	}
-                                	Log.d(TAG, sb.toString());
-                                    if(!resetForOverrideInstall) {
-                                        Handler h = new Handler(Looper.getMainLooper());
-                                        h.post(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                List<String> pkgList = BundleInfoManager.instance().resolveSameVersionBundle(installedBundles, lastVersionName, getPackageInfo().versionName, true);
-                                                StringBuilder sb = new StringBuilder("output bundle listing: ");
-                                                if (pkgList != null && pkgList.size() > 0) {
-                                                    for (String pkg : pkgList) {
-                                                        sb.append(pkg);
-                                                        if (Atlas.getInstance().getBundle(pkg) == null) {
-                                                            Bundle bundle = null;
-                                                            try {
-                                                                sb.append("install bundle-->packageName: " + pkg + "bundleFile: " + bundleMap.get(pkg));
-                                                                bundle = Atlas.getInstance().installBundle(pkg, bundleMap.get(pkg).getAbsoluteFile());
-                                                                if (bundle != null) {
-                                                                    noDelBundls.append(bundleMap.get(pkg).getAbsolutePath());
-                                                                    if (bundlePersistent.get(pkg)) {
-                                                                        bundle.start();
-                                                                    }
-                                                                    ((BundleImpl) bundle).optDexFile();
-                                                                    Atlas.getInstance().enableComponent(bundle.getLocation());
-
-                                                                }
-                                                            } catch (Exception e) {
-                                                                try {
-                                                                    if (bundle != null) {
-                                                                        ((BundleImpl) bundle).optDexFile();
-                                                                        Atlas.getInstance().enableComponent(bundle.getLocation());
-
-                                                                    }
-                                                                } catch (Exception e1) {
-                                                                    Log.e(TAG, "Could not install bundle.", e1);
-                                                                }
-                                                            }
-                                                            sb.append("-->");
-                                                            sb.append("installed");
-                                                        }
-                                                    }
-                                                }
-                                                sb.append("-->");
-                                                sb.append("uninstall");
-                                                Log.d(TAG, sb.toString());
-                                                BundleInfoManager.instance().removeBundleListingByVersion(lastVersionName);
-                                                Log.d(TAG, "del bundle listing");
-                                                clearPath(path, noDelBundls.toString());
-                                            }
-
-                                        });
-                                    }
-                                	
-                        		}
-                        	}catch(Exception e){
-                        		Log.e(TAG, "Could not merge packageLight.",e);
-                        	}
-                        }
+//                        if(Globals.isMiniPackage()){
+//                        	try{
+//                        		final String lastVersionName = sharePrefs.getString("last_version_name", "");
+//                        		final StringBuilder noDelBundls = new StringBuilder();
+//                        		if(!StringUtils.isEmpty(lastVersionName)){
+//                        			final File path = new File(TaobaoApplication.this.getFilesDir(),"storage"+File.separatorChar+lastVersionName+File.separatorChar);
+//                                	List<ParseAtlasMetaUtil.AtlasMetaInfo> metaInfoList = ParseAtlasMetaUtil.parseAtlasMetaInfo(path);
+//                                	final String[] installedBundles = new String[metaInfoList.size()];
+//                                	final Map<String,File> bundleMap = new HashMap<String,File>();
+//                                	final Map<String,Boolean> bundlePersistent = new HashMap<String,Boolean>();
+//                                	StringBuilder sb = new StringBuilder("input bundle listing: ");
+//
+//
+//                                	for(int i=0; i<metaInfoList.size();i++){
+//                                		String pkgName = metaInfoList.get(i).getPackageName();
+//                                		File file = metaInfoList.get(i).getBundleFile();
+//                                		Boolean isPersistent = metaInfoList.get(i).isPersistently();
+//                                		bundleMap.put(pkgName, file);
+//                                		bundlePersistent.put(pkgName, isPersistent);
+//                                		installedBundles[i] = pkgName;
+//                                		sb.append(pkgName);
+//                                		sb.append("-->");
+//                                		sb.append(file.getAbsolutePath());
+//                                		sb.append("-->");
+//                                		sb.append(isPersistent);
+//                                		sb.append("-->");
+//                                	}
+//                                	Log.d(TAG, sb.toString());
+//                                    if(!resetForOverrideInstall) {
+//                                        Handler h = new Handler(Looper.getMainLooper());
+//                                        h.post(new Runnable() {
+//                                            @Override
+//                                            public void run() {
+//                                                List<String> pkgList = BundleInfoManager.instance().resolveSameVersionBundle(installedBundles, lastVersionName, getPackageInfo().versionName, true);
+//                                                StringBuilder sb = new StringBuilder("output bundle listing: ");
+//                                                if (pkgList != null && pkgList.size() > 0) {
+//                                                    for (String pkg : pkgList) {
+//                                                        sb.append(pkg);
+//                                                        if (Atlas.getInstance().getBundle(pkg) == null) {
+//                                                            Bundle bundle = null;
+//                                                            try {
+//                                                                sb.append("install bundle-->packageName: " + pkg + "bundleFile: " + bundleMap.get(pkg));
+//                                                                bundle = Atlas.getInstance().installBundle(pkg, bundleMap.get(pkg).getAbsoluteFile());
+//                                                                if (bundle != null) {
+//                                                                    noDelBundls.append(bundleMap.get(pkg).getAbsolutePath());
+//                                                                    if (bundlePersistent.get(pkg)) {
+//                                                                        bundle.start();
+//                                                                    }
+//                                                                    ((BundleImpl) bundle).optDexFile();
+//                                                                    Atlas.getInstance().enableComponent(bundle.getLocation());
+//
+//                                                                }
+//                                                            } catch (Exception e) {
+//                                                                try {
+//                                                                    if (bundle != null) {
+//                                                                        ((BundleImpl) bundle).optDexFile();
+//                                                                        Atlas.getInstance().enableComponent(bundle.getLocation());
+//
+//                                                                    }
+//                                                                } catch (Exception e1) {
+//                                                                    Log.e(TAG, "Could not install bundle.", e1);
+//                                                                }
+//                                                            }
+//                                                            sb.append("-->");
+//                                                            sb.append("installed");
+//                                                        }
+//                                                    }
+//                                                }
+//                                                sb.append("-->");
+//                                                sb.append("uninstall");
+//                                                Log.d(TAG, sb.toString());
+//                                                BundleInfoManager.instance().removeBundleListingByVersion(lastVersionName);
+//                                                Log.d(TAG, "del bundle listing");
+//                                                clearPath(path, noDelBundls.toString());
+//                                            }
+//
+//                                        });
+//                                    }
+//
+//                        		}
+//                        	}catch(Exception e){
+//                        		Log.e(TAG, "Could not merge packageLight.",e);
+//                        	}
+//                        }
                         Editor editor = sharePrefs.edit();
                         editor.putInt("last_version_code", getPackageInfo().versionCode);
                         editor.putString("last_version_name", getPackageInfo().versionName);
