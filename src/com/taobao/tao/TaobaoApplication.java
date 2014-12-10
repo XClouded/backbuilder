@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -790,5 +793,33 @@ public class TaobaoApplication extends PanguApplication {
 			return super.openOrCreateDatabase(name, mode, factory);
 		}
 	}
+
+//    private PackageManagerProxyhandler mPackageManagerProxyhandler;
+//    @Override
+//    public PackageManager getPackageManager(){
+//        if(mPackageManagerProxyhandler==null){
+//            mPackageManagerProxyhandler = new PackageManagerProxyhandler(super.getPackageManager());
+//        }
+//        PackageManager proxyManager = (PackageManager)Proxy.newProxyInstance(getClassLoader(),new Class[]{PackageManager.class},mPackageManagerProxyhandler);
+//        return proxyManager;
+//    }
+
+    public class PackageManagerProxyhandler implements InvocationHandler{
+
+        private PackageManager packageManager;
+
+        public PackageManagerProxyhandler(PackageManager pm){
+            packageManager = pm;
+        }
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            if(method.getName().equals("getPackageInfo")){
+                PackageInfo info = (PackageInfo)method.invoke(packageManager,args);
+                info.versionName = Globals.getVersionName();
+                return info;
+            }
+            return method.invoke(packageManager,args);
+        }
+    }
     
 }
