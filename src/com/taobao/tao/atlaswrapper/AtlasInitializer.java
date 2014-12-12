@@ -156,6 +156,12 @@ public class AtlasInitializer {
 	           		// Just send out the bundle installed message out, so that homepage could be started.
                     System.setProperty("BUNDLES_INSTALLED", "true");
                     mApplication.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
+                    
+                    /*
+                     *  Need update package version when not install bundles at onCreate, to avoid storage directory
+                     *  being deleted once and once again, since the updated flag would be always true. 
+                     */
+                    bundlesInstaller.UpdatePackageVersion();
 	           	} else
 	            Coordinator.postTask(new TaggedRunnable("ProcessBundles") {
 	

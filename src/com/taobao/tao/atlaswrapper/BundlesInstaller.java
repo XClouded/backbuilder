@@ -91,16 +91,7 @@ public class BundlesInstaller {
             }
             processLibsBundles(zipFile, entryNames, mApplication);	                        
 
-            /*
-             *  For mini package, after upgrade, 1st install all bundles downloaded, then overide with those not supported bundles already installed.
-             */
-            prefs = mApplication.getSharedPreferences("atlas_configs", Context.MODE_PRIVATE);	         
-            mMiniPackage.process(prefs, mPackageInfo);
-            
-            Editor editor = prefs.edit();
-            editor.putInt("last_version_code", mPackageInfo.versionCode);
-            editor.putString("last_version_name", mPackageInfo.versionName);
-            editor.commit();
+            UpdatePackageVersion();
 
         } catch (IOException e) {
             Log.e(TAG, "IOException while processLibsBundles >>>", e);
@@ -116,6 +107,26 @@ public class BundlesInstaller {
         
         // Mark process flag as true to avoid bundle installation executed twice.
         mIsProcessed = true;
+	}
+
+	public void UpdatePackageVersion() {
+		// Never process once not initialized yet to avoid null exception
+		if (!mIsInited){
+			Log.e(TAG, "Bundle Installer not initialized yet, process abort!");
+			return;
+		}
+		
+		SharedPreferences prefs;
+		/*
+		 *  For mini package, after upgrade, 1st install all bundles downloaded, then overide with those not supported bundles already installed.
+		 */
+		prefs = mApplication.getSharedPreferences("atlas_configs", Context.MODE_PRIVATE);	         
+		mMiniPackage.process(prefs, mPackageInfo);
+		
+		Editor editor = prefs.edit();
+		editor.putInt("last_version_code", mPackageInfo.versionCode);
+		editor.putString("last_version_name", mPackageInfo.versionName);
+		editor.commit();
 	}	
     
     private List<String> getBundleEntryNames(ZipFile zipFile, String prefix, String suffix) {
