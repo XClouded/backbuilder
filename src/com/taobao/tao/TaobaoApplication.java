@@ -230,15 +230,15 @@ public class TaobaoApplication extends PanguApplication {
 		}
 	}
 
-//    private PackageManagerProxyhandler mPackageManagerProxyhandler;
-//    @Override
-//    public PackageManager getPackageManager(){
-//        if(mPackageManagerProxyhandler==null){
-//            mPackageManagerProxyhandler = new PackageManagerProxyhandler(super.getPackageManager());
-//        }
-//        PackageManager proxyManager = (PackageManager)Proxy.newProxyInstance(getClassLoader(),new Class[]{PackageManager.class},mPackageManagerProxyhandler);
-//        return proxyManager;
-//    }
+    private PackageManagerProxyhandler mPackageManagerProxyhandler;
+    @Override
+    public PackageManager getPackageManager(){
+        if(mPackageManagerProxyhandler==null){
+            mPackageManagerProxyhandler = new PackageManagerProxyhandler(super.getPackageManager());
+        }
+        PackageManager proxyManager = (PackageManager)Proxy.newProxyInstance(getClassLoader(),new Class[]{PackageManager.class},mPackageManagerProxyhandler);
+        return proxyManager;
+    }
 
     public class PackageManagerProxyhandler implements InvocationHandler{
 
@@ -252,6 +252,7 @@ public class TaobaoApplication extends PanguApplication {
             if(method.getName().equals("getPackageInfo")){
                 PackageInfo info = (PackageInfo)method.invoke(packageManager,args);
                 info.versionName = Globals.getVersionName();
+                info.versionCode = Globals.getVersionCode();
                 return info;
             }
             return method.invoke(packageManager,args);

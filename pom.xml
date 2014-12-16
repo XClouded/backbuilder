@@ -32,6 +32,12 @@
             <type>aar</type>
             <scope>${scope.value}</scope>
         </dependency>
+        <dependency>
+            <groupId>com.taobao.android</groupId>
+            <artifactId>update</artifactId>
+            <type>aar</type>
+            <scope>${scope.value}</scope>
+        </dependency>
     </dependencies>
      <build>
         <finalName>${project.artifactId}</finalName>
