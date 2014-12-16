@@ -13,11 +13,11 @@
             android:name="com.taobao.tao.TaobaoApplication"
             android:icon="@drawable/icon"
             android:label="@string/taobao_app_name" >
-<!-- 
+
         <meta-data
                 android:name="application"
-                android:value="com.taobao.tao.TaoApplication,com.taobao.browser.BrowserApplication" >
-        </meta-data> -->
+                android:value="com.taobao.tao.TaoApplication" >
+        </meta-data>
 
         <receiver android:name="com.taobao.tao.atlaswrapper.ReplacedReceiver" >
             <intent-filter>
