@@ -3,10 +3,7 @@ package com.taobao.tao;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -17,6 +14,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import android.taobao.atlas.hack.AndroidHack;
+import android.taobao.atlas.hack.AtlasHacks;
+import android.taobao.atlas.hack.Reflect;
+import com.taobao.tao.util.StringUtil;
 import org.osgi.framework.Bundle;
 
 import android.annotation.SuppressLint;
@@ -231,32 +232,90 @@ public class TaobaoApplication extends PanguApplication {
 	}
 
     private PackageManagerProxyhandler mPackageManagerProxyhandler;
+    private PackageManager mPackageManager;
+    private Context mBaseContext;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        mBaseContext = base;
+        Field sInstalledVersionName = null;
+        try {
+            sInstalledVersionName = Globals.class.getDeclaredField("sInstalledVersionName");
+            sInstalledVersionName.setAccessible(true);
+            sInstalledVersionName.set(null, mBaseContext.getPackageManager().getPackageInfo(base.getPackageName(),0).versionName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public PackageManager getPackageManager(){
-        if(mPackageManagerProxyhandler==null){
-            mPackageManagerProxyhandler = new PackageManagerProxyhandler(super.getPackageManager());
+        if(mPackageManager!=null){
+            return mPackageManager;
         }
-        PackageManager proxyManager = (PackageManager)Proxy.newProxyInstance(getClassLoader(),new Class[]{PackageManager.class},mPackageManagerProxyhandler);
-        return proxyManager;
+        try {
+            Class IPackageManagerClass = Class.forName("android.content.pm.IPackageManager");
+            Class ActvityThread = Class.forName("android.app.ActivityThread");
+            Method method = ActvityThread.getDeclaredMethod("getPackageManager");
+            method.setAccessible(true);
+            Object mPm = method.invoke(ActvityThread);
+            if (mPm != null) {
+                if (mPackageManagerProxyhandler == null) {
+                    mPackageManagerProxyhandler = new PackageManagerProxyhandler(mPm);
+                }
+                Object mProxyPm = Proxy.newProxyInstance(getClassLoader(), new Class[]{IPackageManagerClass}, mPackageManagerProxyhandler);
+
+                Class ApplicationPackageManager = Class.forName("android.app.ApplicationPackageManager");
+                Class ContextImpl = Class.forName("android.app.ContextImpl");
+                Class<?>[] constructorArgs = {ContextImpl, IPackageManagerClass};
+                Constructor<?> constructor = ApplicationPackageManager.getDeclaredConstructor(constructorArgs);
+                constructor.setAccessible(true);
+                mPackageManager = (PackageManager)constructor.newInstance(mBaseContext, mProxyPm);
+                return mPackageManager;
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            return super.getPackageManager();
+        }
+        return super.getPackageManager();
     }
 
     public class PackageManagerProxyhandler implements InvocationHandler{
-
-        private PackageManager packageManager;
-
-        public PackageManagerProxyhandler(PackageManager pm){
-            packageManager = pm;
+        private Object mPm;
+        public PackageManagerProxyhandler(Object pm){
+            mPm = pm;
         }
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if(method.getName().equals("getPackageInfo")){
-                PackageInfo info = (PackageInfo)method.invoke(packageManager,args);
-                info.versionName = Globals.getVersionName();
-                info.versionCode = Globals.getVersionCode();
+            if(method.getName().equals("getPackageInfo") && args[0]!=null && args[0].equals(getPackageName())){
+                Log.d("TaobaoApplication","invoke method = " + "change version");
+                PackageInfo info = mBaseContext.getPackageManager().getPackageInfo(getPackageName(),0);
+                String containerVersion = info.versionName;
+                int baselineVersionCode = BaselineInfoProvider.getInstance().getMainVersionCode();
+                if(info.versionCode > baselineVersionCode){
+                    return info;
+                }
+                String mainVersion = BaselineInfoProvider.getInstance().getMainVersionName();
+                if(!StringUtil.isEmpty(mainVersion)){
+                    if(!containerVersion.equalsIgnoreCase(mainVersion)){
+                        return info;
+                    }
+                }
+                String baselineVersion = BaselineInfoProvider.getInstance().getBaselineVersion();
+                if(!StringUtil.isEmpty(mainVersion) && !StringUtil.isEmpty(baselineVersion)){
+
+                    String[] v = mainVersion.split("\\.");
+                    if(v.length >= 3) {
+                        v[2] = baselineVersion;
+                        info.versionName =  TextUtils.join(".", v);
+                        return info;
+                    }
+                }
                 return info;
             }
-            return method.invoke(packageManager,args);
+            return method.invoke(mPm,args);
         }
     }
-    
+
 }
