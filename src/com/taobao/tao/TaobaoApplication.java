@@ -288,32 +288,32 @@ public class TaobaoApplication extends PanguApplication {
         }
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if(method.getName().equals("getPackageInfo") && args[0]!=null && args[0].equals(getPackageName())){
-                Log.d("TaobaoApplication","invoke method = " + "change version");
-                PackageInfo info = mBaseContext.getPackageManager().getPackageInfo(getPackageName(),0);
-                String containerVersion = info.versionName;
-                int baselineVersionCode = BaselineInfoProvider.getInstance().getMainVersionCode();
-                if(info.versionCode > baselineVersionCode){
-                    return info;
-                }
-                String mainVersion = BaselineInfoProvider.getInstance().getMainVersionName();
-                if(!StringUtil.isEmpty(mainVersion)){
-                    if(!containerVersion.equalsIgnoreCase(mainVersion)){
-                        return info;
-                    }
-                }
-                String baselineVersion = BaselineInfoProvider.getInstance().getBaselineVersion();
-                if(!StringUtil.isEmpty(mainVersion) && !StringUtil.isEmpty(baselineVersion)){
-
-                    String[] v = mainVersion.split("\\.");
-                    if(v.length >= 3) {
-                        v[2] = baselineVersion;
-                        info.versionName =  TextUtils.join(".", v);
-                        return info;
-                    }
-                }
-                return info;
-            }
+//            if(method.getName().equals("getPackageInfo") && args[0]!=null && args[0].equals(getPackageName())){
+//                Log.d("TaobaoApplication","invoke method = " + "change version");
+//                PackageInfo info = mBaseContext.getPackageManager().getPackageInfo(getPackageName(),0);
+//                String containerVersion = info.versionName;
+//                int baselineVersionCode = BaselineInfoProvider.getInstance().getMainVersionCode();
+//                if(info.versionCode > baselineVersionCode){
+//                    return info;
+//                }
+//                String mainVersion = BaselineInfoProvider.getInstance().getMainVersionName();
+//                if(!StringUtil.isEmpty(mainVersion)){
+//                    if(!containerVersion.equalsIgnoreCase(mainVersion)){
+//                        return info;
+//                    }
+//                }
+//                String baselineVersion = BaselineInfoProvider.getInstance().getBaselineVersion();
+//                if(!StringUtil.isEmpty(mainVersion) && !StringUtil.isEmpty(baselineVersion)){
+//
+//                    String[] v = mainVersion.split("\\.");
+//                    if(v.length >= 3) {
+//                        v[2] = baselineVersion;
+//                        info.versionName =  TextUtils.join(".", v);
+//                        return info;
+//                    }
+//                }
+//                return info;
+//            }
             return method.invoke(mPm,args);
         }
     }
