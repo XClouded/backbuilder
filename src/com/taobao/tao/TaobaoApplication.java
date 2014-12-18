@@ -147,12 +147,7 @@ public class TaobaoApplication extends PanguApplication {
         	return;
         }
         
-        /*
-         *  AtlasInitializer wraps the logic for Atlas Debug logic, 
-         *  Mini packag logic, bundle install/dexopt, and Security check.
-         */
-        AtlasInitializer mAtlasInitializer = new AtlasInitializer(this, processName);
-        mAtlasInitializer.init();
+
     }
     
     @SuppressLint("DefaultLocale")
@@ -247,6 +242,20 @@ public class TaobaoApplication extends PanguApplication {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        /*
+         *  AtlasInitializer wraps the logic for Atlas Debug logic, 
+         *  Mini package logic, bundle install/dexopt, and Security check.
+         */
+        int pid = android.os.Process.myPid();        
+        ActivityManager activityManager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);        
+        for (ActivityManager.RunningAppProcessInfo appProcess : activityManager.getRunningAppProcesses()) {
+            if(appProcess.pid == pid){
+                processName = appProcess.processName;
+            }
+        }
+        AtlasInitializer mAtlasInitializer = new AtlasInitializer(this, processName);
+        mAtlasInitializer.init();
     }
 
     @Override
