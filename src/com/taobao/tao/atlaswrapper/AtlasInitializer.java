@@ -237,7 +237,7 @@ public class AtlasInitializer {
         
         // 判断版本是否更新了
         if (packageInfo.versionCode > lastVersionCode
-            || (packageInfo.versionCode == lastVersionCode && !TextUtils.equals(packageInfo.versionName,
+            || (packageInfo.versionCode == lastVersionCode && !TextUtils.equals(Globals.getInstalledVersionName(),
                                                                                 lastVersionName))
             || resetForOverrideInstall) {
         	return true;
