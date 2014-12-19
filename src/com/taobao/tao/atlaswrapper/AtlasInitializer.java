@@ -100,7 +100,7 @@ public class AtlasInitializer {
 	                Atlas.getInstance().addFrameworkListener(new SecurityFrameListener());
 	            }
 	            
-	            if (updated){
+	            if (updated || mAwbDebug.checkExternalAwbFile()){
 		            // 把磁盘上的对应bundle全部删除，以便后面重新安装新版本
 		            props.put("osgi.init", "true");            
 	            }
