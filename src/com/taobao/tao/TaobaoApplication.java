@@ -289,34 +289,32 @@ public class TaobaoApplication extends PanguApplication {
         }
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            Object object =  method.invoke(mPm,args);
             if(method.getName().equals("getPackageInfo") && args[0]!=null && args[0].equals(getPackageName())){
-                if(mPackageInfo!=null) {
-                    PackageInfo info = mBaseContext.getPackageManager().getPackageInfo(getPackageName(), 0);
+                    PackageInfo info = (PackageInfo)object;
                     String containerVersion = info.versionName;
                     int baselineVersionCode = BaselineInfoProvider.getInstance().getMainVersionCode();
                     if (info.versionCode > baselineVersionCode) {
                         mPackageInfo = info;
+                        return mPackageInfo;
                     }
                     String mainVersion = BaselineInfoProvider.getInstance().getMainVersionName();
                     if (!StringUtil.isEmpty(mainVersion)) {
                         if (!containerVersion.equalsIgnoreCase(mainVersion)) {
                             mPackageInfo = info;
+                            return mPackageInfo;
                         }
                     }
                     String baselineVersion = BaselineInfoProvider.getInstance().getBaselineVersion();
                     if (!StringUtil.isEmpty(mainVersion) && !StringUtil.isEmpty(baselineVersion)) {
-                        Log.d("TaobaoApplication", "invoke method = " + "change version");
-                        String[] v = mainVersion.split("\\.");
-                        if (v.length >= 3) {
-                            v[2] = baselineVersion;
-                            info.versionName = TextUtils.join(".", v);
-                            mPackageInfo = info;
-                        }
+                        info.versionName = baselineVersion;
+                        mPackageInfo = info;
+                        return mPackageInfo;
                     }
-                }
                 return mPackageInfo;
+            }else{
+                return object;
             }
-            return method.invoke(mPm,args);
         }
     }
 
