@@ -120,7 +120,15 @@ public class AtlasInitializer {
 	        Log.d(TAG, "Atlas framework starting in process " + mProcessName + " " + (System.currentTimeMillis() - START)
 	                   + " ms");
 
-	        if (InstallSolutionConfig.install_when_findclass && mApplication.getPackageName().equals(mProcessName)){
+	        // Check whether x86 platform
+	        if (Build.CPU_ABI.equalsIgnoreCase("x86")){
+	        	/*
+	        	 * Current platform is x86 need install bundles when onCreate
+	        	 */
+	        	InstallSolutionConfig.install_when_oncreate = true;
+	        }
+	        
+	        if (InstallSolutionConfig.install_when_findclass){	        	
 		        /**
 		         *  Read Bundle Info configurations for bundle's findClass() usage,
 		         *  When findClass() can not find class due to bundle not installed/dexopt yet,
