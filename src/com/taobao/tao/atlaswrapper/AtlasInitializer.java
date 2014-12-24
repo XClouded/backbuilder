@@ -121,7 +121,7 @@ public class AtlasInitializer {
 	                   + " ms");
 
 	        // Check whether x86 platform
-	        if (Build.CPU_ABI.equalsIgnoreCase("x86")){
+	        if (Utils.searchFile((mApplication.getFilesDir().getParentFile() + "/lib"), "libcom_taobao") == false){
 	        	/*
 	        	 * Current platform is x86 need install bundles when onCreate
 	        	 */

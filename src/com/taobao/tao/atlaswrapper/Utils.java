@@ -1,5 +1,6 @@
 package com.taobao.tao.atlaswrapper;
 
+import java.io.File;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import android.app.Application;
@@ -96,4 +97,29 @@ public class Utils {
         }
         editor.commit();
     }    
+    
+    /*
+     * Check whether bundle library exist under the directory
+     */
+    public static boolean searchFile(String directory, String keyword){
+    	  if (directory == null || keyword == null){
+    		  Log.e(TAG, "error in search File, direcoty or keyword is null");
+    		  return false;
+    	  }
+    	  
+    	  File fDir = new File(directory);
+    	  if ((fDir == null) || (fDir.exists() == false)){
+    		  Log.e(TAG, "error in search File, can not open directory " + directory);
+    		  return false;
+    	  }
+    	   File[] files = new File(directory).listFiles(); 
+    	   for (File file : files) { 
+    	     if (file.getName().indexOf(keyword) >= 0) { 
+    	    	 Log.i(TAG, "the file search success " + file.getName() + " keyword is " + keyword);
+    	       return true;
+    	     } 
+    	   } 
+    	Log.i(TAG, "the file search failed " + "directory is " + directory + " keyword is " + keyword);
+    	return false;	
+    }
 }
