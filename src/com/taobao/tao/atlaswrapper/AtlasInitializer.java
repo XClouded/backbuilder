@@ -122,18 +122,7 @@ public class AtlasInitializer {
 	        Log.d(TAG, "Atlas framework starting in process " + mProcessName + " " + (System.currentTimeMillis() - START)
 	                   + " ms");
 
-	        try {
-	            Atlas.getInstance().startup(props);
-	        } catch (Exception e) {
-	            Log.e(TAG, "Could not start up atlas framework !!!", e);
-	        }
-
-	        long startupTime = System.currentTimeMillis() - START;
-	        Log.d(TAG, "Atlas framework started in process " + mProcessName + " " + (startupTime)
-	                   + " ms");
-           	
 	        if (InstallSolutionConfig.install_when_findclass && mApplication.getPackageName().equals(mProcessName)){
-	        	
 		        /**
 		         *  Read Bundle Info configurations for bundle's findClass() usage,
 		         *  When findClass() can not find class due to bundle not installed/dexopt yet,
@@ -144,6 +133,16 @@ public class AtlasInitializer {
 	        	mBundleInfoCollection.generateBundleInfos();
 	        }
 	        
+	        try {
+	            Atlas.getInstance().startup(props);
+	        } catch (Exception e) {
+	            Log.e(TAG, "Could not start up atlas framework !!!", e);
+	        }
+
+	        long startupTime = System.currentTimeMillis() - START;
+	        Log.d(TAG, "Atlas framework started in process " + mProcessName + " " + (startupTime)
+	                   + " ms");
+
 	        if (mApplication.getPackageName().equals(mProcessName) && (updated || mAwbDebug.checkExternalAwbFile())) {
 	        	
 		        /*
