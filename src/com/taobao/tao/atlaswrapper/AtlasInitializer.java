@@ -115,10 +115,8 @@ public class AtlasInitializer {
 		            // 把磁盘上的对应bundle全部删除，以便后面重新安装新版本
 		            props.put("osgi.init", "true");            
 	            }
-	        } else if (mProcessName.endsWith(":push")) {
-	        	props.put("android.taobao.atlas.auto.load", "false");
 	        }
-
+	        
 	        Log.d(TAG, "Atlas framework starting in process " + mProcessName + " " + (System.currentTimeMillis() - START)
 	                   + " ms");
 
