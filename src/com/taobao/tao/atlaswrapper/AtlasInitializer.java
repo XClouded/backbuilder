@@ -132,8 +132,7 @@ public class AtlasInitializer {
 		        /**
 		         *  Read Bundle Info configurations for bundle's findClass() usage,
 		         *  When findClass() can not find class due to bundle not installed/dexopt yet,
-		         *  it is useful to locate which bundle to install/dexopt, **limted** only on the taobao process.
-		         *  TODO: need optimization.
+		         *  it is useful to locate which bundle to install/dexopt.
 		         */
 	        	BundleInfoCollection mBundleInfoCollection = new BundleInfoCollection(mApplication.getApplicationContext());
 	        	mBundleInfoCollection.generateBundleInfos();
