@@ -64,8 +64,12 @@ public class SecurityFrameListener implements FrameworkListener {
             List<Bundle> bundles = Atlas.getInstance().getBundles();
             if (bundles != null) {
                 for (Bundle bundle : bundles) {
+                	
                     File file = Atlas.getInstance().getBundleFile(bundle.getLocation());
                     if(!isBundleValid(file.getAbsolutePath())){
+                        return false;
+                    } else{
+                    	// Bundle is valid, double check the public key
                     	String[] publicKeys = ApkUtils.getApkPublicKey(file.getAbsolutePath());
                         if (!StringUtils.contains(publicKeys, PUBLIC_KEY)) {
                         	Log.e(TAG, "Security check failed. " + bundle.getLocation());
@@ -76,12 +80,14 @@ public class SecurityFrameListener implements FrameworkListener {
                             }
                             return false;
                         }
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                        }
+                    }
+                    
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
                     }
                 }
+                
             }
 
             return true;
