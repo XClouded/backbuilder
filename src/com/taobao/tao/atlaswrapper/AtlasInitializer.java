@@ -2,8 +2,8 @@ package com.taobao.tao.atlaswrapper;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
+
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.taobao.atlas.bundleInfo.BundleInfoList;
 import android.taobao.atlas.framework.Atlas;
 import android.taobao.atlas.util.ApkUtils;
 import android.text.TextUtils;
@@ -19,6 +20,8 @@ import android.util.Log;
 import com.taobao.android.base.Versions;
 import com.taobao.android.task.Coordinator;
 import com.taobao.android.task.Coordinator.TaggedRunnable;
+import com.taobao.lightapk.BundleInfoManager;
+import com.taobao.lightapk.BundleListing;
 import com.taobao.tao.Globals;
 import android.content.SharedPreferences.Editor;
 
@@ -134,8 +137,33 @@ public class AtlasInitializer {
 		         *  When findClass() can not find class due to bundle not installed/dexopt yet,
 		         *  it is useful to locate which bundle to install/dexopt.
 		         */
-	        	BundleInfoCollection mBundleInfoCollection = new BundleInfoCollection(mApplication.getApplicationContext());
-	        	mBundleInfoCollection.generateBundleInfos();
+//	        	BundleInfoCollection mBundleInfoCollection = new BundleInfoCollection(mApplication.getApplicationContext());
+//	        	mBundleInfoCollection.generateBundleInfos();
+                BundleListing listing = BundleInfoManager.instance().getBundleListing();
+                if(listing==null || listing.getBundles()==null){
+                    throw new RuntimeException("bundleinfo list is null");
+                }
+                LinkedList<BundleInfoList.BundleInfo> list = new LinkedList<BundleInfoList.BundleInfo>();
+                for(BundleListing.BundleInfo info : listing.getBundles()){
+                    if(info!=null){
+                        BundleInfoList.BundleInfo bf = new BundleInfoList.BundleInfo();
+                        List<String> components = new ArrayList<String>();
+                        if(info.getActivities()!=null)
+                            components.addAll(info.getActivities());
+                        if(info.getServices()!=null)
+                            components.addAll(info.getServices());
+                        if(info.getReceivers()!=null)
+                            components.addAll(info.getReceivers());
+                        if(info.getContentProviders()!=null)
+                            components.addAll(info.getContentProviders());
+                        bf.bundleName = info.getPkgName();
+                        bf.Components = components;
+                        bf.DependentBundles = info.getDependency();
+                        list.add(bf);
+                    }
+                }
+                BundleInfoList.getInstance().init(list);
+
 	        }
 	        
 	        try {
