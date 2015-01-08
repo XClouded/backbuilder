@@ -72,8 +72,10 @@ public class TaobaoApplication extends PanguApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+    }
 
-        START = System.currentTimeMillis();
+	private void initCrashHandlerAndSafeMode(Context context) {
+		START = System.currentTimeMillis();
 
         int uid = android.os.Process.myUid();
         int pid = android.os.Process.myPid();
@@ -134,8 +136,8 @@ public class TaobaoApplication extends PanguApplication {
         	
         }
 
-        UTCrashHandler.getInstance().setCrashCaughtListener(new UTCrashCaughtListner(getApplicationContext()));
-        UTCrashHandler.getInstance().enable(getApplicationContext(), Constants.appkey);
+        UTCrashHandler.getInstance().setCrashCaughtListener(new UTCrashCaughtListner(context));
+        UTCrashHandler.getInstance().enable(context, Constants.appkey);
         
         if(isSafeMode){
             return;
@@ -146,9 +148,7 @@ public class TaobaoApplication extends PanguApplication {
         	Log.d(TAG, "watchdog process");
         	return;
         }
-        
-
-    }
+	}
     
     @SuppressLint("DefaultLocale")
 	private boolean isLowDevice() {
@@ -255,6 +255,13 @@ public class TaobaoApplication extends PanguApplication {
             }
         }
         AtlasInitializer mAtlasInitializer = new AtlasInitializer(this, processName);
+        /* 
+         * Inject mApplication to support content provider, otherwize, as
+         * PackageInfo.mApplication is still null when attachBaseContext(),
+         * there could be a lot of null pointer issues.
+         */
+        mAtlasInitializer.injectApplication();
+        initCrashHandlerAndSafeMode(mBaseContext);
         mAtlasInitializer.init();
     }
 
