@@ -137,33 +137,7 @@ public class AtlasInitializer {
 		         *  When findClass() can not find class due to bundle not installed/dexopt yet,
 		         *  it is useful to locate which bundle to install/dexopt.
 		         */
-//	        	BundleInfoCollection mBundleInfoCollection = new BundleInfoCollection(mApplication.getApplicationContext());
-//	        	mBundleInfoCollection.generateBundleInfos();
-                BundleListing listing = BundleInfoManager.instance().getBundleListing();
-                if(listing==null || listing.getBundles()==null){
-                    throw new RuntimeException("bundleinfo list is null");
-                }
-                LinkedList<BundleInfoList.BundleInfo> list = new LinkedList<BundleInfoList.BundleInfo>();
-                for(BundleListing.BundleInfo info : listing.getBundles()){
-                    if(info!=null){
-                        BundleInfoList.BundleInfo bf = new BundleInfoList.BundleInfo();
-                        List<String> components = new ArrayList<String>();
-                        if(info.getActivities()!=null)
-                            components.addAll(info.getActivities());
-                        if(info.getServices()!=null)
-                            components.addAll(info.getServices());
-                        if(info.getReceivers()!=null)
-                            components.addAll(info.getReceivers());
-                        if(info.getContentProviders()!=null)
-                            components.addAll(info.getContentProviders());
-                        bf.bundleName = info.getPkgName();
-                        bf.Components = components;
-                        bf.DependentBundles = info.getDependency();
-                        list.add(bf);
-                    }
-                }
-                BundleInfoList.getInstance().init(list);
-
+                UpdateBundleInfo();
 	        }
 	        
 	        try {
@@ -216,21 +190,37 @@ public class AtlasInitializer {
 	                }
 	            });
 	        } else if (!updated && mApplication.getPackageName().equals(mProcessName)){
-            	final OptDexProcess mOptDexProcess = OptDexProcess.getInstance();
-            	mOptDexProcess.init(mApplication);
-	        	/*
-	        	 *  Maybe the phone was shutdown when dexopt, here is to continue dexopt after
-	        	 *  reboot
-	        	 */
-	            Coordinator.postTask(new TaggedRunnable("ProcessBundles") {
-	            	
-	                @Override
-	                public void run() {
-	        	        mOptDexProcess.processPackages();
-	                }
-	            });	        	
-
+           		// Just send out the bundle installed message out, so that homepage could be started.
+                System.setProperty("BUNDLES_INSTALLED", "true");
+                mApplication.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED")); 	
 	        }
+	}
+
+	private void UpdateBundleInfo() {
+		BundleListing listing = BundleInfoManager.instance().getBundleListing();
+		if(listing==null || listing.getBundles()==null){
+		    throw new RuntimeException("bundleinfo list is null");
+		}
+		LinkedList<BundleInfoList.BundleInfo> list = new LinkedList<BundleInfoList.BundleInfo>();
+		for(BundleListing.BundleInfo info : listing.getBundles()){
+		    if(info!=null){
+		        BundleInfoList.BundleInfo bf = new BundleInfoList.BundleInfo();
+		        List<String> components = new ArrayList<String>();
+		        if(info.getActivities()!=null)
+		            components.addAll(info.getActivities());
+		        if(info.getServices()!=null)
+		            components.addAll(info.getServices());
+		        if(info.getReceivers()!=null)
+		            components.addAll(info.getReceivers());
+		        if(info.getContentProviders()!=null)
+		            components.addAll(info.getContentProviders());
+		        bf.bundleName = info.getPkgName();
+		        bf.Components = components;
+		        bf.DependentBundles = info.getDependency();
+		        list.add(bf);
+		    }
+		}
+		BundleInfoList.getInstance().init(list);
 	}
 	    
     @SuppressLint("DefaultLocale")
