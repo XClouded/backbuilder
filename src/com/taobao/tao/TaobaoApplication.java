@@ -69,9 +69,12 @@ public class TaobaoApplication extends PanguApplication {
 
     private String processName;
     private boolean resetForOverrideInstall;
+    AtlasInitializer mAtlasInitializer = null;    
+    
     @Override
     public void onCreate() {
         super.onCreate();
+        mAtlasInitializer.startUp();
     }
 
 	private void initCrashHandlerAndSafeMode(Context context) {
@@ -254,7 +257,7 @@ public class TaobaoApplication extends PanguApplication {
                 processName = appProcess.processName;
             }
         }
-        AtlasInitializer mAtlasInitializer = new AtlasInitializer(this, processName);
+        mAtlasInitializer = new AtlasInitializer(this, processName);
         /* 
          * Inject mApplication to support content provider, otherwize, as
          * PackageInfo.mApplication is still null when attachBaseContext(),

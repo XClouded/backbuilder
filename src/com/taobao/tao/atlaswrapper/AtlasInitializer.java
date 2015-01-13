@@ -78,130 +78,132 @@ public class AtlasInitializer {
 	        }
 	        
 	        Log.d(TAG, "Atlas framework inited " + (System.currentTimeMillis() - START) + " ms");
+	}
 
-	        try {
-	            Field sApplication = Globals.class.getDeclaredField("sApplication");
-	            sApplication.setAccessible(true);
-	            sApplication.set(null, mApplication);
-	            Field sClassLoader = Globals.class.getDeclaredField("sClassLoader");
-	            sClassLoader.setAccessible(true);
-	            sClassLoader.set(null, Atlas.getInstance().getDelegateClassLoader());
-	        } catch (Exception e) {
-	            Log.e(TAG, "Could not set Globals.sApplication & Globals.sClassLoader !!!", e);
-	            throw new RuntimeException("Could not set Globals.sApplication & Globals.sClassLoader !!!",e);
-	        }
-			
-	        Properties props = new Properties();
-	        props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
-	        props.put("android.taobao.atlas.debug.bundles", "true");
-	        props.put("android.taobao.atlas.AppDirectory", mApplication.getFilesDir().getParent());	        
-            
-	        mMiniPackage = new MiniPackage(mApplication); 
-	        mMiniPackage.init(props);
-	        
-			// Check whether awb debug from external storage is supported or not
-			mAwbDebug = new AwbDebug();
+	public void startUp() {
+		try {
+		    Field sApplication = Globals.class.getDeclaredField("sApplication");
+		    sApplication.setAccessible(true);
+		    sApplication.set(null, mApplication);
+		    Field sClassLoader = Globals.class.getDeclaredField("sClassLoader");
+		    sClassLoader.setAccessible(true);
+		    sClassLoader.set(null, Atlas.getInstance().getDelegateClassLoader());
+		} catch (Exception e) {
+		    Log.e(TAG, "Could not set Globals.sApplication & Globals.sClassLoader !!!", e);
+		    throw new RuntimeException("Could not set Globals.sApplication & Globals.sClassLoader !!!",e);
+		}
+		
+		Properties props = new Properties();
+		props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
+		props.put("android.taobao.atlas.debug.bundles", "true");
+		props.put("android.taobao.atlas.AppDirectory", mApplication.getFilesDir().getParent());	        
+		
+		mMiniPackage = new MiniPackage(mApplication); 
+		mMiniPackage.init(props);
+		
+		// Check whether awb debug from external storage is supported or not
+		mAwbDebug = new AwbDebug();
+		
+		// 安装程序是否已经升级了
+		final boolean updated = isUpdated();
+      /**
+       * 如果发生了更新，清除动态部署缓存文件
+       */
+		if(updated){
+		    String baseLineInfoPath = mApplication.getFilesDir()+File.separator+"bundleBaseline"+File.separator+"baselineInfo";
+		    File file = new File(baseLineInfoPath);
+		    if(file.exists()){
+		        file.delete();
+		    }
+		}
+		if (mApplication.getPackageName().equals(mProcessName)) {
+ 	
+		    // 非debug版本设置公钥，用于atlas校验签名
+		    if (!Versions.isDebug() && !isLowDevice() && ApkUtils.isRootSystem()) {
+		        props.put("android.taobao.atlas.publickey", SecurityFrameListener.PUBLIC_KEY);
+		        Atlas.getInstance().addFrameworkListener(new SecurityFrameListener());
+		    }
 		    
-	        // 安装程序是否已经升级了
-	        final boolean updated = isUpdated();
-        /**
-         * 如果发生了更新，清除动态部署缓存文件
-         */
-            if(updated){
-                String baseLineInfoPath = mApplication.getFilesDir()+File.separator+"bundleBaseline"+File.separator+"baselineInfo";
-                File file = new File(baseLineInfoPath);
-                if(file.exists()){
-                    file.delete();
-                }
-            }
-	        if (mApplication.getPackageName().equals(mProcessName)) {
-  	
-	            // 非debug版本设置公钥，用于atlas校验签名
-	            if (!Versions.isDebug() && !isLowDevice() && ApkUtils.isRootSystem()) {
-	                props.put("android.taobao.atlas.publickey", SecurityFrameListener.PUBLIC_KEY);
-	                Atlas.getInstance().addFrameworkListener(new SecurityFrameListener());
-	            }
-	            
-	            if (updated || mAwbDebug.checkExternalAwbFile()){
-		            // 把磁盘上的对应bundle全部删除，以便后面重新安装新版本
-		            props.put("osgi.init", "true");            
-	            }
-	        }
-	        
-	        Log.d(TAG, "Atlas framework starting in process " + mProcessName + " " + (System.currentTimeMillis() - START)
-	                   + " ms");
+		    if (updated || mAwbDebug.checkExternalAwbFile()){
+		        // 把磁盘上的对应bundle全部删除，以便后面重新安装新版本
+		        props.put("osgi.init", "true");            
+		    }
+		}
+		
+		Log.d(TAG, "Atlas framework starting in process " + mProcessName + " " + (System.currentTimeMillis() - START)
+		           + " ms");
 
-	        // Check whether x86 platform
-	        if (Utils.searchFile((mApplication.getFilesDir().getParentFile() + "/lib"), "libcom_taobao") == false){
-	        	/*
-	        	 * Current platform is x86 need install bundles when onCreate
-	        	 */
-	        	InstallSolutionConfig.install_when_oncreate = true;
-	        }
-	        
-	        if (InstallSolutionConfig.install_when_findclass){	        	
-		        /**
-		         *  Read Bundle Info configurations for bundle's findClass() usage,
-		         *  When findClass() can not find class due to bundle not installed/dexopt yet,
-		         *  it is useful to locate which bundle to install/dexopt.
-		         */
-                UpdateBundleInfo();
-	        }
-	        
-	        try {
-	            Atlas.getInstance().startup(props);
-	        } catch (Exception e) {
-	            Log.e(TAG, "Could not start up atlas framework !!!", e);
-	        }
+		// Check whether x86 platform
+		if (Utils.searchFile((mApplication.getFilesDir().getParentFile() + "/lib"), "libcom_taobao") == false){
+			/*
+			 * Current platform is x86 need install bundles when onCreate
+			 */
+			InstallSolutionConfig.install_when_oncreate = true;
+		}
+		
+		if (InstallSolutionConfig.install_when_findclass){	        	
+		    /**
+		     *  Read Bundle Info configurations for bundle's findClass() usage,
+		     *  When findClass() can not find class due to bundle not installed/dexopt yet,
+		     *  it is useful to locate which bundle to install/dexopt.
+		     */
+		    UpdateBundleInfo();
+		}
+		
+		try {
+		    Atlas.getInstance().startup(props);
+		} catch (Exception e) {
+		    Log.e(TAG, "Could not start up atlas framework !!!", e);
+		}
 
-	        long startupTime = System.currentTimeMillis() - START;
-	        Log.d(TAG, "Atlas framework started in process " + mProcessName + " " + (startupTime)
-	                   + " ms");
+		long startupTime = System.currentTimeMillis() - START;
+		Log.d(TAG, "Atlas framework started in process " + mProcessName + " " + (startupTime)
+		           + " ms");
 
-	        if (mApplication.getPackageName().equals(mProcessName) && (updated || mAwbDebug.checkExternalAwbFile())) {
-	        	
+		if (mApplication.getPackageName().equals(mProcessName) && (updated || mAwbDebug.checkExternalAwbFile())) {
+			
+		    /*
+		     * Make sure bundle installer/OptDex  processors are initialized 
+		     * in OnCreate() to avoid Replaced Receiver's installer cannot work!
+		     */
+		   	final BundlesInstaller bundlesInstaller =BundlesInstaller.getInstance();
+		   	bundlesInstaller.init(mApplication, mMiniPackage, mAwbDebug);
+			final OptDexProcess mOptDexProcess = OptDexProcess.getInstance();
+			mOptDexProcess.init(mApplication);
+		   	
+		    /*
+		     *  Only install/dexopt all bundles at Taobao process, why **not** do it in Nofity/Push process?
+		     *  The reason is that it has potential issue that meta file could be written by two processes(Taobao and Notify/Push)
+		     *  
+		     *  A exception case is we still need do install/dexopt in findClass/execStartActivityInternal in InstrumentationHook
+		     *  once work not done yet, since Notify/Push process, it would raise Taobao application and call findClass/execStartActivityInternal
+		     *  maybe Taobao Process's install/dexopt is on-going, and it would lead to ClassNotFound issue.
+		     */
+		   	if (!InstallSolutionConfig.install_when_oncreate){
+		   		// Just send out the bundle installed message out, so that homepage could be started.
+		        System.setProperty("BUNDLES_INSTALLED", "true");
+		        mApplication.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
+		        
 		        /*
-		         * Make sure bundle installer/OptDex  processors are initialized 
-		         * in OnCreate() to avoid Replaced Receiver's installer cannot work!
+		         *  Need update package version when not install bundles at onCreate, to avoid storage directory
+		         *  being deleted once and once again, since the updated flag would be always true. 
 		         */
-	           	final BundlesInstaller bundlesInstaller =BundlesInstaller.getInstance();
-	           	bundlesInstaller.init(mApplication, mMiniPackage, mAwbDebug);
-            	final OptDexProcess mOptDexProcess = OptDexProcess.getInstance();
-            	mOptDexProcess.init(mApplication);
-	           	
-                /*
-                 *  Only install/dexopt all bundles at Taobao process, why **not** do it in Nofity/Push process?
-                 *  The reason is that it has potential issue that meta file could be written by two processes(Taobao and Notify/Push)
-                 *  
-                 *  A exception case is we still need do install/dexopt in findClass/execStartActivityInternal in InstrumentationHook
-                 *  once work not done yet, since Notify/Push process, it would raise Taobao application and call findClass/execStartActivityInternal
-                 *  maybe Taobao Process's install/dexopt is on-going, and it would lead to ClassNotFound issue.
-                 */
-	           	if (!InstallSolutionConfig.install_when_oncreate){
-	           		// Just send out the bundle installed message out, so that homepage could be started.
-                    System.setProperty("BUNDLES_INSTALLED", "true");
-                    mApplication.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
-                    
-                    /*
-                     *  Need update package version when not install bundles at onCreate, to avoid storage directory
-                     *  being deleted once and once again, since the updated flag would be always true. 
-                     */
-                    bundlesInstaller.UpdatePackageVersion();
-	           	} else
-	            Coordinator.postTask(new TaggedRunnable("ProcessBundles") {
-	
-	                @Override
-	                public void run() {
-	                    // Install bundles to Atlas frameworks and dexopt
-	                    bundlesInstaller.process();
-	        	        mOptDexProcess.processPackages();
-	                }
-	            });
-	        } else if (!updated && mApplication.getPackageName().equals(mProcessName)){
-           		// Just send out the bundle installed message out, so that homepage could be started.
-                System.setProperty("BUNDLES_INSTALLED", "true");
-                mApplication.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED")); 	
-	        }
+		        bundlesInstaller.UpdatePackageVersion();
+		   	} else
+		    Coordinator.postTask(new TaggedRunnable("ProcessBundles") {
+
+		        @Override
+		        public void run() {
+		            // Install bundles to Atlas frameworks and dexopt
+		            bundlesInstaller.process();
+			        mOptDexProcess.processPackages();
+		        }
+		    });
+		} else if (!updated && mApplication.getPackageName().equals(mProcessName)){
+			// Just send out the bundle installed message out, so that homepage could be started.
+		    System.setProperty("BUNDLES_INSTALLED", "true");
+		    mApplication.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED")); 	
+		}
 	}
 
 	private void UpdateBundleInfo() {
