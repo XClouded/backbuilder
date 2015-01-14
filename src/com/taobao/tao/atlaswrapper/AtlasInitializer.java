@@ -224,6 +224,7 @@ public class AtlasInitializer {
 		            components.addAll(info.getReceivers());
 		        if(info.getContentProviders()!=null)
 		            components.addAll(info.getContentProviders());
+		        bf.hasSO = info.isHasSO();
 		        bf.bundleName = info.getPkgName();
 		        bf.Components = components;
 		        bf.DependentBundles = info.getDependency();
