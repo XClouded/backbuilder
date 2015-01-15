@@ -48,6 +48,9 @@ public class AtlasInitializer {
     // Defines the bundle<->components map
     private final String mBundleInfoFile = "bundleinfo";
     
+    // Flag to check whether current process is com.taobao.taobao
+    private static boolean mIsTaobaoProcess;
+    
     /*
      *  Check whether need override when version is reversed
      *  i.e., from mini <-->full, if yes, need reinstall all bundles
@@ -57,6 +60,9 @@ public class AtlasInitializer {
     public AtlasInitializer(Application mApplication, String mProcessName){
     	this.mApplication = mApplication;
     	this.mProcessName = mProcessName;
+    	if (mApplication.getPackageName().equals(mProcessName)){
+    		mIsTaobaoProcess = true;
+    	}
     }
     
     public void injectApplication(){
@@ -116,7 +122,7 @@ public class AtlasInitializer {
 		        file.delete();
 		    }
 		}
-		if (mApplication.getPackageName().equals(mProcessName)) {
+		if (mIsTaobaoProcess) {
  	
 		    // 非debug版本设置公钥，用于atlas校验签名
 		    if (!Versions.isDebug() && !isLowDevice() && ApkUtils.isRootSystem()) {
@@ -167,7 +173,7 @@ public class AtlasInitializer {
 		     * in OnCreate() to avoid Replaced Receiver's installer cannot work!
 		     */
 		   	final BundlesInstaller bundlesInstaller =BundlesInstaller.getInstance();
-		   	bundlesInstaller.init(mApplication, mMiniPackage, mAwbDebug);
+		   	bundlesInstaller.init(mApplication, mMiniPackage, mAwbDebug, mIsTaobaoProcess);
 			final OptDexProcess mOptDexProcess = OptDexProcess.getInstance();
 			mOptDexProcess.init(mApplication);
 		   	

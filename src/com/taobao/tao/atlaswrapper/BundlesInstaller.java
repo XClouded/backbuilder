@@ -34,16 +34,20 @@ public class BundlesInstaller {
 	private boolean mIsInited;	
 	private boolean mIsProcessed;
 	
+    // Flag to check whether current process is com.taobao.taobao
+    private static boolean mIsTaobaoProcess;	
+	
     private static BundlesInstaller uniqueInstance;
 	
 	BundlesInstaller(){
 	}
 
 	void init(Application mApplication, MiniPackage mMiniPackage,
-			AwbDebug mAwbDebug) {
+			AwbDebug mAwbDebug, boolean mIsTaobaoProcess) {
 		this.mApplication = mApplication;
 		this.mMiniPackage = mMiniPackage;
 		this.mAwbDebug = mAwbDebug;
+		this.mIsTaobaoProcess = mIsTaobaoProcess;
 		mPackageInfo = Utils.getPackageInfo(mApplication);
 		mIsInited = true;
 	}
@@ -169,15 +173,17 @@ public class BundlesInstaller {
             processLibsBundle(zipFile, entryName, mApplication);
         }
         // 根据需要自动启动Bundle
-        for (String pkg :Utils.AUTOSTART_PACKAGES) {
-        	Bundle bundle = Atlas.getInstance().getBundle(pkg);
-            if (bundle != null) {
-                try {
-                    bundle.start();
-                } catch (Exception e) {
-                    Log.e(TAG, "Could not auto start bundle: " + bundle.getLocation(), e);
-                }
-            }
+        if (mIsTaobaoProcess){
+	        for (String pkg :Utils.AUTOSTART_PACKAGES) {
+	        	Bundle bundle = Atlas.getInstance().getBundle(pkg);
+	            if (bundle != null) {
+	                try {
+	                    bundle.start();
+	                } catch (Exception e) {
+	                    Log.e(TAG, "Could not auto start bundle: " + bundle.getLocation(), e);
+	                }
+	            }
+	        }
         }
     }    
     
