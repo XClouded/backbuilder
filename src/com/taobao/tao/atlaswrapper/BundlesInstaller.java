@@ -130,6 +130,8 @@ public class BundlesInstaller {
 		Editor editor = prefs.edit();
 		editor.putInt("last_version_code", mPackageInfo.versionCode);
 		editor.putString("last_version_name", mPackageInfo.versionName);
+		editor.putString(mPackageInfo.versionName, "dexopt");
+		
 		editor.commit();
 	}	
     

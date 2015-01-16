@@ -113,6 +113,10 @@ public class Utils {
     		  return false;
     	  }
     	   File[] files = new File(directory).listFiles(); 
+    	   if (files == null || files.length <= 0){
+    		   return false;
+    	   }
+    	   
     	   for (File file : files) { 
     	     if (file.getName().indexOf(keyword) >= 0) { 
     	    	 Log.i(TAG, "the file search success " + file.getName() + " keyword is " + keyword);
