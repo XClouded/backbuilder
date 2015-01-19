@@ -1,7 +1,6 @@
 package com.taobao.tao.atlaswrapper;
 
 import org.osgi.framework.Bundle;
-import com.taobao.tao.ClassNotFoundInterceptor;
 
 import android.app.Application;
 import android.content.Intent;
@@ -83,8 +82,6 @@ public class OptDexProcess {
 	
     private void notifyBundleInstalled(){
     	mApplication.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
-        ClassNotFoundInterceptor calssNotFoundCallback = new ClassNotFoundInterceptor();
-        Atlas.getInstance().setClassNotFoundInterceptorCallback(calssNotFoundCallback);
     }
     
 	private void processPakcagesDelayed(){

@@ -24,6 +24,7 @@ import com.taobao.lightapk.BundleInfoManager;
 import com.taobao.lightapk.BundleListing;
 import com.taobao.tao.Globals;
 import android.content.SharedPreferences.Editor;
+import com.taobao.tao.ClassNotFoundInterceptor;
 
 
 public class AtlasInitializer {
@@ -184,6 +185,9 @@ public class AtlasInitializer {
 		long startupTime = System.currentTimeMillis() - START;		
 		Log.d(TAG, "Atlas framework begin to start in process " + mProcessName + " " + (startupTime)
 		           + " ms");		
+		
+        ClassNotFoundInterceptor calssNotFoundCallback = new ClassNotFoundInterceptor();
+        Atlas.getInstance().setClassNotFoundInterceptorCallback(calssNotFoundCallback);		
 		/*
 		 * Start a thread to make welcome appear in advance.
 		 */
