@@ -106,6 +106,7 @@ public class AtlasInitializer {
 	            Atlas.getInstance().init(mApplication, props);
 	        } catch (Exception e) {
 	            Log.e(TAG, "Could not init atlas framework !!!", e);
+	            throw new RuntimeException("atlas initialization fail" + e.getMessage());
 	        }
 	        
 	        Log.d(TAG, "Atlas framework inited " + (System.currentTimeMillis() - START) + " ms");
@@ -188,23 +189,26 @@ public class AtlasInitializer {
 		
         ClassNotFoundInterceptor calssNotFoundCallback = new ClassNotFoundInterceptor();
         Atlas.getInstance().setClassNotFoundInterceptorCallback(calssNotFoundCallback);		
+        
+		try {
+		    Atlas.getInstance().startup();
+		} catch (Exception e) {
+		    Log.e(TAG, "Could not start up atlas framework !!!", e);
+            throw new RuntimeException("atlas startUp fail" + e.getMessage());
+		}
+		
 		/*
 		 * Start a thread to make welcome appear in advance.
 		 */
 		Coordinator.postTask(new TaggedRunnable("AtlasStartup") {
 		    @Override
 		    public void run() {	        
-		    	AtlasStartup(bundlesInstaller, mOptDexProcess);
+		    	installBundles(bundlesInstaller, mOptDexProcess);
 		    }
 		});
 	}
 
-	private void AtlasStartup(BundlesInstaller bundlesInstaller, OptDexProcess optDexProcess) {
-		try {
-		    Atlas.getInstance().startup();
-		} catch (Exception e) {
-		    Log.e(TAG, "Could not start up atlas framework !!!", e);
-		}
+	private void installBundles(BundlesInstaller bundlesInstaller, OptDexProcess optDexProcess) {
 
 		long startupTime = System.currentTimeMillis() - START;
 		Log.d(TAG, "Atlas framework started in process " + mProcessName + " " + (startupTime)
