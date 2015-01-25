@@ -165,7 +165,7 @@ public class BundlesInstaller {
         for (int i = 0; i < Utils.SORTED_PACKAGES.length; i++) {
             String pkg = Utils.SORTED_PACKAGES[i].replace(".", "_");
             String entryName = filterEntryName(entryNames, pkg);
-            if (entryName != null) {
+            if (entryName != null && entryName.length() > 0) {
                 processLibsBundle(zipFile, entryName, mApplication);
                 entryNames.remove(entryName);
             }
@@ -209,6 +209,10 @@ public class BundlesInstaller {
         
         String fileName = Utils.getFileNameFromEntryName(entryName);
         String packageName = Utils.getPackageNameFromEntryName(entryName);
+        
+        if (packageName == null || packageName.length() <= 0){
+        	return false;
+        }
 
         File libDir = new File(mApplication.getFilesDir().getParentFile(), "lib");
         File soFile = new File(libDir, fileName);
