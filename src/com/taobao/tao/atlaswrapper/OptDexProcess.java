@@ -6,6 +6,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.taobao.atlas.framework.Atlas;
 import android.taobao.atlas.framework.BundleImpl;
+import android.taobao.atlas.framework.bundlestorage.BundleArchiveRevision;
 import android.util.Log;
 
 public class OptDexProcess {
@@ -73,6 +74,9 @@ public class OptDexProcess {
                     ((BundleImpl) bundle).optDexFile();
                     Atlas.getInstance().enableComponent(bundle.getLocation());
                 } catch (Exception e) {
+                	if (e instanceof BundleArchiveRevision.DexLoadException){
+                		throw (RuntimeException)e;
+                	}
                     Log.e(TAG, "Error while dexopt >>>", e);
                 }
             }
@@ -93,6 +97,9 @@ public class OptDexProcess {
 					((BundleImpl) bundle).optDexFile();
                     Atlas.getInstance().enableComponent(bundle.getLocation());					
 				} catch (Exception e) {
+                	if (e instanceof BundleArchiveRevision.DexLoadException){
+                		throw (RuntimeException)e;
+                	}
                     Log.e(TAG, "Error while dexopt >>>", e);
 				}
 			}
