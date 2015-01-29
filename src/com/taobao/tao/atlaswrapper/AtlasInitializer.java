@@ -249,9 +249,9 @@ public class AtlasInitializer {
 	private void UpdateBundleInfo() {
 		BundleListing listing = BundleInfoManager.instance().getBundleListing();
 		if(listing==null || listing.getBundles()==null){
-		    throw new RuntimeException("bundleinfo list is null");
+		    return;
 		}
-		LinkedList<BundleInfoList.BundleInfo> list = new LinkedList<BundleInfoList.BundleInfo>();
+        LinkedList<BundleInfoList.BundleInfo> list = new LinkedList<BundleInfoList.BundleInfo>();
 		for(BundleListing.BundleInfo info : listing.getBundles()){
 		    if(info!=null){
 		        BundleInfoList.BundleInfo bf = new BundleInfoList.BundleInfo();
