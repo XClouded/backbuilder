@@ -299,7 +299,7 @@ public class AtlasInitializer {
         } catch (Exception e) {
             // 不可能发生
             Log.e(TAG, "Error to get PackageInfo >>>", e);
-            packageInfo = new PackageInfo();
+            throw new RuntimeException(e);
         }
 
         // 检测之前的版本记录
