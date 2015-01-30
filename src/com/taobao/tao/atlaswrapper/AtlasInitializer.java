@@ -194,7 +194,7 @@ public class AtlasInitializer {
 		    Atlas.getInstance().startup();
 		} catch (Exception e) {
 		    Log.e(TAG, "Could not start up atlas framework !!!", e);
-            throw new RuntimeException("atlas startUp fail" + e.getMessage());
+            throw new RuntimeException("atlas startUp fail " + e);
 		}
 		
 		/*
