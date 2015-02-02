@@ -29,7 +29,9 @@ public class Utils {
     
     final static String[] DELAYED_PACKAGES = new String[]{
     	"com.taobao.fmagazine","com.taobao.taobao.pluginservice", "com.taobao.legacy", "com.ut.share",
-    	"com.taobao.taobao.map", "com.taobao.android.gamecenter", "com.taobao.tongxue", "com.taobao.taobao.zxing", "com.taobao.labs"};
+    	"com.taobao.taobao.map", "com.taobao.android.gamecenter", "com.taobao.tongxue", "com.taobao.taobao.zxing", "com.taobao.labs",
+    	"com.taobao.android.audio", "com.taobao.dressmatch", "com.taobao.crazyanchor", "com.taobao.bala", "com.taobao.coupon",
+    	"com.taobao.cainiao", "com.taobao.rushpromotion", "com.taobao.android.gamecenter", "com.taobao.ju.android", "com.taobao.android.big"};
     
     public static String getFileNameFromEntryName(String entryName) {
         String fileName = entryName.substring(entryName.indexOf("lib/armeabi/") + "lib/armeabi/".length());
