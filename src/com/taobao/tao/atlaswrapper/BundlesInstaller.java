@@ -65,13 +65,13 @@ public class BundlesInstaller {
 	 * (1) Make process function synchronized
 	 * (2) Once enter, check whether executed already, if yes, just return
 	 */
-	public synchronized void  process(boolean onlyAuto){
+	public synchronized void  process(boolean onlyAuto, boolean force){
 
 		// Never process once not initialized yet to avoid null exception
 		if (!mIsInited){
 			Log.e(TAG, "Bundle Installer not initialized yet, process abort!");
 			return;
-		} else if (mIsProcessed == true){
+		} else if (mIsProcessed && !force){
 			Log.i(TAG, "Bundle install already executed, just return");
 			return;
 		}
@@ -110,8 +110,10 @@ public class BundlesInstaller {
 			} else {
 				processLibsBundles(zipFile, entryNames, mApplication);	        
 			}
-
-            UpdatePackageVersion();
+			
+			if (!force){
+				UpdatePackageVersion();
+			}
 
         } catch (IOException e) {
             Log.e(TAG, "IOException while processLibsBundles >>>", e);

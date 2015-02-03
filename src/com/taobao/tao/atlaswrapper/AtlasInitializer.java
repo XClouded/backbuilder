@@ -217,12 +217,12 @@ public class AtlasInitializer {
 		if (mApplication.getPackageName().equals(mProcessName) && (updated || mAwbDebug.checkExternalAwbFile())) {
 		   	if (!InstallSolutionConfig.install_when_oncreate){
 		        // install and start auto-start bundles
-		        bundlesInstaller.process(true);
-	            optDexProcess.processPackages(true);
+		        bundlesInstaller.process(true, false);
+	            optDexProcess.processPackages(true, false);
 		   	} else {
 	            // Install bundles to Atlas frameworks and dexopt
-	            bundlesInstaller.process(false);
-	            optDexProcess.processPackages(false);
+	            bundlesInstaller.process(false, false);
+	            optDexProcess.processPackages(false, false);
 		    }
 		} else if (!updated && mApplication.getPackageName().equals(mProcessName)){
 			// Just send out the bundle installed message out, so that homepage could be started.

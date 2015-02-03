@@ -31,12 +31,12 @@ public class OptDexProcess {
 		mIsInited = true;
 	}	
 	
-	public synchronized  void processPackages(boolean onlyAuto){
+	public synchronized  void processPackages(boolean onlyAuto, boolean force){
 		// Never process once not initialized yet to avoid null exception
 		if (!mIsInited){
 			Log.e(TAG, "Bundle Installer not initialized yet, process abort!");
 			return;
-		} else if (mIsProcessed){
+		} else if (mIsProcessed && !force){
 			Log.i(TAG, "Bundle install already executed, just return");
 			return;
 		}
@@ -45,23 +45,26 @@ public class OptDexProcess {
 	    	// 完成auto start bundle的dexopt		
 	        long start = System.currentTimeMillis();
 			processPakcagesAutoStarted();
-	        NotifyBundleInstalled();
+			if (!force){
+				NotifyBundleInstalled();
+			}
 	        Log.d(TAG, "dexopt auto start bundles cost time = " + (System.currentTimeMillis() - start) + " ms");
 		} else {
 	    	// 完成非delayed bundle的dexopt		
 	        long start = System.currentTimeMillis();
 			processPakagesNotDelayed();
 	        Log.d(TAG, "dexopt bundles not delayed cost time = " + (System.currentTimeMillis() - start) + " ms");
-	        NotifyBundleInstalled();
+			if (!force){
+				NotifyBundleInstalled();
+			}
 			// 完成delayed bundle的dexopt
 	        start = System.currentTimeMillis();
 	    	OptDexProcess mOptDexProcess = OptDexProcess.getInstance();
 	    	mOptDexProcess.processPakcagesDelayed();
-	    	
 	        Log.d(TAG, "dexopt delayed bundles cost time = " + (System.currentTimeMillis() - start) + " ms");    	
 		}
         
-    	mIsProcessed = true;    	
+		mIsProcessed = true;    	
 	}
 
 	private void NotifyBundleInstalled() {

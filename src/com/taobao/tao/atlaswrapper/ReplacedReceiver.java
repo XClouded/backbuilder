@@ -22,10 +22,10 @@ public class ReplacedReceiver extends BroadcastReceiver {
                 Log.d(TAG, " Do bundle installation and dexopt when received PACKAG_REPLACED intent!");
                 
                	BundlesInstaller bundlesInstaller =BundlesInstaller.getInstance();
-               	bundlesInstaller.process(false);
+               	bundlesInstaller.process(false, true);
                	
             	OptDexProcess mOptDexProcess = OptDexProcess.getInstance();
-            	mOptDexProcess.processPackages(false);
+            	mOptDexProcess.processPackages(false, true);
             }
         });
     }
