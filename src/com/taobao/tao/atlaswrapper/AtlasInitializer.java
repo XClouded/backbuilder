@@ -200,7 +200,7 @@ public class AtlasInitializer {
 		/*
 		 * Start a thread to make welcome appear in advance.
 		 */
-		Coordinator.postTask(new TaggedRunnable("AtlasStartup") {
+		Coordinator.postTask(new TaggedRunnable("BundleInstaller") {
 		    @Override
 		    public void run() {	        
 		    	installBundles(bundlesInstaller, mOptDexProcess);
@@ -215,29 +215,14 @@ public class AtlasInitializer {
 		           + " ms");
 
 		if (mApplication.getPackageName().equals(mProcessName) && (updated || mAwbDebug.checkExternalAwbFile())) {
-		   	
-		    /*
-		     *  Only install/dexopt all bundles at Taobao process, why **not** do it in Nofity/Push process?
-		     *  The reason is that it has potential issue that meta file could be written by two processes(Taobao and Notify/Push)
-		     *  
-		     *  A exception case is we still need do install/dexopt in findClass/execStartActivityInternal in InstrumentationHook
-		     *  once work not done yet, since Notify/Push process, it would raise Taobao application and call findClass/execStartActivityInternal
-		     *  maybe Taobao Process's install/dexopt is on-going, and it would lead to ClassNotFound issue.
-		     */
 		   	if (!InstallSolutionConfig.install_when_oncreate){
-		   		// Just send out the bundle installed message out, so that homepage could be started.
-		        System.setProperty("BUNDLES_INSTALLED", "true");
-		        mApplication.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
-		        
-		        /*
-		         *  Need update package version when not install bundles at onCreate, to avoid storage directory
-		         *  being deleted once and once again, since the updated flag would be always true. 
-		         */
-		        bundlesInstaller.UpdatePackageVersion();
+		        // install and start auto-start bundles
+		        bundlesInstaller.process(true);
+	            optDexProcess.processPackages(true);
 		   	} else {
-		            // Install bundles to Atlas frameworks and dexopt
-		            bundlesInstaller.process();
-		            optDexProcess.processPackages();
+	            // Install bundles to Atlas frameworks and dexopt
+	            bundlesInstaller.process(false);
+	            optDexProcess.processPackages(false);
 		    }
 		} else if (!updated && mApplication.getPackageName().equals(mProcessName)){
 			// Just send out the bundle installed message out, so that homepage could be started.
