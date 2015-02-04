@@ -13,6 +13,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.taobao.atlas.bundleInfo.BundleInfoList;
+import android.taobao.atlas.bundleInfo.BundleInfoWrapper;
 import android.taobao.atlas.framework.Atlas;
 import android.taobao.atlas.util.ApkUtils;
 import android.text.TextUtils;
@@ -284,7 +285,7 @@ public class AtlasInitializer {
 		        list.add(bf);
 		    }
 		}
-		BundleInfoList.getInstance().init(list);
+		BundleInfoWrapper.getInstance().initBundleInfoList(list);
 		return true;
 	}
 	    
