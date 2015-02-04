@@ -16,7 +16,7 @@ public class ReplacedReceiver extends BroadcastReceiver {
         // 应用覆盖安装时，接收消息启动TaobaoApplication，自动完成Bundle安装
         Log.d(TAG, "onReceive: " + intent == null ? "null" : intent.getAction());
         
-        if (InstallSolutionConfig.install_when_onreceive)
+        if (InstallSolutionConfig.install_when_onreceive && !InstallSolutionConfig.install_when_oncreate)
         Coordinator.postTask(new TaggedRunnable("ProcessBundlesInReceiver") {
             public void run() {
                 Log.d(TAG, " Do bundle installation and dexopt when received PACKAG_REPLACED intent!");

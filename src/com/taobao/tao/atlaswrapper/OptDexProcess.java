@@ -63,8 +63,16 @@ public class OptDexProcess {
 	    	mOptDexProcess.processPakcagesDelayed();
 	        Log.d(TAG, "dexopt delayed bundles cost time = " + (System.currentTimeMillis() - start) + " ms");    	
 		}
-        
-		mIsProcessed = true;    	
+		
+        /*
+         *  Mark process flag as true to avoid bundle installation executed twice.
+         *  Dont's set the flag when force since below logic:
+         *  replaced receiver excecute-->TaobaoApplication onCreate()'s thread execution
+         *  NotifyBundleInstalled() wouldn't be execute.
+         */		
+		if (!force){
+			mIsProcessed = true;    	
+		}
 	}
 
 	private void NotifyBundleInstalled() {
