@@ -177,10 +177,10 @@ public class AtlasInitializer {
 		 * in OnCreate() to avoid Replaced Receiver's installer cannot work!
 		 */	        
 		final BundlesInstaller bundlesInstaller =BundlesInstaller.getInstance();	        
-		final OptDexProcess mOptDexProcess = OptDexProcess.getInstance();		   	
+		final OptDexProcess optDexProcess = OptDexProcess.getInstance();		   	
 		if (mApplication.getPackageName().equals(mProcessName) && (updated || mAwbDebug.checkExternalAwbFile())) {
 		   	bundlesInstaller.init(mApplication, mMiniPackage, mAwbDebug, mIsTaobaoProcess);
-			mOptDexProcess.init(mApplication);
+		   	optDexProcess.init(mApplication);
 		}
 		
 		long startupTime = System.currentTimeMillis() - START;		
@@ -196,38 +196,30 @@ public class AtlasInitializer {
 		    Log.e(TAG, "Could not start up atlas framework !!!", e);
             throw new RuntimeException("atlas startUp fail " + e);
 		}
-		
-		/*
-		 * Start a thread to make welcome appear in advance.
-		 */
-		Coordinator.postTask(new TaggedRunnable("BundleInstaller") {
-		    @Override
-		    public void run() {	        
-		    	installBundles(bundlesInstaller, mOptDexProcess);
-		    }
-		});
-	}
 
-	private void installBundles(BundlesInstaller bundlesInstaller, OptDexProcess optDexProcess) {
-
-		long startupTime = System.currentTimeMillis() - START;
-		Log.d(TAG, "Atlas framework started in process " + mProcessName + " " + (startupTime)
-		           + " ms");
-
-		if (mApplication.getPackageName().equals(mProcessName) && (updated || mAwbDebug.checkExternalAwbFile())) {
+        if (mApplication.getPackageName().equals(mProcessName) && (updated || mAwbDebug.checkExternalAwbFile())) {
 		   	if (!InstallSolutionConfig.install_when_oncreate){
-		        // install and start auto-start bundles
-		        bundlesInstaller.process(true, false);
-	            optDexProcess.processPackages(true, false);
-		   	} else {
-	            // Install bundles to Atlas frameworks and dexopt
-	            bundlesInstaller.process(false, false);
-	            optDexProcess.processPackages(false, false);
-		    }
+				// Install bundles
+				Coordinator.postTask(new TaggedRunnable("AtlasStartup") {
+				    @Override
+				    public void run() {	        
+			            bundlesInstaller.process(true, false);
+			            optDexProcess.processPackages(true, false);
+				    }
+				});
+		   	} else {		        
+				// Install bundles
+				Coordinator.postTask(new TaggedRunnable("AtlasStartup") {
+				    @Override
+				    public void run() {	        
+			            bundlesInstaller.process(false, false);
+			            optDexProcess.processPackages(false, false);
+				    }
+				});
+		   	}
 		} else if (!updated && mApplication.getPackageName().equals(mProcessName)){
 			// Just send out the bundle installed message out, so that homepage could be started.
-		    System.setProperty("BUNDLES_INSTALLED", "true");
-		    mApplication.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED")); 	
+	        Utils.notifyBundleInstalled(mApplication);
 		}
 	}
 
