@@ -109,7 +109,7 @@ public class AtlasInitializer {
 	            throw new RuntimeException("atlas initialization fail" + e.getMessage());
 	        }
 	        
-	        Log.d(TAG, "Atlas framework inited " + (System.currentTimeMillis() - START) + " ms");
+			Log.d(TAG, "Atlas framework inited end " + mProcessName + " " +(System.currentTimeMillis() - START) + " ms");			        
 
 	        try {
 	            Field sClassLoader = Globals.class.getDeclaredField("sClassLoader");
@@ -148,9 +148,6 @@ public class AtlasInitializer {
 		            props.put("osgi.init", "true");            
 	            }
 	        }
-	        
-	        Log.d(TAG, "Atlas framework starting in process " + mProcessName + " " + (System.currentTimeMillis() - START)
-	                   + " ms");
 
 	        // Check whether x86 platform
 	        if (Utils.searchFile((mApplication.getFilesDir().getParentFile() + "/lib"), "libcom_taobao") == false){
@@ -169,6 +166,7 @@ public class AtlasInitializer {
                 UpdateBundleInfo();
 	        }
 			
+
 	}
 
 	public void startUp() {
@@ -183,10 +181,9 @@ public class AtlasInitializer {
 		   	optDexProcess.init(mApplication);
 		}
 		
-		long startupTime = System.currentTimeMillis() - START;		
-		Log.d(TAG, "Atlas framework begin to start in process " + mProcessName + " " + (startupTime)
-		           + " ms");		
-		
+        Log.d(TAG, "Atlas framework prepare starting in process " + mProcessName + " " + (System.currentTimeMillis() - START)
+                + " ms");	        
+        		
         ClassNotFoundInterceptor calssNotFoundCallback = new ClassNotFoundInterceptor();
         Atlas.getInstance().setClassNotFoundInterceptorCallback(calssNotFoundCallback);		
         
@@ -221,6 +218,9 @@ public class AtlasInitializer {
 			// Just send out the bundle installed message out, so that homepage could be started.
 	        Utils.notifyBundleInstalled(mApplication);
 		}
+        
+		Log.d(TAG, "Atlas framework end startUp in process " + mProcessName + " " + ( System.currentTimeMillis() - START)
+		           + " ms");		
 	}
 
 	private void UpdateBundleInfo() {
