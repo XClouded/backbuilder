@@ -125,16 +125,28 @@ public class AtlasInitializer {
 		    
 	        // 安装程序是否已经升级了
 	        updated = isUpdated();
-        /**
-         * 如果发生了更新，清除动态部署缓存文件
-         */
+
             if(updated){
+            	/*
+            	 *  Kill non-taobao process once updated until taobao main process installed all bundles
+            	 *  this is to avoid non-taobao process hold those bundles and main process can not
+            	 *  remove the storage directory
+            	 */
+            	boolean isTaobaoProcess = mApplication.getPackageName().equals(mProcessName);
+    	        if (isTaobaoProcess == false) {
+    	            android.os.Process.killProcess(android.os.Process.myPid());
+    	        }
+    	        
+    	        /**
+    	         * 如果发生了更新，清除动态部署缓存文件
+    	         */    	        
                 String baseLineInfoPath = mApplication.getFilesDir()+File.separator+"bundleBaseline"+File.separator+"baselineInfo";
                 File file = new File(baseLineInfoPath);
                 if(file.exists()){
                     file.delete();
                 }
             }
+            
 	        if (mApplication.getPackageName().equals(mProcessName)) {
   	
 	            // 非debug版本设置公钥，用于atlas校验签名
