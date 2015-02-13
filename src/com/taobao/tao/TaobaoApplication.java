@@ -284,13 +284,17 @@ public class TaobaoApplication extends PanguApplication {
                     mPackageManagerProxyhandler = new PackageManagerProxyhandler(mPm);
                 }
                 Object mProxyPm = Proxy.newProxyInstance(getClassLoader(), new Class[]{IPackageManagerClass}, mPackageManagerProxyhandler);
-
+                PackageManager manager = super.getPackageManager();
                 Class ApplicationPackageManager = Class.forName("android.app.ApplicationPackageManager");
-                Class ContextImpl = Class.forName("android.app.ContextImpl");
-                Class<?>[] constructorArgs = {ContextImpl, IPackageManagerClass};
-                Constructor<?> constructor = ApplicationPackageManager.getDeclaredConstructor(constructorArgs);
-                constructor.setAccessible(true);
-                mPackageManager = (PackageManager)constructor.newInstance(mBaseContext, mProxyPm);
+                Field field = ApplicationPackageManager.getDeclaredField("mPM");
+                field.setAccessible(true);
+                field.set(manager,mProxyPm);
+                mPackageManager = manager;
+//                Class ContextImpl = Class.forName("android.app.ContextImpl");
+//                Class<?>[] constructorArgs = {ContextImpl, IPackageManagerClass};
+//                Constructor<?> constructor = ApplicationPackageManager.getDeclaredConstructor(constructorArgs);
+//                constructor.setAccessible(true);
+//                mPackageManager = (PackageManager)constructor.newInstance(mBaseContext, mProxyPm);
                 return mPackageManager;
             }
         }catch(Exception e){
