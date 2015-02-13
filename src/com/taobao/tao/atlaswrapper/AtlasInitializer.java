@@ -172,7 +172,7 @@ public class AtlasInitializer {
 		    Atlas.getInstance().startup(props);
 		} catch (Exception e) {
 		    Log.e(TAG, "Could not start up atlas framework !!!", e);
-            throw new RuntimeException("atlas startUp fail " + e);
+            throw new RuntimeException( e);
 		}
 
 		handleBundlesInstallation(bundlesInstaller, optDexProcess);		
