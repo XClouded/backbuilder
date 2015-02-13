@@ -44,7 +44,7 @@
             <groupId>com.taobao.android</groupId>
             <artifactId>atlas</artifactId>
             <type>jar</type>
-            <version>2.2.20</version>
+            <version>2.2.25</version>
         </dependency>
 
     </dependencies>

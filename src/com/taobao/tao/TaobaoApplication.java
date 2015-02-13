@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import android.app.Activity;
 import android.taobao.atlas.hack.AndroidHack;
 import android.taobao.atlas.hack.AtlasHacks;
 import android.taobao.atlas.hack.Reflect;
@@ -230,7 +231,6 @@ public class TaobaoApplication extends PanguApplication {
 	}
 
     private PackageManagerProxyhandler mPackageManagerProxyhandler;
-    private PackageManager mPackageManager;
     private Context mBaseContext;
 
     @Override
@@ -268,40 +268,29 @@ public class TaobaoApplication extends PanguApplication {
         mAtlasInitializer.init();
     }
 
+    private Object mProxyPm;
     @Override
     public PackageManager getPackageManager(){
-        if(mPackageManager!=null){
-            return mPackageManager;
-        }
         try {
-            Class IPackageManagerClass = Class.forName("android.content.pm.IPackageManager");
-            Class ActvityThread = Class.forName("android.app.ActivityThread");
-            Method method = ActvityThread.getDeclaredMethod("getPackageManager");
-            method.setAccessible(true);
-            Object mPm = method.invoke(ActvityThread);
-            if (mPm != null) {
-                if (mPackageManagerProxyhandler == null) {
-                    mPackageManagerProxyhandler = new PackageManagerProxyhandler(mPm);
-                }
-                Object mProxyPm = Proxy.newProxyInstance(getClassLoader(), new Class[]{IPackageManagerClass}, mPackageManagerProxyhandler);
-                PackageManager manager = super.getPackageManager();
+            PackageManager manager = super.getPackageManager();
+            if (mProxyPm == null) {
                 Class ApplicationPackageManager = Class.forName("android.app.ApplicationPackageManager");
                 Field field = ApplicationPackageManager.getDeclaredField("mPM");
                 field.setAccessible(true);
-                field.set(manager,mProxyPm);
-                mPackageManager = manager;
-//                Class ContextImpl = Class.forName("android.app.ContextImpl");
-//                Class<?>[] constructorArgs = {ContextImpl, IPackageManagerClass};
-//                Constructor<?> constructor = ApplicationPackageManager.getDeclaredConstructor(constructorArgs);
-//                constructor.setAccessible(true);
-//                mPackageManager = (PackageManager)constructor.newInstance(mBaseContext, mProxyPm);
-                return mPackageManager;
+                Object rawPm = field.get(manager);
+                Class IPackageManagerClass = Class.forName("android.content.pm.IPackageManager");
+                if (rawPm != null) {
+                    if (mPackageManagerProxyhandler == null) {
+                        mPackageManagerProxyhandler = new PackageManagerProxyhandler(rawPm);
+                    }
+                    mProxyPm = Proxy.newProxyInstance(getClassLoader(), new Class[]{IPackageManagerClass}, mPackageManagerProxyhandler);
+                }
+                field.set(manager, mProxyPm);
             }
-        }catch(Exception e){
-            e.printStackTrace();
+            return manager;
+        }catch(Throwable e){
+            return super.getPackageManager();
         }
-        return super.getPackageManager();
-
     }
 
     private PackageInfo mPackageInfo = null;
@@ -311,8 +300,13 @@ public class TaobaoApplication extends PanguApplication {
             mPm = pm;
         }
         @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            Object object =  method.invoke(mPm,args);
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {Activity
+            Object object = null;
+            try {
+                object = method.invoke(mPm, args);
+            }catch(InvocationTargetException e){
+                throw e.getTargetException();
+            }
             if(method.getName().equals("getPackageInfo") && args[0]!=null && args[0].equals(getPackageName())){
                     PackageInfo info = (PackageInfo)object;
                     String containerVersion = info.versionName;
