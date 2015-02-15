@@ -52,6 +52,9 @@ public class AtlasInitializer {
     // Flag to check whether current process is com.taobao.taobao
     private static boolean mIsTaobaoProcess;
     
+    // BundleInfoList parsed fail, fall back to install all bundles
+    private boolean mIsBundleInfoParsed;
+    
     /*
      *  Check whether need override when version is reversed
      *  i.e., from mini <-->full, if yes, need reinstall all bundles
@@ -175,7 +178,12 @@ public class AtlasInitializer {
 		         *  When findClass() can not find class due to bundle not installed/dexopt yet,
 		         *  it is useful to locate which bundle to install/dexopt.
 		         */
-                UpdateBundleInfo();
+                if (UpdateBundleInfo() == false){
+                	// Bundle Info list parsed fail, let's install all bundles
+    	        	InstallSolutionConfig.install_when_oncreate = true;
+    	        	mIsBundleInfoParsed = true;
+                }
+                	
 	        }
 			
 
@@ -206,7 +214,12 @@ public class AtlasInitializer {
             throw new RuntimeException("atlas startUp fail " + e);
 		}
 
-        if (mApplication.getPackageName().equals(mProcessName) && (updated || mAwbDebug.checkExternalAwbFile())) {
+		if (mApplication.getPackageName().equals(mProcessName) == false){
+			// Non main process, just return
+			return;
+		}
+		
+        if (updated || mAwbDebug.checkExternalAwbFile()) {
 		   	if (!InstallSolutionConfig.install_when_oncreate){
 				// Install bundles
 				Coordinator.postTask(new TaggedRunnable("AtlasStartup") {
@@ -226,19 +239,30 @@ public class AtlasInitializer {
 				    }
 				});
 		   	}
-		} else if (!updated && mApplication.getPackageName().equals(mProcessName)){
-			// Just send out the bundle installed message out, so that homepage could be started.
-	        Utils.notifyBundleInstalled(mApplication);
+		} else if (!updated){
+			if (mIsBundleInfoParsed == false){
+				// Just send out the bundle installed message out, so that homepage could be started.
+		        Utils.notifyBundleInstalled(mApplication);
+			} else {
+				// BundleInfoList parsed fail, fall back to install all bundles
+				Coordinator.postTask(new TaggedRunnable("AtlasStartup") {
+				    @Override
+				    public void run() {	        
+			            bundlesInstaller.process(false, false);
+			            optDexProcess.processPackages(false, false);
+				    }
+				});
+			}
 		}
         
 		Log.d(TAG, "Atlas framework end startUp in process " + mProcessName + " " + ( System.currentTimeMillis() - START)
 		           + " ms");		
 	}
 
-	private void UpdateBundleInfo() {
+	private boolean UpdateBundleInfo() {
 		BundleListing listing = BundleInfoManager.instance().getBundleListing();
 		if(listing==null || listing.getBundles()==null){
-		    return;
+		    return false;
 		}
         LinkedList<BundleInfoList.BundleInfo> list = new LinkedList<BundleInfoList.BundleInfo>();
 		for(BundleListing.BundleInfo info : listing.getBundles()){
@@ -261,6 +285,7 @@ public class AtlasInitializer {
 		    }
 		}
 		BundleInfoList.getInstance().init(list);
+		return true;
 	}
 	    
     @SuppressLint("DefaultLocale")
