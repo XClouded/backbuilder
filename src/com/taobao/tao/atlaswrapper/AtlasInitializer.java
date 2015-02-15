@@ -109,7 +109,7 @@ public class AtlasInitializer {
 	            throw new RuntimeException("atlas initialization fail" + e.getMessage());
 	        }
 	        
-	        Log.d(TAG, "Atlas framework inited " + (System.currentTimeMillis() - START) + " ms");
+			Log.d(TAG, "Atlas framework inited end " + mProcessName + " " +(System.currentTimeMillis() - START) + " ms");			        
 
 	        try {
 	            Field sClassLoader = Globals.class.getDeclaredField("sClassLoader");
@@ -125,16 +125,28 @@ public class AtlasInitializer {
 		    
 	        // 安装程序是否已经升级了
 	        updated = isUpdated();
-        /**
-         * 如果发生了更新，清除动态部署缓存文件
-         */
+
             if(updated){
+            	/*
+            	 *  Kill non-taobao process once updated until taobao main process installed all bundles
+            	 *  this is to avoid non-taobao process hold those bundles and main process can not
+            	 *  remove the storage directory
+            	 */
+            	boolean isTaobaoProcess = mApplication.getPackageName().equals(mProcessName);
+    	        if (isTaobaoProcess == false) {
+    	            android.os.Process.killProcess(android.os.Process.myPid());
+    	        }
+    	        
+    	        /**
+    	         * 如果发生了更新，清除动态部署缓存文件
+    	         */    	        
                 String baseLineInfoPath = mApplication.getFilesDir()+File.separator+"bundleBaseline"+File.separator+"baselineInfo";
                 File file = new File(baseLineInfoPath);
                 if(file.exists()){
                     file.delete();
                 }
             }
+            
 	        if (mApplication.getPackageName().equals(mProcessName)) {
   	
 	            // 非debug版本设置公钥，用于atlas校验签名
@@ -148,9 +160,6 @@ public class AtlasInitializer {
 		            props.put("osgi.init", "true");            
 	            }
 	        }
-	        
-	        Log.d(TAG, "Atlas framework starting in process " + mProcessName + " " + (System.currentTimeMillis() - START)
-	                   + " ms");
 
 	        // Check whether x86 platform
 	        if (Utils.searchFile((mApplication.getFilesDir().getParentFile() + "/lib"), "libcom_taobao") == false){
@@ -169,6 +178,7 @@ public class AtlasInitializer {
                 UpdateBundleInfo();
 	        }
 			
+
 	}
 
 	public void startUp() {
@@ -177,16 +187,15 @@ public class AtlasInitializer {
 		 * in OnCreate() to avoid Replaced Receiver's installer cannot work!
 		 */	        
 		final BundlesInstaller bundlesInstaller =BundlesInstaller.getInstance();	        
-		final OptDexProcess mOptDexProcess = OptDexProcess.getInstance();		   	
+		final OptDexProcess optDexProcess = OptDexProcess.getInstance();		   	
 		if (mApplication.getPackageName().equals(mProcessName) && (updated || mAwbDebug.checkExternalAwbFile())) {
 		   	bundlesInstaller.init(mApplication, mMiniPackage, mAwbDebug, mIsTaobaoProcess);
-			mOptDexProcess.init(mApplication);
+		   	optDexProcess.init(mApplication);
 		}
 		
-		long startupTime = System.currentTimeMillis() - START;		
-		Log.d(TAG, "Atlas framework begin to start in process " + mProcessName + " " + (startupTime)
-		           + " ms");		
-		
+        Log.d(TAG, "Atlas framework prepare starting in process " + mProcessName + " " + (System.currentTimeMillis() - START)
+                + " ms");	        
+        		
         ClassNotFoundInterceptor calssNotFoundCallback = new ClassNotFoundInterceptor();
         Atlas.getInstance().setClassNotFoundInterceptorCallback(calssNotFoundCallback);		
         
@@ -196,54 +205,34 @@ public class AtlasInitializer {
 		    Log.e(TAG, "Could not start up atlas framework !!!", e);
             throw new RuntimeException("atlas startUp fail " + e);
 		}
-		
-		/*
-		 * Start a thread to make welcome appear in advance.
-		 */
-		Coordinator.postTask(new TaggedRunnable("AtlasStartup") {
-		    @Override
-		    public void run() {	        
-		    	installBundles(bundlesInstaller, mOptDexProcess);
-		    }
-		});
-	}
 
-	private void installBundles(BundlesInstaller bundlesInstaller, OptDexProcess optDexProcess) {
-
-		long startupTime = System.currentTimeMillis() - START;
-		Log.d(TAG, "Atlas framework started in process " + mProcessName + " " + (startupTime)
-		           + " ms");
-
-		if (mApplication.getPackageName().equals(mProcessName) && (updated || mAwbDebug.checkExternalAwbFile())) {
-		   	
-		    /*
-		     *  Only install/dexopt all bundles at Taobao process, why **not** do it in Nofity/Push process?
-		     *  The reason is that it has potential issue that meta file could be written by two processes(Taobao and Notify/Push)
-		     *  
-		     *  A exception case is we still need do install/dexopt in findClass/execStartActivityInternal in InstrumentationHook
-		     *  once work not done yet, since Notify/Push process, it would raise Taobao application and call findClass/execStartActivityInternal
-		     *  maybe Taobao Process's install/dexopt is on-going, and it would lead to ClassNotFound issue.
-		     */
+        if (mApplication.getPackageName().equals(mProcessName) && (updated || mAwbDebug.checkExternalAwbFile())) {
 		   	if (!InstallSolutionConfig.install_when_oncreate){
-		   		// Just send out the bundle installed message out, so that homepage could be started.
-		        System.setProperty("BUNDLES_INSTALLED", "true");
-		        mApplication.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
-		        
-		        /*
-		         *  Need update package version when not install bundles at onCreate, to avoid storage directory
-		         *  being deleted once and once again, since the updated flag would be always true. 
-		         */
-		        bundlesInstaller.UpdatePackageVersion();
-		   	} else {
-		            // Install bundles to Atlas frameworks and dexopt
-		            bundlesInstaller.process();
-		            optDexProcess.processPackages();
-		    }
+				// Install bundles
+				Coordinator.postTask(new TaggedRunnable("AtlasStartup") {
+				    @Override
+				    public void run() {	        
+			            bundlesInstaller.process(true, false);
+			            optDexProcess.processPackages(true, false);
+				    }
+				});
+		   	} else {		        
+				// Install bundles
+				Coordinator.postTask(new TaggedRunnable("AtlasStartup") {
+				    @Override
+				    public void run() {	        
+			            bundlesInstaller.process(false, false);
+			            optDexProcess.processPackages(false, false);
+				    }
+				});
+		   	}
 		} else if (!updated && mApplication.getPackageName().equals(mProcessName)){
 			// Just send out the bundle installed message out, so that homepage could be started.
-		    System.setProperty("BUNDLES_INSTALLED", "true");
-		    mApplication.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED")); 	
+	        Utils.notifyBundleInstalled(mApplication);
 		}
+        
+		Log.d(TAG, "Atlas framework end startUp in process " + mProcessName + " " + ( System.currentTimeMillis() - START)
+		           + " ms");		
 	}
 
 	private void UpdateBundleInfo() {

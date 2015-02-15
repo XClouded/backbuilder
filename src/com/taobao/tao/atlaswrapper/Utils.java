@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
@@ -99,6 +100,12 @@ public class Utils {
         }
         editor.commit();
     }    
+    
+    public static void notifyBundleInstalled(Application mApplication){
+    	System.setProperty("BUNDLES_INSTALLED", "true");
+    	mApplication.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
+        Log.d(TAG,  "Send out BUNDLES_INSTALLED ");    	
+    }
     
     /*
      * Check whether bundle library exist under the directory

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import org.osgi.framework.Bundle;
+
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -64,13 +65,13 @@ public class BundlesInstaller {
 	 * (1) Make process function synchronized
 	 * (2) Once enter, check whether executed already, if yes, just return
 	 */
-	public synchronized void  process(){
+	public synchronized void  process(boolean onlyAuto, boolean force){
 
 		// Never process once not initialized yet to avoid null exception
 		if (!mIsInited){
 			Log.e(TAG, "Bundle Installer not initialized yet, process abort!");
 			return;
-		} else if (mIsProcessed == true){
+		} else if (mIsProcessed && !force){
 			Log.i(TAG, "Bundle install already executed, just return");
 			return;
 		}
@@ -93,9 +94,26 @@ public class BundlesInstaller {
             		});
             	}
             }
-            processLibsBundles(zipFile, entryNames, mApplication);	                        
-
-            UpdatePackageVersion();
+			
+			if (onlyAuto){
+				final List<String> autoStartEntryNames = new ArrayList<String>();
+		        // 过滤出auto start的bundle
+		        for (String entryName : entryNames) {
+		            for (int i = 0; i < Utils.AUTOSTART_PACKAGES.length; i++) {
+		                String pkg = Utils.AUTOSTART_PACKAGES[i].replace(".", "_");
+		                if (entryName.contains(pkg)){
+		                	autoStartEntryNames.add(entryName);
+		                }
+		            }
+		        }
+				processAutoStartBundles(zipFile, autoStartEntryNames, mApplication);
+			} else {
+				processLibsBundles(zipFile, entryNames, mApplication);	        
+			}
+			
+			if (!force){
+				UpdatePackageVersion();
+			}
 
         } catch (IOException e) {
             Log.e(TAG, "IOException while processLibsBundles >>>", e);
@@ -109,8 +127,15 @@ public class BundlesInstaller {
             }
         }
         
-        // Mark process flag as true to avoid bundle installation executed twice.
-        mIsProcessed = true;
+        /*
+         *  Mark process flag as true to avoid bundle installation executed twice.
+         *  Dont's set the flag when force since below logic:
+         *  replaced receiver excecute-->TaobaoApplication onCreate()'s thread execution
+         *  UpdatePackageVersion() wouldn't be execute.
+         */
+        if (!force){
+        	mIsProcessed = true;
+        }
 	}
 
 	public void UpdatePackageVersion() {
@@ -159,6 +184,29 @@ public class BundlesInstaller {
         long availableBlocks = stat.getAvailableBlocks();  
         return availableBlocks*blockSize;  
     }
+	
+	public void processAutoStartBundles(ZipFile zipFile, List<String> entryNames,  Application mApplication){
+		
+		// 安装autostart bundle
+        for (String entryName : entryNames) {
+            processLibsBundle(zipFile, entryName, mApplication);
+        }
+        
+        // 根据需要自动启动Bundle
+        if (mIsTaobaoProcess){
+	        for (String pkg :Utils.AUTOSTART_PACKAGES) {
+	        	Bundle bundle = Atlas.getInstance().getBundle(pkg);
+	            if (bundle != null) {
+	                try {
+	                    bundle.start();
+	                } catch (Exception e) {
+	                    Log.e(TAG, "Could not auto start bundle: " + bundle.getLocation(), e);
+	                }
+	            }
+	        }
+        }
+        
+	}
 	
     private void processLibsBundles(ZipFile zipFile, List<String> entryNames, Application mApplication) {
         // 首先按照预先设定的顺序处理Bundle安装包

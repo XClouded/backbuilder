@@ -300,7 +300,7 @@ public class TaobaoApplication extends PanguApplication {
             mPm = pm;
         }
         @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {Activity
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             Object object = null;
             try {
                 object = method.invoke(mPm, args);
