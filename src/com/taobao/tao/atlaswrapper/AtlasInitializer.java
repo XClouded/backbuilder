@@ -54,7 +54,7 @@ public class AtlasInitializer {
     private static boolean mIsTaobaoProcess;
     
     // BundleInfoList parsed fail, fall back to install all bundles
-    private boolean mIsBundleInfoParsed;
+    private boolean mIsBundleInfoParsedFail;
     
     /*
      *  Check whether need override when version is reversed
@@ -81,7 +81,6 @@ public class AtlasInitializer {
     }
     
 	public void init(){
-		
 			START = System.currentTimeMillis();
 			
 	        Properties props = new Properties();
@@ -182,7 +181,7 @@ public class AtlasInitializer {
                 if (UpdateBundleInfo() == false){
                 	// Bundle Info list parsed fail, let's install all bundles
     	        	InstallSolutionConfig.install_when_oncreate = true;
-    	        	mIsBundleInfoParsed = true;
+    	        	mIsBundleInfoParsedFail = true;
                 }
                 	
 	        }
@@ -222,16 +221,14 @@ public class AtlasInitializer {
 		
         if (updated || mAwbDebug.checkExternalAwbFile()) {
 		   	if (!InstallSolutionConfig.install_when_oncreate){
-				// Install bundles
-				Coordinator.postTask(new TaggedRunnable("AtlasStartup") {
-				    @Override
-				    public void run() {	        
-			            bundlesInstaller.process(true, false);
-			            optDexProcess.processPackages(true, false);
-				    }
-				});
+				/*
+				 *  Just send out the bundle installed message out, so that homepage could be started.
+				 *  System bundle would start the auto start bundles
+				 */
+				Utils.saveAtlasInfoBySharedPreferences(mApplication);
+		        Utils.notifyBundleInstalled(mApplication);
 		   	} else {		        
-				// Install bundles
+				// Install all bundles
 				Coordinator.postTask(new TaggedRunnable("AtlasStartup") {
 				    @Override
 				    public void run() {	        
@@ -241,8 +238,11 @@ public class AtlasInitializer {
 				});
 		   	}
 		} else if (!updated){
-			if (mIsBundleInfoParsed == false){
-				// Just send out the bundle installed message out, so that homepage could be started.
+			if (mIsBundleInfoParsedFail == false){
+				/*
+				 *  Just send out the bundle installed message out, so that homepage could be started.
+				 *  System bundle would start the auto start bundles
+				 */
 		        Utils.notifyBundleInstalled(mApplication);
 			} else {
 				// BundleInfoList parsed fail, fall back to install all bundles
@@ -255,7 +255,6 @@ public class AtlasInitializer {
 				});
 			}
 		}
-        
 		Log.d(TAG, "Atlas framework end startUp in process " + mProcessName + " " + ( System.currentTimeMillis() - START)
 		           + " ms");		
 	}
