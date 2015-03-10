@@ -231,8 +231,9 @@ public class AtlasInitializer {
 				 *  Just send out the bundle installed message out, so that homepage could be started.
 				 *  System bundle would start the auto start bundles
 				 */
-				Utils.saveAtlasInfoBySharedPreferences(mApplication);
 		        Utils.notifyBundleInstalled(mApplication);
+		        Utils.UpdatePackageVersion(mApplication);
+				Utils.saveAtlasInfoBySharedPreferences(mApplication);		        
 		   	} else {		        
 				// Install all bundles
 				Coordinator.postTask(new TaggedRunnable("AtlasStartup") {

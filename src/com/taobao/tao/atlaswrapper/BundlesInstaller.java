@@ -30,7 +30,6 @@ public class BundlesInstaller {
         
     private Application mApplication;
     private MiniPackage mMiniPackage;
-	private PackageInfo mPackageInfo;
 	AwbDebug mAwbDebug;  
 	private boolean mIsInited;	
 	private boolean mIsProcessed;
@@ -49,7 +48,7 @@ public class BundlesInstaller {
 		this.mMiniPackage = mMiniPackage;
 		this.mAwbDebug = mAwbDebug;
 		this.mIsTaobaoProcess = mIsTaobaoProcess;
-		mPackageInfo = Utils.getPackageInfo(mApplication);
+
 		mIsInited = true;
 	}
 	
@@ -112,7 +111,7 @@ public class BundlesInstaller {
 			}
 			
 			if (!force){
-				UpdatePackageVersion();
+				Utils.UpdatePackageVersion(mApplication);
 			}
 
         } catch (IOException e) {
@@ -137,28 +136,6 @@ public class BundlesInstaller {
         	mIsProcessed = true;
         }
 	}
-
-	public void UpdatePackageVersion() {
-		// Never process once not initialized yet to avoid null exception
-		if (!mIsInited){
-			Log.e(TAG, "Bundle Installer not initialized yet, process abort!");
-			return;
-		}
-		
-		SharedPreferences prefs;
-		/*
-		 *  For mini package, after upgrade, 1st install all bundles downloaded, then overide with those not supported bundles already installed.
-		 */
-		prefs = mApplication.getSharedPreferences("atlas_configs", Context.MODE_PRIVATE);	         
-		mMiniPackage.process(prefs, mPackageInfo);
-		
-		Editor editor = prefs.edit();
-		editor.putInt("last_version_code", mPackageInfo.versionCode);
-		editor.putString("last_version_name", mPackageInfo.versionName);
-		editor.putString(mPackageInfo.versionName, "dexopt");
-		
-		editor.commit();
-	}	
     
     private List<String> getBundleEntryNames(ZipFile zipFile, String prefix, String suffix) {
         List<String> entryNames = new ArrayList<String>();
