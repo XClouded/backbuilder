@@ -257,7 +257,7 @@ public class TaobaoApplication extends PanguApplication {
                 processName = appProcess.processName;
             }
         }
-        mAtlasInitializer = new AtlasInitializer(this, processName);
+        mAtlasInitializer = new AtlasInitializer(this, processName, mBaseContext);
         /* 
          * Inject mApplication to support content provider, otherwize, as
          * PackageInfo.mApplication is still null when attachBaseContext(),

@@ -56,6 +56,8 @@ public class AtlasInitializer {
     // BundleInfoList parsed fail, fall back to install all bundles
     private boolean mIsBundleInfoParsedFail;
     
+    // Base context
+    private  Context mBaseContext;
     /*
      *  Check whether need override when version is reversed
      *  i.e., from mini <-->full, if yes, need reinstall all bundles
@@ -64,9 +66,10 @@ public class AtlasInitializer {
     
     private boolean updated = false;
         
-    public AtlasInitializer(Application mApplication, String mProcessName){
+    public AtlasInitializer(Application mApplication, String mProcessName,  Context mBaseContext){
     	this.mApplication = mApplication;
     	this.mProcessName = mProcessName;
+    	this.mBaseContext =  mBaseContext;
     	if (mApplication.getPackageName().equals(mProcessName)){
     		mIsTaobaoProcess = true;
     	}
@@ -259,12 +262,34 @@ public class AtlasInitializer {
 		           + " ms");		
 	}
 
+	private static final String BundleInfoKey = "bundle-info";
+	
 	private boolean UpdateBundleInfo() {
+		
+		ArrayList<BundleInfoList.BundleInfo> list = null;
+		list = (ArrayList<BundleInfoList.BundleInfo>)
+				PendingIntentSave.getInstance().getData(BundleInfoKey, mBaseContext);
+		
+		if (list == null){
+			list = UpdateFromBundleInfoManager();
+			if (list == null){
+				return false;
+			}
+			PendingIntentSave.getInstance().saveData(BundleInfoKey, list);
+			PendingIntentSave.getInstance().commit(mBaseContext);
+		}
+		
+		BundleInfoWrapper.getInstance().initBundleInfoList(list);
+		
+		return true;
+	}
+
+	private ArrayList<BundleInfoList.BundleInfo> UpdateFromBundleInfoManager() {
 		BundleListing listing = BundleInfoManager.instance().getBundleListing();
 		if(listing==null || listing.getBundles()==null){
-		    return false;
+		    return null;
 		}
-        LinkedList<BundleInfoList.BundleInfo> list = new LinkedList<BundleInfoList.BundleInfo>();
+		ArrayList<BundleInfoList.BundleInfo> list = new ArrayList<BundleInfoList.BundleInfo>();
 		for(BundleListing.BundleInfo info : listing.getBundles()){
 		    if(info!=null){
 		        BundleInfoList.BundleInfo bf = new BundleInfoList.BundleInfo();
@@ -284,8 +309,7 @@ public class AtlasInitializer {
 		        list.add(bf);
 		    }
 		}
-		BundleInfoWrapper.getInstance().initBundleInfoList(list);
-		return true;
+		return list;
 	}
 	    
     @SuppressLint("DefaultLocale")
