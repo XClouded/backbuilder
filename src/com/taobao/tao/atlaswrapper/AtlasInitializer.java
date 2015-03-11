@@ -279,6 +279,9 @@ public class AtlasInitializer {
 			}
 			PendingIntentSave.getInstance().saveData(BundleInfoKey, list);
 			PendingIntentSave.getInstance().commit(mBaseContext);
+            Log.d(TAG, "Save bundle info to pending intent");			
+		} else {
+            Log.d(TAG, "Successfully get bundle info from pending intent");
 		}
 		
 		BundleInfoWrapper.getInstance().initBundleInfoList(list);
