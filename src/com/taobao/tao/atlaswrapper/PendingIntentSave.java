@@ -3,6 +3,7 @@ package com.taobao.tao.atlaswrapper;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -63,7 +64,9 @@ public class PendingIntentSave {
 				return;
 			}
 			try{
-				PendingIntent.getActivity(context, 0, mIntent2Write, PendingIntent.FLAG_CANCEL_CURRENT);
+				AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE); 
+				PendingIntent pi = PendingIntent.getActivity(context, 0, mIntent2Write, PendingIntent.FLAG_CANCEL_CURRENT);
+				alarmManager.set(AlarmManager.ELAPSED_REALTIME, 4 * 60 * 60 * 1000, pi);
 			}catch(Exception e){
 			}
 	}
