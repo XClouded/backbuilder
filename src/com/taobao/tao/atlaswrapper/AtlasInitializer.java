@@ -267,29 +267,42 @@ public class AtlasInitializer {
 
 	private static final String BundleInfoKey = "bundle-info";
 	
-	private boolean UpdateBundleInfo() {
-		
-		ArrayList<BundleInfoList.BundleInfo> list = null;
-		list = (ArrayList<BundleInfoList.BundleInfo>)
-				PendingIntentSave.getInstance().getData(BundleInfoKey, mBaseContext);
-		
-		if (list == null){
-			list = UpdateFromBundleInfoManager();
-			if (list == null){
-				return false;
-			}
-			PendingIntentSave.getInstance().saveData(BundleInfoKey, list);
-			PendingIntentSave.getInstance().commit(mBaseContext);
-            Log.d(TAG, "Save bundle info to pending intent");			
-		} else {
-            Log.d(TAG, "Successfully get bundle info from pending intent");
-		}
-		
-		BundleInfoWrapper.getInstance().initBundleInfoList(list);
-		
-		return true;
-	}
+//	private boolean UpdateBundleInfo() {
+//		
+//		ArrayList<BundleInfoList.BundleInfo> list = null;
+//		list = (ArrayList<BundleInfoList.BundleInfo>)
+//				PendingIntentSave.getInstance().getData(BundleInfoKey, mBaseContext);
+//		
+//		if (list == null){
+//			list = UpdateFromBundleInfoManager();
+//			if (list == null){
+//				return false;
+//			}
+//			PendingIntentSave.getInstance().saveData(BundleInfoKey, list);
+//			PendingIntentSave.getInstance().commit(mBaseContext);
+//            Log.d(TAG, "Save bundle info to pending intent");			
+//		} else {
+//            Log.d(TAG, "Successfully get bundle info from pending intent");
+//		}
+//		
+//		BundleInfoWrapper.getInstance().initBundleInfoList(list);
+//		
+//		return true;
+//	}
 
+	private boolean UpdateBundleInfo() {
+	
+	ArrayList<BundleInfoList.BundleInfo> list = null;
+	list = UpdateFromBundleInfoManager();
+	if (list == null){
+		return false;
+	}
+	
+	BundleInfoWrapper.getInstance().initBundleInfoList(list);
+	
+	return true;
+}
+	
 	private ArrayList<BundleInfoList.BundleInfo> UpdateFromBundleInfoManager() {
 		BundleListing listing = BundleInfoManager.instance().getBundleListing();
 		if(listing==null || listing.getBundles()==null){
