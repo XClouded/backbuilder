@@ -93,7 +93,6 @@ public class OptDexProcess {
             if (bundle != null && !contains(Utils.DELAYED_PACKAGES, bundle.getLocation())) {
                 try {
                     ((BundleImpl) bundle).optDexFile();
-                    Atlas.getInstance().enableComponent(bundle.getLocation());
                 } catch (Exception e) {
                 	if (e instanceof BundleArchiveRevision.DexLoadException){
                 		throw (RuntimeException)e;
@@ -112,7 +111,6 @@ public class OptDexProcess {
 			if (bundle != null) {
 				try {
 					((BundleImpl) bundle).optDexFile();
-                    Atlas.getInstance().enableComponent(bundle.getLocation());					
 				} catch (Exception e) {
                 	if (e instanceof BundleArchiveRevision.DexLoadException){
                 		throw (RuntimeException)e;
@@ -131,7 +129,6 @@ public class OptDexProcess {
 			if (bundle != null) {
 				try {
 					((BundleImpl) bundle).optDexFile();
-                    Atlas.getInstance().enableComponent(bundle.getLocation());					
 				} catch (Exception e) {
                 	if (e instanceof BundleArchiveRevision.DexLoadException){
                 		throw (RuntimeException)e;

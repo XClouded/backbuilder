@@ -101,6 +101,16 @@ public class Utils {
         editor.commit();
     }    
     
+	public static void UpdatePackageVersion(Application mApplication) {
+		PackageInfo mPackageInfo = Utils.getPackageInfo(mApplication);
+		SharedPreferences prefs = mApplication.getSharedPreferences("atlas_configs", Context.MODE_PRIVATE);	         
+		Editor editor = prefs.edit();
+		editor.putInt("last_version_code", mPackageInfo.versionCode);
+		editor.putString("last_version_name", mPackageInfo.versionName);
+		editor.putString(mPackageInfo.versionName, "dexopt");
+		editor.commit();
+	}	
+	
     public static void notifyBundleInstalled(Application mApplication){
     	System.setProperty("BUNDLES_INSTALLED", "true");
     	mApplication.sendBroadcast(new Intent("com.taobao.taobao.action.BUNDLES_INSTALLED"));
