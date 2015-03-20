@@ -13,7 +13,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.taobao.atlas.bundleInfo.BundleInfoList;
-import android.taobao.atlas.bundleInfo.BundleInfoWrapper;
 import android.taobao.atlas.framework.Atlas;
 import android.taobao.atlas.util.ApkUtils;
 import android.text.TextUtils;
@@ -285,7 +284,7 @@ public class AtlasInitializer {
 //            Log.d(TAG, "Successfully get bundle info from pending intent");
 //		}
 //		
-//		BundleInfoWrapper.getInstance().initBundleInfoList(list);
+//		BundleInfoList.getInstance().initBundleInfoList(list);
 //		
 //		return true;
 //	}
@@ -298,7 +297,7 @@ public class AtlasInitializer {
 		return false;
 	}
 	
-	BundleInfoWrapper.getInstance().initBundleInfoList(list);
+	BundleInfoList.getInstance().init(list);
 	
 	return true;
 }
