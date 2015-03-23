@@ -4,6 +4,8 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.*;
 
+import org.osgi.framework.BundleException;
+
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
@@ -14,6 +16,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.taobao.atlas.bundleInfo.BundleInfoList;
 import android.taobao.atlas.framework.Atlas;
+import android.taobao.atlas.framework.BundleImpl;
 import android.taobao.atlas.util.ApkUtils;
 import android.text.TextUtils;
 import android.util.Log;
@@ -262,6 +265,29 @@ public class AtlasInitializer {
 				});
 			}
 		}
+		
+		launch_wangxin_bundle();
+	}
+
+	private void launch_wangxin_bundle() {
+		/*
+		 * Hard code to launch Wangxin bundle, this is a just temp solution
+		 * Since Wangxin need receive message when background in some cases
+		 */
+		Coordinator.postTask(new TaggedRunnable("WangXinStartUp") {
+		    @Override
+		    public void run() {	        
+		        BundleImpl bundle = (BundleImpl) Atlas.getInstance().getBundleOnDemand("com.taobao.wangxin");
+		        if (bundle != null){
+		            try {
+		                bundle.startBundle();
+		            } catch (BundleException e) {
+		                e.printStackTrace();
+		            }
+		        }
+		    }
+		});
+
 	}
 
 	private static final String BundleInfoKey = "bundle-info";
