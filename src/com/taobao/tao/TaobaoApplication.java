@@ -39,6 +39,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.StatFs;
+import android.preference.PreferenceManager;
 import android.taobao.atlas.framework.Atlas;
 import android.taobao.atlas.framework.BundleImpl;
 import android.taobao.atlas.runtime.ContextImplHook;
@@ -59,6 +60,7 @@ import com.taobao.lightapk.BundleInfoManager;
 import com.taobao.tao.util.Constants;
 import com.ut.mini.crashhandler.UTCrashHandler;
 import com.taobao.tao.atlaswrapper.AtlasInitializer;
+import com.taobao.updatecenter.hotpatch.HotPatchManager;
 
 
 public class TaobaoApplication extends PanguApplication {
@@ -257,6 +259,17 @@ public class TaobaoApplication extends PanguApplication {
                 processName = appProcess.processName;
             }
         }
+		HotPatchManager hm = HotPatchManager.getInstance();
+		hm.init(Globals.getApplication(), Globals.getVersionName(), Globals
+				.getApplication().getPackageName(), TaoPackageInfo.getTTID());
+		if ("com.taobao.taobao".equals(processName)
+				|| StringUtil.contains(processName, ":push")) {
+			SharedPreferences settings = PreferenceManager
+					.getDefaultSharedPreferences(Globals.getApplication());
+			if ("1".equals(settings.getString("hotpatch_priority", "0"))) {
+				hm.startHotPatch();
+			}
+		}
         mAtlasInitializer = new AtlasInitializer(this, processName, mBaseContext);
         /* 
          * Inject mApplication to support content provider, otherwize, as
