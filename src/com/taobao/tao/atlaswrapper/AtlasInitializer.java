@@ -200,11 +200,6 @@ public class AtlasInitializer {
 
 	private void handleBundlesInstallation(final BundlesInstaller bundlesInstaller,
 			final OptDexProcess optDexProcess) {
-		
-		if (mApplication.getPackageName().equals(mProcessName) == false){
-			// Non main process, just return
-			return;
-		}
 
         // Check whether x86 platform
         if ((Utils.searchFile((mApplication.getFilesDir().getParentFile() + "/lib"), "libcom_taobao") == false)
@@ -228,6 +223,11 @@ public class AtlasInitializer {
             }
         }
         
+		if (mApplication.getPackageName().equals(mProcessName) == false){
+			// Non main process, just return
+			return;
+		}
+		
         if (updated || mAwbDebug.checkExternalAwbFile()) {
 		   	if (!InstallSolutionConfig.install_when_oncreate){
 				/*
