@@ -31,6 +31,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteException;
@@ -260,7 +261,14 @@ public class TaobaoApplication extends PanguApplication {
             }
         }
 		HotPatchManager hm = HotPatchManager.getInstance();
-		hm.init(this, getPackageManager().getPackageInfo(getPackageName(),0).versionName,null, null);
+		String versionName;
+		try {
+			versionName = getPackageManager().getPackageInfo(getPackageName(),
+					0).versionName;
+		} catch (NameNotFoundException e) {
+			versionName = "5.3.0";
+		}
+		hm.init(this, versionName, null, null);
 		if ("com.taobao.taobao".equals(processName)
 				|| StringUtil.contains(processName, ":push")) {
 			SharedPreferences settings = PreferenceManager
