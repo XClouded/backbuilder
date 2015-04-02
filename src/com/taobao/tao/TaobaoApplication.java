@@ -260,23 +260,7 @@ public class TaobaoApplication extends PanguApplication {
                 processName = appProcess.processName;
             }
         }
-		HotPatchManager hm = HotPatchManager.getInstance();
-		String versionName;
-		try {
-			versionName = getPackageManager().getPackageInfo(getPackageName(),
-					0).versionName;
-		} catch (NameNotFoundException e) {
-			versionName = "5.3.0";
-		}
-		hm.init(this, versionName, null, null);
-		if ("com.taobao.taobao".equals(processName)
-				|| StringUtil.contains(processName, ":push")) {
-			SharedPreferences settings = PreferenceManager
-					.getDefaultSharedPreferences(Globals.getApplication());
-			if ("1".equals(settings.getString("hotpatch_priority", "0"))) {
-				hm.startHotPatch();
-			}
-		}
+		
         mAtlasInitializer = new AtlasInitializer(this, processName, mBaseContext);
         /* 
          * Inject mApplication to support content provider, otherwize, as
@@ -284,8 +268,21 @@ public class TaobaoApplication extends PanguApplication {
          * there could be a lot of null pointer issues.
          */
         mAtlasInitializer.injectApplication();
+        initAndStartHotpatch();
         initCrashHandlerAndSafeMode(mBaseContext);
         mAtlasInitializer.init();
+    }
+    
+    private void initAndStartHotpatch() {
+    	HotPatchManager hm = HotPatchManager.getInstance();
+		hm.init(this, Globals.getVersionName(), null, null);
+		if ("com.taobao.taobao".equals(processName)
+				|| StringUtil.contains(processName, ":push")) {
+			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(Globals.getApplication());
+			if ("1".equals(settings.getString("hotpatch_priority", "0"))) {
+				hm.startHotPatch();
+			}
+		}
     }
 
     private Object mProxyPm;
