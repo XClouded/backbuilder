@@ -260,8 +260,7 @@ public class TaobaoApplication extends PanguApplication {
             }
         }
 		HotPatchManager hm = HotPatchManager.getInstance();
-		hm.init(Globals.getApplication(), Globals.getVersionName(), Globals
-				.getApplication().getPackageName(), TaoPackageInfo.getTTID());
+		hm.init(this, getPackageManager().getPackageInfo(getPackageName(),0).versionName,null, null);
 		if ("com.taobao.taobao".equals(processName)
 				|| StringUtil.contains(processName, ":push")) {
 			SharedPreferences settings = PreferenceManager
