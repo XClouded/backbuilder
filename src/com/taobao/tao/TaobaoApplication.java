@@ -121,12 +121,6 @@ public class TaobaoApplication extends PanguApplication {
             UTCrashHandler.getInstance().setChannel(TaoPackageInfo.sTTID);
 
             StringBuilder sb = new StringBuilder(32);
-//废弃by 关杰
-//            String baseline = Globals.getBaselineVer();
-//            if(!TextUtils.isEmpty(baseline)){
-//            	sb.append("_bv=").append(baseline).append(",");
-//            }
-            
             boolean isMini = Globals.isMiniPackage(this);
             if(isMini){
             	sb.append("_jjb=1").append(",");
@@ -333,17 +327,6 @@ public class TaobaoApplication extends PanguApplication {
                         return mPackageInfo;
                     }
                     String mainVersion = BaselineInfoProvider.getInstance().getMainVersionName();
-//                    if (!StringUtil.isEmpty(mainVersion)) {
-//                        if (!containerVersion.equalsIgnoreCase(mainVersion)) {
-//                            mPackageInfo = info;
-//                            return mPackageInfo;
-//                        }else{
-//                            String baselineVersion = BaselineInfoProvider.getInstance().getBaselineVersion();
-//                            info.versionName = baselineVersion;
-//                            mPackageInfo = info;
-//                            return mPackageInfo;
-//                        }
-//                    }
                 String baselineVersion = BaselineInfoProvider.getInstance().getBaselineVersion();
                 if (!StringUtil.isEmpty(baselineVersion)) {
                         info.versionName = baselineVersion;
