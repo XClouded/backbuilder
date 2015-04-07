@@ -225,7 +225,9 @@ public class TaobaoApplication extends PanguApplication {
         initAndStartHotpatch();
         
         // start watchdog monitor alarm
-        LaunchdogAlarm.start(mBaseContext);
+        if (processName.equals(getPackageName())) {
+        	LaunchdogAlarm.start(mBaseContext);
+        }
         
         initCrashHandlerAndSafeMode(mBaseContext);
         if (!isPureProcess) {
