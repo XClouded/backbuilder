@@ -238,7 +238,7 @@ public class TaobaoApplication extends PanguApplication {
     private void initAndStartHotpatch() {
     	HotPatchManager hm = HotPatchManager.getInstance();
 		hm.init(this, Globals.getVersionName(), null, null);
-		if ("com.taobao.taobao".equals(processName)
+		if (getPackageName().equals(processName)
 				|| StringUtil.contains(processName, ":push")) {
 			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(Globals.getApplication());
 			if ("1".equals(settings.getString("hotpatch_priority", "0"))) {
