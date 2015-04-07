@@ -254,13 +254,17 @@ public class TaobaoApplication extends PanguApplication {
         for (ActivityManager.RunningAppProcessInfo appProcess : activityManager.getRunningAppProcesses()) {
             if(appProcess.pid == pid){
                 processName = appProcess.processName;
+				if (appProcess.processName.equals(getPackageName()+ ":safemode")
+						|| appProcess.processName.equals(getPackageName() + ":watchdog")) {
+					isPureProcess = true;
+				} else {
+					return;
+				}
             }
+            // For safemode process, to kill brother processes.
             if(appProcess.uid == uid && appProcess.pid != pid){
                 if(appProcess.processName.equals(getPackageName() + ":safemode")){
                     android.os.Process.killProcess(pid);
-                    isPureProcess = true;
-                } else if(appProcess.processName.equals(getPackageName() + ":watchdog")){
-                	isPureProcess = true;
                 }
             }            
         }
