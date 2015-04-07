@@ -59,6 +59,7 @@ import com.taobao.android.task.Coordinator.TaggedRunnable;
 import com.taobao.launch.BuildConfig;
 import com.taobao.lightapk.BundleInfoManager;
 import com.taobao.tao.util.Constants;
+import com.taobao.tao.watchdog.LaunchdogAlarm;
 import com.ut.mini.crashhandler.UTCrashHandler;
 import com.taobao.tao.atlaswrapper.AtlasInitializer;
 import com.taobao.updatecenter.hotpatch.HotPatchManager;
@@ -219,7 +220,13 @@ public class TaobaoApplication extends PanguApplication {
          * there could be a lot of null pointer issues.
          */
         mAtlasInitializer.injectApplication();
+        
+        // Start hotpatch if it is high priority. 
         initAndStartHotpatch();
+        
+        // start watchdog monitor alarm
+        LaunchdogAlarm.start(mBaseContext);
+        
         initCrashHandlerAndSafeMode(mBaseContext);
         if (!isPureProcess) {
         	mAtlasInitializer.init();
