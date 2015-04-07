@@ -121,16 +121,6 @@ public class TaobaoApplication extends PanguApplication {
 
         UTCrashHandler.getInstance().setCrashCaughtListener(new UTCrashCaughtListner(context));
         UTCrashHandler.getInstance().enable(context, Constants.appkey);
-        
-        if(isSafeMode){
-            return;
-        }
-        
-        if(processName.contains(":watchdog")){
-        	//watchdog进程启动, 什么都不初始化了。进入安全模式
-        	Log.d(TAG, "watchdog process");
-        	return;
-        }
 	}
     
     @SuppressLint("DefaultLocale")
