@@ -72,6 +72,7 @@ public class TaobaoApplication extends PanguApplication {
     private static long START = 0;
 
     private String processName;
+    private ArrayList<Integer> pidList;
     private boolean resetForOverrideInstall;
     AtlasInitializer mAtlasInitializer = null;    
     
@@ -83,24 +84,6 @@ public class TaobaoApplication extends PanguApplication {
 
 	private void initCrashHandlerAndSafeMode(Context context) {
 		START = System.currentTimeMillis();
-
-        int uid = android.os.Process.myUid();
-        int pid = android.os.Process.myPid();
-        ArrayList<Integer> pidList = new ArrayList<Integer>();
-        ActivityManager activityManager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningAppProcessInfo appProcess : activityManager.getRunningAppProcesses()) {
-            if(appProcess.pid == pid){
-                processName = appProcess.processName;
-            }
-            if(appProcess.uid == uid && appProcess.pid != pid){
-                if(appProcess.processName.equals(getPackageName() + ":safemode")){
-                    android.os.Process.killProcess(pid);
-                    return;
-                }
-                pidList.add(appProcess.pid);
-            }
-            
-        }
         boolean isSafeMode = false;
         if (processName == null) {
         	processName = "";
@@ -133,8 +116,7 @@ public class TaobaoApplication extends PanguApplication {
             	UTCrashHandler.getInstance().setExtraInfo(sb.toString());
             }
             
-        } catch(Exception e) {
-        	
+        } catch(Exception e) {        	
         }
 
         UTCrashHandler.getInstance().setCrashCaughtListener(new UTCrashCaughtListner(context));
@@ -243,18 +225,12 @@ public class TaobaoApplication extends PanguApplication {
             e.printStackTrace();
         }
         
+        initProcessInfos();
+        
         /*
          *  AtlasInitializer wraps the logic for Atlas Debug logic, 
          *  Mini package logic, bundle install/dexopt, and Security check.
-         */
-        int pid = android.os.Process.myPid();        
-        ActivityManager activityManager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);        
-        for (ActivityManager.RunningAppProcessInfo appProcess : activityManager.getRunningAppProcesses()) {
-            if(appProcess.pid == pid){
-                processName = appProcess.processName;
-            }
-        }
-		
+         */		
         mAtlasInitializer = new AtlasInitializer(this, processName, mBaseContext);
         /* 
          * Inject mApplication to support content provider, otherwize, as
@@ -277,6 +253,24 @@ public class TaobaoApplication extends PanguApplication {
 				hm.startHotPatch();
 			}
 		}
+    }
+    
+    private void initProcessInfos() {
+        int uid = android.os.Process.myUid();
+        int pid = android.os.Process.myPid();
+        ActivityManager activityManager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningAppProcessInfo appProcess : activityManager.getRunningAppProcesses()) {
+            if(appProcess.pid == pid){
+                processName = appProcess.processName;
+            }
+            if(appProcess.uid == uid && appProcess.pid != pid){
+                if(appProcess.processName.equals(getPackageName() + ":safemode")){
+                    android.os.Process.killProcess(pid);
+                    return;
+                }
+                pidList.add(appProcess.pid);
+            }            
+        }
     }
 
     private Object mProxyPm;
