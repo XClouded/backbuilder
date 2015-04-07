@@ -71,30 +71,21 @@ public class TaobaoApplication extends PanguApplication {
     //doesn't delete used for online monitor
     private static long START = 0;
 
-    private String processName;
-    private ArrayList<Integer> pidList;
+    private String processName = "";
+    private boolean isPureProcess = false;
     private boolean resetForOverrideInstall;
     AtlasInitializer mAtlasInitializer = null;    
     
     @Override
     public void onCreate() {
         super.onCreate();
-        mAtlasInitializer.startUp();
+        if (!isPureProcess) {
+        	mAtlasInitializer.startUp();
+        }
     }
 
 	private void initCrashHandlerAndSafeMode(Context context) {
-		START = System.currentTimeMillis();
-        boolean isSafeMode = false;
-        if (processName == null) {
-        	processName = "";
-        }
-        if(processName.equals(getPackageName() + ":safemode")){
-            isSafeMode = true;
-            for (Integer integer : pidList) {
-                android.os.Process.killProcess(integer);
-            }
-        }
-        
+		START = System.currentTimeMillis();        
         if(Versions.isDebug()){
         	UTCrashHandler.getInstance().turnOnDebug();
         }
@@ -230,7 +221,9 @@ public class TaobaoApplication extends PanguApplication {
         mAtlasInitializer.injectApplication();
         initAndStartHotpatch();
         initCrashHandlerAndSafeMode(mBaseContext);
-        mAtlasInitializer.init();
+        if (!isPureProcess) {
+        	mAtlasInitializer.init();
+        }
     }
     
     private void initAndStartHotpatch() {
@@ -256,11 +249,16 @@ public class TaobaoApplication extends PanguApplication {
             if(appProcess.uid == uid && appProcess.pid != pid){
                 if(appProcess.processName.equals(getPackageName() + ":safemode")){
                     android.os.Process.killProcess(pid);
-                    return;
+                    isPureProcess = true;
+                } else if(appProcess.processName.equals(getPackageName() + ":watchdog")){
+                	isPureProcess = true;
                 }
-                pidList.add(appProcess.pid);
             }            
         }
+    }
+    
+    private boolean isPureProcess() {
+    	
     }
 
     private Object mProxyPm;
