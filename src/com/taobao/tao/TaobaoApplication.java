@@ -256,10 +256,6 @@ public class TaobaoApplication extends PanguApplication {
             }            
         }
     }
-    
-    private boolean isPureProcess() {
-    	
-    }
 
     private Object mProxyPm;
     @Override
