@@ -66,6 +66,8 @@ public class AtlasInitializer {
      */
     private boolean resetForOverrideInstall;
     
+    private Properties props = new Properties();
+    
     private boolean updated = false;
         
     public AtlasInitializer(Application mApplication, String mProcessName,  Context mBaseContext){
@@ -113,8 +115,7 @@ public class AtlasInitializer {
 			 */    
 		    removeDynamicDeployFiles();
 		}
-		
-        Properties props = new Properties();
+
         props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
         props.put("android.taobao.atlas.debug.bundles", "true");
         props.put("android.taobao.atlas.AppDirectory", mApplication.getFilesDir().getParent());	        
@@ -226,6 +227,11 @@ public class AtlasInitializer {
 		if (mApplication.getPackageName().equals(mProcessName) == false){
 			// Non main process, just return
 			return;
+		}
+		
+		// Tell welcome to wait broadcast com.taobao.taobao.action.BUNDLES_INSTALLED
+		if (InstallSolutionConfig.install_when_oncreate == true){
+			props.put("android.taobao.atlas.mainAct.wait", "true");
 		}
 		
         if (updated || mAwbDebug.checkExternalAwbFile()) {
