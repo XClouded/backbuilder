@@ -201,15 +201,6 @@ public class AtlasInitializer {
 
 	private void handleBundlesInstallation(final BundlesInstaller bundlesInstaller,
 			final OptDexProcess optDexProcess) {
-
-        // Check whether x86 platform
-        if ((Utils.searchFile((mApplication.getFilesDir().getParentFile() + "/lib"), "libcom_taobao") == false)
-                || mAwbDebug.checkExternalAwbFile()){
-        	/*
-        	 * Current platform is x86 need install bundles when onCreate
-        	 */
-        	InstallSolutionConfig.install_when_oncreate = true;
-        }
         
         if (InstallSolutionConfig.install_when_findclass){	        	
 	        /**
