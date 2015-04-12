@@ -201,7 +201,7 @@ public class AtlasInitializer {
 
 	private void handleBundlesInstallation(final BundlesInstaller bundlesInstaller,
 			final OptDexProcess optDexProcess) {
-        
+              
         if (InstallSolutionConfig.install_when_findclass){	        	
 	        /**
 	         *  Read Bundle Info configurations for bundle's findClass() usage,
@@ -325,6 +325,7 @@ public class AtlasInitializer {
 		        bf.bundleName = info.getPkgName();
 		        bf.Components = components;
 		        bf.DependentBundles = info.getDependency();
+		        bf.applicationName = info.getApplicationName();
 		        list.add(bf);
 		    }
 		}
