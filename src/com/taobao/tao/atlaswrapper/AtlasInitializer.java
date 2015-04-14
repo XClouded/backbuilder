@@ -28,7 +28,8 @@ import com.taobao.lightapk.BundleListing;
 import com.taobao.tao.Globals;
 import android.content.SharedPreferences.Editor;
 import com.taobao.tao.ClassNotFoundInterceptor;
-
+import android.taobao.atlas.util.IMonitor;
+import com.taobao.statistic.TBS;
 
 public class AtlasInitializer {
 	
@@ -89,7 +90,7 @@ public class AtlasInitializer {
     
 	public void init(){
 			START = System.currentTimeMillis();
-			  
+			 setAtlasMonitor();
 	        try {
 	            Atlas.getInstance().init(mApplication);
 	        } catch (Exception e) {
@@ -387,5 +388,19 @@ public class AtlasInitializer {
         
 		return false;
     }
- 
+
+    private class AtlasMonitorImpl implements IMonitor{
+        public void trace(String num, String detail){
+        	TBS.Ext.commitEvent(61005, num, detail);
+        }
+        
+        public void trace(Integer num, String detail){
+        	TBS.Ext.commitEvent(61005, num.toString(), detail);
+        }
+    }
+    
+    private void setAtlasMonitor(){
+    	AtlasMonitorImpl mMonitor = new AtlasMonitorImpl();
+    	Atlas.getInstance().setMonitor(mMonitor);
+    }
 }
