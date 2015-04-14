@@ -390,12 +390,12 @@ public class AtlasInitializer {
     }
 
     private class AtlasMonitorImpl implements IMonitor{
-        public void trace(String num, String detail){
-        	TBS.Ext.commitEvent(61005, num, detail);
+        public void trace(String num, String arg1, String arg2, String detail){
+        	TBS.Ext.commitEvent(61005, num, arg1, arg2, detail);
         }
         
-        public void trace(Integer num, String detail){
-        	TBS.Ext.commitEvent(61005, num.toString(), detail);
+        public void trace(Integer num, String arg1, String arg2, String detail){
+        	TBS.Ext.commitEvent(61005, num.toString(), arg1, arg2, detail);
         }
     }
     
