@@ -51,7 +51,6 @@ public class SecurityFrameListener implements FrameworkListener {
 
         @Override
         protected Boolean doInBackground(String... params) {
-
             if (PUBLIC_KEY == null || PUBLIC_KEY.isEmpty()) {
                 return true;
             }
@@ -64,7 +63,6 @@ public class SecurityFrameListener implements FrameworkListener {
             List<Bundle> bundles = Atlas.getInstance().getBundles();
             if (bundles != null) {
                 for (Bundle bundle : bundles) {
-                	
                     File file = Atlas.getInstance().getBundleFile(bundle.getLocation());
                     if(!isBundleValid(file.getAbsolutePath())){
                         return false;
@@ -81,13 +79,12 @@ public class SecurityFrameListener implements FrameworkListener {
                             return false;
                         }
                     }
-                    
+
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
                     }
                 }
-                
             }
 
             return true;

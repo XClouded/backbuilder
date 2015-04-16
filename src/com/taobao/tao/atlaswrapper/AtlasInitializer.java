@@ -145,8 +145,8 @@ public class AtlasInitializer {
 	
             // 非debug版本设置公钥，用于atlas校验签名
             if (!Versions.isDebug() && !isLowDevice() && ApkUtils.isRootSystem()) {
-                props.put("android.taobao.atlas.publickey", SecurityFrameListener.PUBLIC_KEY);
-                Atlas.getInstance().addFrameworkListener(new SecurityFrameListener());
+                props.put("android.taobao.atlas.publickey", SecurityBundleListner.PUBLIC_KEY);
+                Atlas.getInstance().addBundleListener(new SecurityBundleListner());
             }
             
             if (updated || mAwbDebug.checkExternalAwbFile()){
