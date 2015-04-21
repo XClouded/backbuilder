@@ -224,6 +224,11 @@ public class AtlasInitializer {
             }
         }
         
+		// Check whether external awb is used
+		if (mAwbDebug.checkExternalAwbFile()){
+			InstallSolutionConfig.install_when_oncreate = true;
+		}
+        
 		if (mApplication.getPackageName().equals(mProcessName) == false){
 			// Non main process, just return
 			return;
