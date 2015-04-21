@@ -34,6 +34,17 @@
             <version>2.9.9</version>
         </dependency>
         <dependency>
+	        <groupId>com.taobao.android</groupId>
+			<artifactId>modular_framework</artifactId>
+			<version>1.2.1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.taobao.android</groupId>
+            <artifactId>taobaocompat</artifactId>
+            <type>aar</type>
+            <version>2.9.9</version>
+        </dependency>
+        <dependency>
             <groupId>com.taobao.android</groupId>
             <artifactId>update</artifactId>
             <type>aar</type>

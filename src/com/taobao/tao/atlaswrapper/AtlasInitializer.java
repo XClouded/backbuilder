@@ -20,15 +20,21 @@ import android.taobao.atlas.framework.BundleImpl;
 import android.taobao.atlas.util.ApkUtils;
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.taobao.android.base.Versions;
+import com.taobao.android.service.Services;
 import com.taobao.android.task.Coordinator;
 import com.taobao.android.task.Coordinator.TaggedRunnable;
 import com.taobao.lightapk.BundleInfoManager;
 import com.taobao.lightapk.BundleListing;
 import com.taobao.tao.Globals;
+
 import android.content.SharedPreferences.Editor;
+
 import com.taobao.tao.ClassNotFoundInterceptor;
+
 import android.taobao.atlas.util.IMonitor;
+
 import com.taobao.statistic.TBS;
 
 public class AtlasInitializer {
@@ -139,6 +145,8 @@ public class AtlasInitializer {
             throw new RuntimeException("Could not set Globals !!!",e);
         }	        
 
+        Services.setSystemClassloader(Atlas.getInstance().getDelegateClassLoader());
+        
 		// Check whether awb debug from external storage is supported or not
 		mAwbDebug = new AwbDebug();
         if (mApplication.getPackageName().equals(mProcessName)) {
