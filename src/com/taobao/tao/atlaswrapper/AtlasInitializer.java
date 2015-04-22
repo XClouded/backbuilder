@@ -97,6 +97,7 @@ public class AtlasInitializer {
 	public void init(){
 			START = System.currentTimeMillis();
 			 setAtlasMonitor();
+			 setAtlasLog();
 	        try {
 	            Atlas.getInstance().init(mApplication);
 	        } catch (Exception e) {
@@ -423,4 +424,9 @@ public class AtlasInitializer {
     	AtlasMonitorImpl mMonitor = new AtlasMonitorImpl();
     	Atlas.getInstance().setMonitor(mMonitor);
     }
+    
+    private void setAtlasLog(){
+    	ExternalLog mLog = new ExternalLog();
+    	Atlas.getInstance().setLogger(mLog);
+    }    
 }
