@@ -245,9 +245,10 @@ public class AtlasInitializer {
 				 *  Just send out the bundle installed message out, so that homepage could be started.
 				 *  System bundle would start the auto start bundles
 				 */
-		        Utils.notifyBundleInstalled(mApplication);
+//		        Utils.notifyBundleInstalled(mApplication);		   		
 		        Utils.UpdatePackageVersion(mApplication);
-				Utils.saveAtlasInfoBySharedPreferences(mApplication);		        
+				Utils.saveAtlasInfoBySharedPreferences(mApplication);		   
+				launch_homepage_bundle();
 		   	} else {		        
 				// Install all bundles
 				Coordinator.postTask(new TaggedRunnable("AtlasStartup") {
@@ -264,7 +265,8 @@ public class AtlasInitializer {
 				 *  Just send out the bundle installed message out, so that homepage could be started.
 				 *  System bundle would start the auto start bundles
 				 */
-		        Utils.notifyBundleInstalled(mApplication);
+				launch_homepage_bundle();
+//		        Utils.notifyBundleInstalled(mApplication);
 			} else {
 				// BundleInfoList parsed fail, fall back to install all bundles
 				Coordinator.postTask(new TaggedRunnable("AtlasStartup") {
@@ -279,6 +281,27 @@ public class AtlasInitializer {
 		
 	}
 
+	private void launch_homepage_bundle() {
+               /*
+                * Hard code to launch Wangxin bundle, this is a just temp solution
+                * Since Wangxin need receive message when background in some cases
+                */
+               Coordinator.postTask(new TaggedRunnable("HomepageStartUp") {
+                   @Override
+                   public void run() {         
+                       BundleImpl bundle = (BundleImpl) Atlas.getInstance().getBundleOnDemand("com.taobao.taobao.home");
+                       if (bundle != null){
+                           try {
+                               bundle.startBundle();
+               		           Utils.notifyBundleInstalled(mApplication);
+                           } catch (BundleException e) {
+                               e.printStackTrace();
+                           }
+                       }
+                   }
+               });
+
+	}
 	private static final String BundleInfoKey = "bundle-info";
 	
 //	private boolean UpdateBundleInfo() {
