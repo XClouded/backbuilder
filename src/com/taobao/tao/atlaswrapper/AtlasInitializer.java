@@ -239,16 +239,20 @@ public class AtlasInitializer {
 			props.put("android.taobao.atlas.mainAct.wait", "true");
 		}
 		
+		// Async bundles installation finish would tell welcome to raise homepage
+		AutoStartBundlesLaunch mAutoStartBundlesLaunch = new AutoStartBundlesLaunch();
+		
         if (updated || mAwbDebug.checkExternalAwbFile()) {
 		   	if (!InstallSolutionConfig.install_when_oncreate){
 				/*
 				 *  Just send out the bundle installed message out, so that homepage could be started.
 				 *  System bundle would start the auto start bundles
 				 */
-//		        Utils.notifyBundleInstalled(mApplication);		   		
+//		        Utils.notifyBundleInstalled(mApplication);
 		        Utils.UpdatePackageVersion(mApplication);
-				Utils.saveAtlasInfoBySharedPreferences(mApplication);		   
-				launch_homepage_bundle();
+				Utils.saveAtlasInfoBySharedPreferences(mApplication);		
+				mAutoStartBundlesLaunch.registerDelayedBundlesAutoStart();
+				mAutoStartBundlesLaunch.launch_async_bundles();
 		   	} else {		        
 				// Install all bundles
 				Coordinator.postTask(new TaggedRunnable("AtlasStartup") {
@@ -265,7 +269,8 @@ public class AtlasInitializer {
 				 *  Just send out the bundle installed message out, so that homepage could be started.
 				 *  System bundle would start the auto start bundles
 				 */
-				launch_homepage_bundle();
+				mAutoStartBundlesLaunch.registerDelayedBundlesAutoStart();
+				mAutoStartBundlesLaunch.launch_async_bundles();
 //		        Utils.notifyBundleInstalled(mApplication);
 			} else {
 				// BundleInfoList parsed fail, fall back to install all bundles
@@ -280,28 +285,7 @@ public class AtlasInitializer {
 		}
 		
 	}
-
-	private void launch_homepage_bundle() {
-               /*
-                * Hard code to launch Wangxin bundle, this is a just temp solution
-                * Since Wangxin need receive message when background in some cases
-                */
-               Coordinator.postTask(new TaggedRunnable("HomepageStartUp") {
-                   @Override
-                   public void run() {         
-                       BundleImpl bundle = (BundleImpl) Atlas.getInstance().getBundleOnDemand("com.taobao.taobao.home");
-                       if (bundle != null){
-                           try {
-                               bundle.startBundle();
-               		           Utils.notifyBundleInstalled(mApplication);
-                           } catch (BundleException e) {
-                               e.printStackTrace();
-                           }
-                       }
-                   }
-               });
-
-	}
+	
 	private static final String BundleInfoKey = "bundle-info";
 	
 //	private boolean UpdateBundleInfo() {

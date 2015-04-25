@@ -25,8 +25,8 @@ public class Utils {
     /**
      * 自动启动的bundle
      */
-    final static String[] AUTOSTART_PACKAGES = new String[]{"com.taobao.login4android", "com.taobao.taobao.home", "com.taobao.mytaobao", "com.taobao.wangxin",
-            "com.taobao.passivelocation", "com.taobao.allspark"};
+    final static String[] AUTOSTART_PACKAGES = new String[]{"com.taobao.taobao.home", "com.taobao.allspark", "com.taobao.mytaobao", "com.taobao.login4android",
+    	"com.taobao.wangxin", "com.taobao.passivelocation", "com.taobao.tao.contacts"};
     
     final static String[] DELAYED_PACKAGES = new String[]{
     	"com.taobao.fmagazine","com.taobao.taobao.pluginservice", "com.taobao.legacy", "com.ut.share",
