@@ -26,23 +26,18 @@
             <scope>provided</scope>
             <version>4.4.2</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.taobao.android</groupId>
             <artifactId>taobaocompat</artifactId>
             <type>aar</type>
-            <version>2.9.9</version>
+            <scope>provided</scope>
+            <version>2.10.0.21</version>
         </dependency>
         <dependency>
 	        <groupId>com.taobao.android</groupId>
 			<artifactId>modular_framework</artifactId>
 			<version>1.2.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.taobao.android</groupId>
-            <artifactId>taobaocompat</artifactId>
-            <type>aar</type>
-            <version>2.10.0.21</version>
         </dependency>
         <dependency>
             <groupId>com.taobao.android</groupId>
@@ -57,6 +52,65 @@
             <type>jar</type>
             <version>2.3.29</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.taobao.android</groupId>
+            <artifactId>appcompat</artifactId>
+            <version>2.0.0</version>
+            <type>aar</type>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.taobao.android</groupId>
+            <artifactId>uikit_core</artifactId>
+            <version>2.3.1</version>
+            <type>aar</type>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.taobao.android</groupId>
+            <artifactId>uikit_extends</artifactId>
+            <version>2.3.4.1</version>
+            <type>aar</type>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.taobao.wireless</groupId>
+            <artifactId>locate</artifactId>
+            <version>2.1.3</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.taobao.wireless</groupId>
+            <artifactId>tbShortUrl</artifactId>
+            <version>1.0.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+	<dependency>
+	  <groupId>com.taobao.android</groupId>
+	  <artifactId>securityguard</artifactId>
+	  <version>2.5.68</version>
+           <scope>provided</scope>
+	</dependency>
+
+	<dependency>
+	  <groupId>com.taobao.android</groupId>
+	  <artifactId>ski</artifactId>
+	  <version>2.0.11</version>
+           <scope>provided</scope>
+	</dependency>
+
+	<dependency>
+	  <groupId>com.taobao.nbdev.android</groupId>
+	  <artifactId>usertrack</artifactId>
+	  <version>2.0.2-SNAPSHOT</version>
+           <scope>provided</scope>
+	</dependency>
 
     </dependencies>
      <build>
