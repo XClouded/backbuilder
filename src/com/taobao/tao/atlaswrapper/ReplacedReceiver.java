@@ -14,7 +14,11 @@ public class ReplacedReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         // 应用覆盖安装时，接收消息启动TaobaoApplication，自动完成Bundle安装
-        Log.d(TAG, "onReceive: " + intent == null ? "null" : intent.getAction());
+    	try{
+            Log.d(TAG, "onReceive: " + intent == null ? "null" : intent.getAction());
+    	} catch(Exception e){
+    		// Reject DOS attack
+    	}
         
         if (InstallSolutionConfig.install_when_onreceive && !InstallSolutionConfig.install_when_oncreate)
         Coordinator.postTask(new TaggedRunnable("ProcessBundlesInReceiver") {
