@@ -4,6 +4,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.*;
 
+import com.taobao.tao.update.Updater;
 import org.osgi.framework.BundleException;
 
 import android.annotation.SuppressLint;
@@ -121,7 +122,7 @@ public class AtlasInitializer {
 			/**
 			 * 如果发生了更新，清除动态部署缓存文件
 			 */    
-		    removeDynamicDeployFiles();
+		    Updater.removeBaseLineInfo();
 		}
 
         props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
@@ -192,14 +193,6 @@ public class AtlasInitializer {
 
 		Log.d(TAG, "Atlas framework end startUp in process " + mProcessName + " " + ( System.currentTimeMillis() - START)
 		           + " ms");		
-	}
-
-	private void removeDynamicDeployFiles() {       
-		String baseLineInfoPath = mApplication.getFilesDir()+File.separator+"bundleBaseline"+File.separator+"baselineInfo";
-		File file = new File(baseLineInfoPath);
-		if(file.exists()){
-		    file.delete();
-		}
 	}
 
 	private void killNonMainProcess() {
@@ -403,7 +396,7 @@ public class AtlasInitializer {
         if (packageInfo.versionCode > lastVersionCode
             || (packageInfo.versionCode == lastVersionCode && !TextUtils.equals(Globals.getInstalledVersionName(),
                                                                                 lastVersionName))
-            || resetForOverrideInstall) {
+            || resetForOverrideInstall || Updater.needRollback()) {
         	return true;
         }
         
