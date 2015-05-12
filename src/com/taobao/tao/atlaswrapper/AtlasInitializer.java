@@ -181,7 +181,20 @@ public class AtlasInitializer {
         		
         ClassNotFoundInterceptor calssNotFoundCallback = new ClassNotFoundInterceptor();
         Atlas.getInstance().setClassNotFoundInterceptorCallback(calssNotFoundCallback);		
-        
+
+        if (InstallSolutionConfig.install_when_findclass){	        	
+	        /**
+	         *  Read Bundle Info configurations for bundle's findClass() usage,
+	         *  When findClass() can not find class due to bundle not installed/dexopt yet,
+	         *  it is useful to locate which bundle to install/dexopt.
+	         */
+            if (UpdateBundleInfo() == false){
+            	// Bundle Info list parsed fail, let's install all bundles
+	        	InstallSolutionConfig.install_when_oncreate = true;
+	        	mIsBundleInfoParsedFail = true;
+            }
+        }
+		
 		try {
 		    Atlas.getInstance().startup(props);
 		} catch (Exception e) {
@@ -204,20 +217,7 @@ public class AtlasInitializer {
 
 	private void handleBundlesInstallation(final BundlesInstaller bundlesInstaller,
 			final OptDexProcess optDexProcess) {
-              
-        if (InstallSolutionConfig.install_when_findclass){	        	
-	        /**
-	         *  Read Bundle Info configurations for bundle's findClass() usage,
-	         *  When findClass() can not find class due to bundle not installed/dexopt yet,
-	         *  it is useful to locate which bundle to install/dexopt.
-	         */
-            if (UpdateBundleInfo() == false){
-            	// Bundle Info list parsed fail, let's install all bundles
-	        	InstallSolutionConfig.install_when_oncreate = true;
-	        	mIsBundleInfoParsedFail = true;
-            }
-        }
-        
+                    
 		// Check whether external awb is used
 		if (mAwbDebug.checkExternalAwbFile()){
 			InstallSolutionConfig.install_when_oncreate = true;
