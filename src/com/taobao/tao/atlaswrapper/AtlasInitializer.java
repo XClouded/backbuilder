@@ -341,6 +341,7 @@ public class AtlasInitializer {
 		        bf.Components = components;
 		        bf.DependentBundles = info.getDependency();
 		        bf.applicationName = info.getApplicationName();
+                bf.host = info.getHost();
 		        list.add(bf);
 		    }
 		}
