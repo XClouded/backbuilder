@@ -318,13 +318,31 @@ public class TaobaoApplication extends PanguApplication {
                         return mPackageInfo;
                     }
                     String mainVersion = BaselineInfoProvider.getInstance().getMainVersionName();
-                String baselineVersion = BaselineInfoProvider.getInstance().getBaselineVersion();
-                if (!StringUtil.isEmpty(baselineVersion)) {
-                        info.versionName = baselineVersion;
-                        mPackageInfo = info;
-                        return mPackageInfo;
+                    String baselineVersion = BaselineInfoProvider.getInstance().getBaselineVersion();
+                    if (!StringUtil.isEmpty(baselineVersion)) {
+                            info.versionName = baselineVersion;
+                            mPackageInfo = info;
+                            return mPackageInfo;
+                    }
+                    return mPackageInfo;
+            }else if(method.getName().equals("queryIntentActivities")){
+                Intent intent = (Intent)args[0];
+                if(!intent.getBooleanExtra("RawQuery",false)) {
+                    List<ResolveInfo> info = Atlas.getInstance().queryNewIntentActivities(intent,(String) args[1], ((Integer) args[2]).intValue(), ((Integer) args[3]).intValue());
+                    if (info != null) {
+                        return info;
+                    }
                 }
-                return mPackageInfo;
+                return object;
+            }else if(method.getName().equals("resolveIntent")) {
+                Intent intent = (Intent) args[0];
+                if (!intent.getBooleanExtra("RawQuery", false)) {
+                    List<ResolveInfo> info = Atlas.getInstance().queryNewIntentActivities(intent, (String) args[1], ((Integer) args[2]).intValue(), ((Integer) args[3]).intValue());
+                    if (info != null) {
+                        return info.get(0);
+                    }
+                }
+                return object;
             }else{
                 return object;
             }
