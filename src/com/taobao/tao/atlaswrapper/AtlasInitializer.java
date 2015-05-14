@@ -77,6 +77,8 @@ public class AtlasInitializer {
     private Properties props = new Properties();
     
     private boolean updated = false;
+    
+    private final static String CHANNEL_PROCESS = "com.taobao.taobao:channel";
         
     public AtlasInitializer(Application mApplication, String mProcessName,  Context mBaseContext){
     	this.mApplication = mApplication;
@@ -195,6 +197,10 @@ public class AtlasInitializer {
             }
         }
 		
+    	if (mProcessName.equals(CHANNEL_PROCESS)){
+    		props.put("android.taobao.atlas.installbundles", "false");
+    	}
+    	
 		try {
 		    Atlas.getInstance().startup(props);
 		} catch (Exception e) {
