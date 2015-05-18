@@ -324,7 +324,7 @@ public class TaobaoApplication extends PanguApplication {
                         mPackageInfo = info;
                         return mPackageInfo;
                 }
-                return mPackageInfo;
+                return object;
             }else{
                 return object;
             }
