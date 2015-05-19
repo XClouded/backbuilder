@@ -67,6 +67,10 @@ public class SecurityBundleListner implements BundleListener {
 			}
 
 			File file = Atlas.getInstance().getBundleFile(location);
+			if (file == null){
+				return;
+			}
+			
 			if (!isBundleValid(file.getAbsolutePath())) {
 				Log.e(TAG, "Security check failed. " + location);
 				Handler handler = new Handler(Looper.getMainLooper());
