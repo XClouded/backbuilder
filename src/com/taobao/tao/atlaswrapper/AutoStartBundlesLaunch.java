@@ -11,8 +11,10 @@ import com.taobao.android.task.Priority;
 import com.taobao.android.task.Coordinator.TaggedRunnable;
 import com.taobao.android.utils.Debuggable;
 import com.taobao.tao.Globals;
+
 import org.osgi.framework.BundleException;
 
+import android.os.Build;
 import android.os.Debug;
 import android.taobao.atlas.framework.BundleImpl;
 import android.taobao.atlas.framework.Atlas;
@@ -23,6 +25,7 @@ class AutoStartBundlesLaunch {
     private final String[] asyncBundleDbg = {"com.taobao.barrier"};
 	private final String[] asyncBundle = {"com.taobao.taobao.home", "com.taobao.allspark", "com.taobao.login4android"};
 	private final String[] delayBundle = {"com.taobao.wangxin", "com.taobao.passivelocation", "com.taobao.tao.contacts", "com.taobao.tbpoplayer"};
+	private final String[] delayBundleOnXiaoMi = {"com.taobao.xiaomi"};
 	private HomeFinishedBroadcastReceiver receiver;
 	private boolean isAsyncStarted = false;
 	private boolean isDelayStarted = false;
@@ -87,6 +90,9 @@ class AutoStartBundlesLaunch {
 		@Override public void onReceive(Context context, Intent intent) {
 	    	if(!isDelayStarted) {
 	    		startBundles(delayBundle, false);
+	    		if (Build.BRAND.equalsIgnoreCase("xiaomi")){
+	    			startBundles(delayBundleOnXiaoMi, false);
+	    		}
 				isDelayStarted = true;
 	    	}
 	    	Globals.getApplication().unregisterReceiver(receiver);
