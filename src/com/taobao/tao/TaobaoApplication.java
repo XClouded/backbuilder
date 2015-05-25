@@ -233,18 +233,13 @@ public class TaobaoApplication extends PanguApplication {
         }
         
         initProcessInfos();
-        
-        /*
-         *  AtlasInitializer wraps the logic for Atlas Debug logic, 
-         *  Mini package logic, bundle install/dexopt, and Security check.
-         */		
-        mAtlasInitializer = new AtlasInitializer(this, processName, mBaseContext,updated);
+
         /* 
          * Inject mApplication to support content provider, otherwize, as
          * PackageInfo.mApplication is still null when attachBaseContext(),
          * there could be a lot of null pointer issues.
          */
-        mAtlasInitializer.injectApplication();
+        injectApplication();
 
         boolean updated = isUpdated(mBaseContext);
         if(updated){
@@ -259,6 +254,12 @@ public class TaobaoApplication extends PanguApplication {
              */
             Updater.removeBaseLineInfo();
         }
+
+        /*
+         *  AtlasInitializer wraps the logic for Atlas Debug logic,
+         *  Mini package logic, bundle install/dexopt, and Security check.
+         */
+        mAtlasInitializer = new AtlasInitializer(this, processName, mBaseContext,updated);
         
         // Start hotpatch if it is high priority. 
         initAndStartHotpatch();
@@ -413,6 +414,14 @@ public class TaobaoApplication extends PanguApplication {
         boolean isTaobaoProcess = context.getPackageName().equals(processName);
         if (isTaobaoProcess == false) {
             android.os.Process.killProcess(android.os.Process.myPid());
+        }
+    }
+
+    public void injectApplication(){
+        try{
+            Atlas.getInstance().injectApplication(this, this.getPackageName());
+        }catch (Exception e) {
+            throw new RuntimeException("atlas inject mApplication fail" + e.getMessage());
         }
     }
 

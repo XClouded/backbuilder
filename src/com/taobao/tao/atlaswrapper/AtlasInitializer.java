@@ -90,14 +90,6 @@ public class AtlasInitializer {
     	}
     }
     
-    public void injectApplication(){
-    	try{
-    		Atlas.getInstance().injectApplication(mApplication, mApplication.getPackageName());
-    	}catch (Exception e) {
-    		throw new RuntimeException("atlas inject mApplication fail" + e.getMessage());
-    	}
-    }
-    
 	public void init(){
 			START = System.currentTimeMillis();
 			 setAtlasMonitor();
