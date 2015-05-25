@@ -233,6 +233,18 @@ public class TaobaoApplication extends PanguApplication {
         }
         
         initProcessInfos();
+        
+        /*
+         *  AtlasInitializer wraps the logic for Atlas Debug logic, 
+         *  Mini package logic, bundle install/dexopt, and Security check.
+         */		
+        mAtlasInitializer = new AtlasInitializer(this, processName, mBaseContext,updated);
+        /* 
+         * Inject mApplication to support content provider, otherwize, as
+         * PackageInfo.mApplication is still null when attachBaseContext(),
+         * there could be a lot of null pointer issues.
+         */
+        mAtlasInitializer.injectApplication();
 
         boolean updated = isUpdated(mBaseContext);
         if(updated){
@@ -248,18 +260,6 @@ public class TaobaoApplication extends PanguApplication {
             Updater.removeBaseLineInfo();
         }
         
-        /*
-         *  AtlasInitializer wraps the logic for Atlas Debug logic, 
-         *  Mini package logic, bundle install/dexopt, and Security check.
-         */		
-        mAtlasInitializer = new AtlasInitializer(this, processName, mBaseContext,updated);
-        /* 
-         * Inject mApplication to support content provider, otherwize, as
-         * PackageInfo.mApplication is still null when attachBaseContext(),
-         * there could be a lot of null pointer issues.
-         */
-        mAtlasInitializer.injectApplication();
-        
         // Start hotpatch if it is high priority. 
         initAndStartHotpatch();
         
@@ -269,9 +269,7 @@ public class TaobaoApplication extends PanguApplication {
         }
         
         initCrashHandlerAndSafeMode(mBaseContext);
-        if (!isPureProcess) {
-        	mAtlasInitializer.init();
-        }
+        mAtlasInitializer.init();
     }
     
     private void initAndStartHotpatch() {
