@@ -3,13 +3,9 @@ package com.taobao.tao;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -18,6 +14,12 @@ import android.app.Activity;
 import android.taobao.atlas.hack.AndroidHack;
 import android.taobao.atlas.hack.AtlasHacks;
 import android.taobao.atlas.hack.Reflect;
+import android.view.animation.DecelerateInterpolator;
+import com.taobao.android.dexposed.XC_MethodHook;
+import com.taobao.android.dexposed.XposedBridge;
+import com.taobao.hotpatch.patch.PatchMain;
+import com.taobao.statistic.TBS;
+import com.taobao.tao.update.Updater;
 import com.taobao.tao.util.StringUtil;
 import org.osgi.framework.Bundle;
 
@@ -73,7 +75,7 @@ public class TaobaoApplication extends PanguApplication {
     private static long START = 0;
 
     private String processName = "";
-    private boolean isPureProcess = false;
+    public static  boolean isPureProcess = false;
     private boolean resetForOverrideInstall;
     AtlasInitializer mAtlasInitializer = null;    
     
@@ -82,6 +84,29 @@ public class TaobaoApplication extends PanguApplication {
         super.onCreate();
         if (!isPureProcess) {
         	mAtlasInitializer.startUp();
+        }
+        if(PatchMain.canHook(this).isSuccess() || isPureProcess) {
+            Class XmlUtilsClazz = null;
+            try {
+                XmlUtilsClazz = Class.forName("com.android.internal.util.XmlUtils");
+                XposedBridge.findAndHookMethod(XmlUtilsClazz, "writeMapXml", Map.class, OutputStream.class, new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+//                    if (param.getThrowable() != null) {
+                        Map map = (Map) param.args[0];
+                        if (map != null) {
+                            String content = Arrays.toString(map.entrySet().toArray(new Map.Entry[map.size()]));
+                            Log.e("PushOOMAnalysisPatch", "map output : " + content);
+                        }
+//                    }
+                    }
+                });
+            } catch (ClassNotFoundException e) {
+                Log.e("PushOOMAnalysisPatch", e.getMessage());
+
+                e.printStackTrace();
+            }
+
         }
     }
 
@@ -208,12 +233,26 @@ public class TaobaoApplication extends PanguApplication {
         }
         
         initProcessInfos();
+
+        boolean updated = isUpdated(mBaseContext);
+        if(updated){
+			/*
+			 *  Kill non-taobao process once updated until taobao main process installed all bundles
+			 *  this is to avoid non-taobao process hold those bundles and main process can not
+			 *  remove the storage directory
+			 */
+            killNonMainProcess(mBaseContext,processName);
+            /**
+             * 如果发生了更新，清除动态部署缓存文件
+             */
+            Updater.removeBaseLineInfo();
+        }
         
         /*
          *  AtlasInitializer wraps the logic for Atlas Debug logic, 
          *  Mini package logic, bundle install/dexopt, and Security check.
          */		
-        mAtlasInitializer = new AtlasInitializer(this, processName, mBaseContext);
+        mAtlasInitializer = new AtlasInitializer(this, processName, mBaseContext,updated);
         /* 
          * Inject mApplication to support content provider, otherwize, as
          * PackageInfo.mApplication is still null when attachBaseContext(),
@@ -328,6 +367,54 @@ public class TaobaoApplication extends PanguApplication {
             }else{
                 return object;
             }
+        }
+    }
+
+    private boolean isUpdated(Context context){
+        PackageInfo packageInfo = null;
+        // 获取当前的版本号
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
+        } catch (Exception e) {
+            // 不可能发生
+            Log.e(TAG, "Error to get PackageInfo >>>", e);
+            throw new RuntimeException(e);
+        }
+
+
+        // 检测之前的版本记录
+        SharedPreferences prefs = context.getSharedPreferences("atlas_configs", Context.MODE_PRIVATE);
+        int lastVersionCode = prefs.getInt("last_version_code", 0);
+        String lastVersionName = prefs.getString("last_version_name", "");
+
+        // 检测之前的版本记录, 如果出现版本反转，极简包<-->全量包，那么需要重新做bundleinstall.
+        SharedPreferences configPrefs = context.getSharedPreferences("atlas_configs", Context.MODE_PRIVATE);
+        String isMiniPackageCache = configPrefs.getString("isMiniPackage","");
+        resetForOverrideInstall = !String.valueOf(Globals.isMiniPackage()).equals(isMiniPackageCache);
+        Log.d("TaobaoApplication","resetForOverrideInstall = " + resetForOverrideInstall);
+        if(TextUtils.isEmpty(isMiniPackageCache) || resetForOverrideInstall) {
+            Editor editor = configPrefs.edit();
+            editor.clear();
+            editor.putString("isMiniPackage", String.valueOf(Globals.isMiniPackage()));
+            editor.commit();
+        }
+
+        // 判断版本是否更新了
+        if (packageInfo.versionCode > lastVersionCode
+                || (packageInfo.versionCode == lastVersionCode && !TextUtils.equals(Globals.getInstalledVersionName(),
+                lastVersionName))
+                || resetForOverrideInstall || Updater.needRollback()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private void killNonMainProcess(Context context,String processName) {
+        boolean isTaobaoProcess = context.getPackageName().equals(processName);
+        if (isTaobaoProcess == false) {
+            android.os.Process.killProcess(android.os.Process.myPid());
         }
     }
 

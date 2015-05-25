@@ -80,10 +80,11 @@ public class AtlasInitializer {
     
     private final static String CHANNEL_PROCESS = "com.taobao.taobao:channel";
         
-    public AtlasInitializer(Application mApplication, String mProcessName,  Context mBaseContext){
+    public AtlasInitializer(Application mApplication,String mProcessName, Context mBaseContext,boolean update){
     	this.mApplication = mApplication;
     	this.mProcessName = mProcessName;
     	this.mBaseContext =  mBaseContext;
+        this.updated      = update;
     	if (mApplication.getPackageName().equals(mProcessName)){
     		mIsTaobaoProcess = true;
     	}
@@ -112,20 +113,6 @@ public class AtlasInitializer {
 	}
 
 	public void startUp() {
-	    
-		updated = isUpdated();
-		if(updated){
-			/*
-			 *  Kill non-taobao process once updated until taobao main process installed all bundles
-			 *  this is to avoid non-taobao process hold those bundles and main process can not
-			 *  remove the storage directory
-			 */
-			killNonMainProcess();
-			/**
-			 * 如果发生了更新，清除动态部署缓存文件
-			 */    
-		    Updater.removeBaseLineInfo();
-		}
 
         props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
         props.put("android.taobao.atlas.debug.bundles", "true");
@@ -212,13 +199,6 @@ public class AtlasInitializer {
 
 		Log.d(TAG, "Atlas framework end startUp in process " + mProcessName + " " + ( System.currentTimeMillis() - START)
 		           + " ms");		
-	}
-
-	private void killNonMainProcess() {
-		boolean isTaobaoProcess = mApplication.getPackageName().equals(mProcessName);
-		if (isTaobaoProcess == false) {
-		    android.os.Process.killProcess(android.os.Process.myPid());
-		}
 	}
 
 	private void handleBundlesInstallation(final BundlesInstaller bundlesInstaller,
@@ -368,46 +348,6 @@ public class AtlasInitializer {
         }
         
         return false;        
-    }
-    
-    private boolean isUpdated(){
-        PackageInfo packageInfo = null;
-        // 获取当前的版本号
-        try {
-            PackageManager packageManager = mApplication.getPackageManager();
-            packageInfo = packageManager.getPackageInfo(mApplication.getPackageName(), 0);
-        } catch (Exception e) {
-            // 不可能发生
-            Log.e(TAG, "Error to get PackageInfo >>>", e);
-            throw new RuntimeException(e);
-        }
-
-        // 检测之前的版本记录
-        SharedPreferences prefs = mApplication.getSharedPreferences("atlas_configs", Context.MODE_PRIVATE);
-        int lastVersionCode = prefs.getInt("last_version_code", 0);
-        String lastVersionName = prefs.getString("last_version_name", "");
-
-        // 检测之前的版本记录, 如果出现版本反转，极简包<-->全量包，那么需要重新做bundleinstall.
-        SharedPreferences configPrefs = mApplication.getSharedPreferences("atlas_configs", Context.MODE_PRIVATE);
-        String isMiniPackageCache = configPrefs.getString("isMiniPackage","");
-        resetForOverrideInstall = !String.valueOf(Globals.isMiniPackage()).equals(isMiniPackageCache);
-        Log.d("TaobaoApplication","resetForOverrideInstall = " + resetForOverrideInstall);
-        if(TextUtils.isEmpty(isMiniPackageCache) || resetForOverrideInstall) {
-            Editor editor = configPrefs.edit();
-            editor.clear();
-            editor.putString("isMiniPackage", String.valueOf(Globals.isMiniPackage()));
-            editor.commit();
-        }
-        
-        // 判断版本是否更新了
-        if (packageInfo.versionCode > lastVersionCode
-            || (packageInfo.versionCode == lastVersionCode && !TextUtils.equals(Globals.getInstalledVersionName(),
-                                                                                lastVersionName))
-            || resetForOverrideInstall || Updater.needRollback()) {
-        	return true;
-        }
-        
-		return false;
     }
 
     private class AtlasMonitorImpl implements IMonitor{
