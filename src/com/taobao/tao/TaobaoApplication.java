@@ -85,29 +85,6 @@ public class TaobaoApplication extends PanguApplication {
         if (!isPureProcess) {
         	mAtlasInitializer.startUp();
         }
-        if(PatchMain.canHook(this).isSuccess() || isPureProcess) {
-            Class XmlUtilsClazz = null;
-            try {
-                XmlUtilsClazz = Class.forName("com.android.internal.util.XmlUtils");
-                XposedBridge.findAndHookMethod(XmlUtilsClazz, "writeMapXml", Map.class, OutputStream.class, new XC_MethodHook() {
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                    if (param.getThrowable() != null) {
-                        Map map = (Map) param.args[0];
-                        if (map != null) {
-                            String content = Arrays.toString(map.entrySet().toArray(new Map.Entry[map.size()]));
-                            Log.e("PushOOMAnalysisPatch", "map output : " + content);
-                        }
-//                    }
-                    }
-                });
-            } catch (ClassNotFoundException e) {
-                Log.e("PushOOMAnalysisPatch", e.getMessage());
-
-                e.printStackTrace();
-            }
-
-        }
     }
 
 	private void initCrashHandlerAndSafeMode(Context context) {
