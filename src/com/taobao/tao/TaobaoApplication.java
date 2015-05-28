@@ -15,12 +15,14 @@ import android.taobao.atlas.hack.AndroidHack;
 import android.taobao.atlas.hack.AtlasHacks;
 import android.taobao.atlas.hack.Reflect;
 import android.view.animation.DecelerateInterpolator;
+
 import com.taobao.android.dexposed.XC_MethodHook;
 import com.taobao.android.dexposed.XposedBridge;
 import com.taobao.hotpatch.patch.PatchMain;
 import com.taobao.statistic.TBS;
 import com.taobao.tao.update.Updater;
 import com.taobao.tao.util.StringUtil;
+
 import org.osgi.framework.Bundle;
 
 import android.annotation.SuppressLint;
@@ -63,9 +65,11 @@ import com.taobao.lightapk.BundleInfoManager;
 import com.taobao.tao.util.Constants;
 import com.taobao.tao.watchdog.LaunchdogAlarm;
 import com.ut.mini.crashhandler.UTCrashHandler;
+import com.taobao.tao.atlaswrapper.AppForgroundObserver;
 import com.taobao.tao.atlaswrapper.AtlasInitializer;
 import com.taobao.updatecenter.hotpatch.HotPatchManager;
-
+import com.taobao.tao.Globals;
+import com.taobao.android.lifecycle.PanguApplication;
 
 public class TaobaoApplication extends PanguApplication {
 
@@ -85,6 +89,8 @@ public class TaobaoApplication extends PanguApplication {
         if (!isPureProcess) {
         	mAtlasInitializer.startUp();
         }
+        AppForgroundObserver AppForgroundObserver = new AppForgroundObserver();
+        ((PanguApplication)Globals.getApplication()).registerCrossActivityLifecycleCallback(new AppForgroundObserver());
     }
 
 	private void initCrashHandlerAndSafeMode(Context context) {
