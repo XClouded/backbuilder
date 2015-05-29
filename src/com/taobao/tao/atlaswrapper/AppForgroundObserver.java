@@ -41,7 +41,8 @@ public class AppForgroundObserver implements CrossActivityLifecycleCallback{
 	        StatFs stat = new StatFs(path.getPath()); 
 	        long availableBlocks = stat.getAvailableBlocks();
 	        long totalBlocks = stat.getBlockCount();  
-        	if(availableBlocks < (totalBlocks / 10)){
+	        long blockSize = stat.getBlockSize();  
+        	if((availableBlocks < (totalBlocks / 20)) || (availableBlocks * blockSize < 100 *1024*1024)){
         		Handler h = new Handler(Looper.getMainLooper());
         		h.post(new Runnable(){
 					@Override
