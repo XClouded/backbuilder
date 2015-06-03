@@ -24,7 +24,7 @@ class AutoStartBundlesLaunch {
 	private final static String TAG = "AutoStartBundlesLaunch";
     private final String[] asyncBundleDbg = {"com.taobao.barrier"};
 	private final String[] asyncBundle = {"com.taobao.taobao.home", "com.taobao.allspark", "com.taobao.login4android"};
-	private final String[] delayBundle = {"com.taobao.wangxin", "com.taobao.passivelocation", "com.taobao.tao.contacts", "com.taobao.tbpoplayer"};
+	private final String[] delayBundle = {"com.taobao.wangxin", "com.taobao.tao.contacts", "com.taobao.tbpoplayer"};
 	private final String[] delayBundleOnXiaoMi = {"com.taobao.xiaomi"};
 	private HomeFinishedBroadcastReceiver receiver;
 	private boolean isAsyncStarted = false;
