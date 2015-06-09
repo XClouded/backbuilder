@@ -15,6 +15,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import android.app.Activity;
+import android.content.pm.ResolveInfo;
 import android.taobao.atlas.hack.AndroidHack;
 import android.taobao.atlas.hack.AtlasHacks;
 import android.taobao.atlas.hack.Reflect;
@@ -338,6 +339,15 @@ public class TaobaoApplication extends PanguApplication {
                 Intent intent = (Intent) args[0];
                 if (!intent.getBooleanExtra("RawQuery", false)) {
                     List<ResolveInfo> info = Atlas.getInstance().queryNewIntentActivities(intent, (String) args[1], ((Integer) args[2]).intValue(), ((Integer) args[3]).intValue());
+                    if (info != null) {
+                        return info.get(0);
+                    }
+                }
+                return object;
+            }else if(method.getName().equals("queryIntentServices")) {
+                Intent intent = (Intent) args[0];
+                if (!intent.getBooleanExtra("RawQuery", false)) {
+                    List<ResolveInfo> info = Atlas.getInstance().queryNewIntentServices(intent, (String) args[1], ((Integer) args[2]).intValue(), ((Integer) args[3]).intValue());
                     if (info != null) {
                         return info.get(0);
                     }
