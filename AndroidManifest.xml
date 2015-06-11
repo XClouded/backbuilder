@@ -24,9 +24,9 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
-        <Activity
+        <activity
                 android:name="android.taobao.atlas.runtime.AtlasFakeActivity">
-                </Activity>
+                </activity>
 
     </application>
 

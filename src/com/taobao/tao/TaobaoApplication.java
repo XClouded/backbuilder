@@ -15,7 +15,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import android.app.Activity;
-import android.content.pm.ResolveInfo;
+import android.content.pm.*;
 import android.taobao.atlas.hack.AndroidHack;
 import android.taobao.atlas.hack.AtlasHacks;
 import android.taobao.atlas.hack.Reflect;
@@ -30,8 +30,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
@@ -335,6 +333,9 @@ public class TaobaoApplication extends PanguApplication {
                     }
                 }
                 return object;
+            }else if(method.getName().equals("getActivityInfo")){
+                ActivityInfo info = Atlas.getInstance().getNewActivityInfo((ComponentName)args[0],(Integer)args[1]);
+                return object;
             }else if(method.getName().equals("resolveIntent")) {
                 Intent intent = (Intent) args[0];
                 if (!intent.getBooleanExtra("RawQuery", false)) {
@@ -352,6 +353,9 @@ public class TaobaoApplication extends PanguApplication {
                         return info.get(0);
                     }
                 }
+                return object;
+            }else if(method.getName().equals("getServiceInfo")){
+                ServiceInfo info = Atlas.getInstance().getNewServiceInfo((ComponentName) args[0], (Integer) args[1]);
                 return object;
             }else{
                 return object;
