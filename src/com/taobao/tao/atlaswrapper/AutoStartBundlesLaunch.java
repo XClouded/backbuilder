@@ -29,7 +29,7 @@ class AutoStartBundlesLaunch {
 	private HomeFinishedBroadcastReceiver receiver;
 	private boolean isAsyncStarted = false;
 	private boolean isDelayStarted = false;
-	private int count = 0;
+	private static int count = 0;
 	
 	void launch_async_bundles() {
 		if (isAsyncStarted == true){
@@ -45,7 +45,7 @@ class AutoStartBundlesLaunch {
 	}
 
 
-	private void startBundles(final String[] bundles, final boolean sendNotify) {
+	public static void startBundles(final String[] bundles, final boolean sendNotify) {
 		for (final String name : bundles) {
 			Coordinator.postTask(new TaggedRunnable("AsyncTask for bundle:" + name){
 				@Override public void run() {        		
@@ -62,7 +62,7 @@ class AutoStartBundlesLaunch {
 		}
 	}
 
-	private void initBundle(final String name) {
+	private static void initBundle(final String name) {
 		BundleImpl bundle = (BundleImpl) Atlas.getInstance().getBundleOnDemand(name);
         if (bundle != null) {
             try {
@@ -90,9 +90,6 @@ class AutoStartBundlesLaunch {
 		@Override public void onReceive(Context context, Intent intent) {
 	    	if(!isDelayStarted) {
 	    		startBundles(delayBundle, false);
-	    		if (Build.BRAND.equalsIgnoreCase("xiaomi")){
-	    			startBundles(delayBundleOnXiaoMi, false);
-	    		}
 				isDelayStarted = true;
 	    	}
 	    	Globals.getApplication().unregisterReceiver(receiver);
