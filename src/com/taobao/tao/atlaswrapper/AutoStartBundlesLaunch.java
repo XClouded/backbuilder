@@ -24,11 +24,14 @@ class AutoStartBundlesLaunch {
 	private final static String TAG = "AutoStartBundlesLaunch";
     private final String[] asyncBundleDbg = {"com.taobao.barrier"};
 	private final String[] asyncBundle = {"com.taobao.taobao.home", "com.taobao.login4android"};
-	private final String[] delayBundle = {};
+	private final String[] delayHomeBundle = {};
+	private final String[] delayLoginBundle = {"com.taobao.allspark"};
 	private final String[] delayBundleOnXiaoMi = {"com.taobao.xiaomi"};
-	private HomeFinishedBroadcastReceiver receiver;
+	private HomeFinishedBroadcastReceiver homeReceiver;
+	private LoginBroadcastReciever loginReceiver;
 	private boolean isAsyncStarted = false;
-	private boolean isDelayStarted = false;
+	private boolean isDelayHomeStarted = false;
+	private boolean isDelayLoginStarted = false;
 	private static int count = 0;
 	
 	void launch_async_bundles() {
@@ -79,21 +82,40 @@ class AutoStartBundlesLaunch {
 	}
 	
 	void registerDelayedBundlesAutoStart(){
-    	if(receiver == null) {
-    		receiver = new HomeFinishedBroadcastReceiver();
-    		Globals.getApplication().registerReceiver(receiver, new IntentFilter("com.taobao.event.HomePageLoadFinished"));
+    	if(homeReceiver == null) {
+    		homeReceiver = new HomeFinishedBroadcastReceiver();
+    		Globals.getApplication().registerReceiver(homeReceiver, new IntentFilter("com.taobao.event.HomePageLoadFinished"));
+    	}
+    	if(loginReceiver == null) {
+    		IntentFilter filter = new IntentFilter();  
+            filter.addAction("NOTIFY_SESSION_VALID");
+            filter.addAction("NOTIFY_LOGIN_SUCCESS");
+    		loginReceiver = new LoginBroadcastReciever();
+    		Globals.getApplication().registerReceiver(loginReceiver, filter);
     	}
 	}
 	
     private class HomeFinishedBroadcastReceiver extends BroadcastReceiver {
 
 		@Override public void onReceive(Context context, Intent intent) {
-	    	if(!isDelayStarted) {
-	    		startBundles(delayBundle, false);
-				isDelayStarted = true;
+	    	if(!isDelayHomeStarted) {
+	    		startBundles(delayHomeBundle, false);
+	    		isDelayHomeStarted = true;
 	    	}
-	    	Globals.getApplication().unregisterReceiver(receiver);
+	    	Globals.getApplication().unregisterReceiver(homeReceiver);
+	    	homeReceiver = null;
 		}	
     }
+    
+    private class LoginBroadcastReciever extends BroadcastReceiver{  
+		@Override public void onReceive(Context context, Intent intent) {
+	    	if(!isDelayLoginStarted) {
+	    		startBundles(delayLoginBundle, false);
+	    		isDelayLoginStarted = true;
+	    	}
+	    	Globals.getApplication().unregisterReceiver(loginReceiver);
+	    	loginReceiver = null;
+		}	
+    }  
 
 }
