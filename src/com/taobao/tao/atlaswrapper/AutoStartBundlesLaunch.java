@@ -40,9 +40,9 @@ class AutoStartBundlesLaunch {
 		}
 		
 		startBundles(asyncBundle, true);
-        if (Debuggable.isDebug()) {		
+//        if (Debuggable.isDebug()) {		
         	startBundles(asyncBundleDbg, false);
-        }
+//        }
         
         isAsyncStarted = true;
 	}
