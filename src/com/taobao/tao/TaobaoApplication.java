@@ -335,6 +335,9 @@ public class TaobaoApplication extends PanguApplication {
                 return object;
             }else if(method.getName().equals("getActivityInfo")){
                 ActivityInfo info = Atlas.getInstance().getNewActivityInfo((ComponentName)args[0],(Integer)args[1]);
+                if(info!=null){
+                    return info;
+                }
                 return object;
             }else if(method.getName().equals("resolveIntent")) {
                 Intent intent = (Intent) args[0];
@@ -356,6 +359,9 @@ public class TaobaoApplication extends PanguApplication {
                 return object;
             }else if(method.getName().equals("getServiceInfo")){
                 ServiceInfo info = Atlas.getInstance().getNewServiceInfo((ComponentName) args[0], (Integer) args[1]);
+                if(info!=null){
+                    return info;
+                }
                 return object;
             }else{
                 return object;
