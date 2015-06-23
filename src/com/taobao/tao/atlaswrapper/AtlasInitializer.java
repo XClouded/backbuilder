@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import com.taobao.tao.update.Updater;
+
 import org.osgi.framework.BundleException;
 
 import android.annotation.SuppressLint;
@@ -188,6 +189,14 @@ public class AtlasInitializer {
 		}
 
 		handleBundlesInstallation(bundlesInstaller, optDexProcess);		
+		
+		String[] delayBundleOnXiaoMi = {"com.taobao.xiaomi"};
+		//start xiaomi bundle on Channel process.
+    	if (mProcessName.equals(CHANNEL_PROCESS)){
+    		if (Build.BRAND.equalsIgnoreCase("xiaomi")){
+    			AutoStartBundlesLaunch.startBundles(delayBundleOnXiaoMi, false);
+    		}
+    	}
 
 		Log.d(TAG, "Atlas framework end startUp in process " + mProcessName + " " + ( System.currentTimeMillis() - START)
 		           + " ms");		
