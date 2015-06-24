@@ -25,9 +25,12 @@ public class SecurityBundleListner implements BundleListener {
 	private HandlerThread mHandlerThread = null;
 	ShutdownProcessHandler shutdownProcessHandler = new ShutdownProcessHandler();
 	private boolean isSecurityCheckFailed = false;
+	private SecurityGuardManager mSgManager = null;
 	public final static String PUBLIC_KEY = "30819f300d06092a864886f70d010101050003818d00308189028181008406125f369fde2720f7264923a63dc48e1243c1d9783ed44d8c276602d2d570073d92c155b81d5899e9a8a97e06353ac4b044d07ca3e2333677d199e0969c96489f6323ed5368e1760731704402d0112c002ccd09a06d27946269a438fe4b0216b718b658eed9d165023f24c6ddaec0af6f47ada8306ad0c4f0fcd80d9b69110203010001";
 
 	public SecurityBundleListner() {
+		mSgManager = SecurityGuardManager
+				.getInstance(RuntimeVariables.androidApplication);
 		mHandlerThread = new HandlerThread("Check bundle security");
 		mHandlerThread.start();
 		mHandler = new SecurityBundleHandler(mHandlerThread.getLooper());
@@ -57,7 +60,7 @@ public class SecurityBundleListner implements BundleListener {
 		@Override
 		public void handleMessage(Message msg) {
 
-			if (msg == null || isSecurityCheckFailed == true) {
+	if (msg == null || isSecurityCheckFailed == true) {
 				return;
 			}
 
@@ -101,10 +104,9 @@ public class SecurityBundleListner implements BundleListener {
 	}
 
 	private boolean isBundleValid(String path) {
-		SecurityGuardManager sgManager = SecurityGuardManager
-				.getInstance(RuntimeVariables.androidApplication);
-		if (sgManager != null) {
-			IPkgValidityCheckComponent pvcComp = sgManager
+
+		if (mSgManager != null) {
+			IPkgValidityCheckComponent pvcComp = mSgManager
 					.getPackageValidityCheckComp();
 			if (pvcComp != null) {
 				return pvcComp.isPackageValid(path);
