@@ -12,6 +12,13 @@ import java.util.zip.ZipFile;
 
 import android.app.Activity;
 import android.content.pm.*;
+import android.os.*;
+import android.os.Build;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.StatFs;
+import android.support.v7.taobao.util.Globals;
 import android.taobao.atlas.hack.AndroidHack;
 import android.taobao.atlas.hack.AtlasHacks;
 import android.taobao.atlas.hack.Reflect;
@@ -38,11 +45,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteException;
-import android.os.Build;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.StatFs;
 import android.preference.PreferenceManager;
 import android.taobao.atlas.framework.Atlas;
 import android.taobao.atlas.framework.BundleImpl;
@@ -348,7 +350,7 @@ public class TaobaoApplication extends PanguApplication {
             }else if(method.getName().equals("queryIntentActivities")){
                 Intent intent = (Intent)args[0];
                 if(!intent.getBooleanExtra("RawQuery",false)) {
-                    List<ResolveInfo> info = Atlas.getInstance().queryNewIntentActivities(intent,(String) args[1], ((Integer) args[2]).intValue(), ((Integer) args[3]).intValue());
+                    List<ResolveInfo> info = Atlas.getInstance().queryNewIntentActivities(intent,(String) args[1], ((Integer) args[2]).intValue(), Globals.getApplication().getApplicationInfo().uid);
                     if (info != null) {
                         return info;
                     }
@@ -363,7 +365,7 @@ public class TaobaoApplication extends PanguApplication {
             }else if(method.getName().equals("resolveIntent")) {
                 Intent intent = (Intent) args[0];
                 if (!intent.getBooleanExtra("RawQuery", false)) {
-                    List<ResolveInfo> info = Atlas.getInstance().queryNewIntentActivities(intent, (String) args[1], ((Integer) args[2]).intValue(), ((Integer) args[3]).intValue());
+                    List<ResolveInfo> info = Atlas.getInstance().queryNewIntentActivities(intent, (String) args[1], ((Integer) args[2]).intValue(), Globals.getApplication().getApplicationInfo().uid);
                     if (info != null) {
                         return info.get(0);
                     }
@@ -372,7 +374,7 @@ public class TaobaoApplication extends PanguApplication {
             }else if(method.getName().equals("queryIntentServices")) {
                 Intent intent = (Intent) args[0];
                 if (!intent.getBooleanExtra("RawQuery", false)) {
-                    List<ResolveInfo> info = Atlas.getInstance().queryNewIntentServices(intent, (String) args[1], ((Integer) args[2]).intValue(), ((Integer) args[3]).intValue());
+                    List<ResolveInfo> info = Atlas.getInstance().queryNewIntentServices(intent, (String) args[1], ((Integer) args[2]).intValue(), Globals.getApplication().getApplicationInfo().uid);
                     if (info != null) {
                         return info.get(0);
                     }
