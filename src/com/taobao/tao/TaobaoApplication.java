@@ -18,7 +18,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.StatFs;
-import android.support.v7.taobao.util.Globals;
 import android.taobao.atlas.hack.AndroidHack;
 import android.taobao.atlas.hack.AtlasHacks;
 import android.taobao.atlas.hack.Reflect;
