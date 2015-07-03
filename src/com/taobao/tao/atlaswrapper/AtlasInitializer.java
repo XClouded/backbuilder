@@ -96,7 +96,7 @@ public class AtlasInitializer {
 			 setAtlasMonitor();
 			 setAtlasLog();
 	        try {
-	            Atlas.getInstance().init(mApplication);
+	            Atlas.getInstance().init(mApplication,Globals.getInstalledVersionName());
 	        } catch (Exception e) {
 	            Log.e(TAG, "Could not init atlas framework !!!", e);
 	            throw new RuntimeException("atlas initialization fail" + e.getMessage());
@@ -133,6 +133,7 @@ public class AtlasInitializer {
         
 		// Check whether awb debug from external storage is supported or not
 		mAwbDebug = new AwbDebug();
+        String osgiInit = "false";
         if (mApplication.getPackageName().equals(mProcessName)) {
 	
             // 非debug版本设置公钥，用于atlas校验签名
@@ -143,9 +144,11 @@ public class AtlasInitializer {
             
             if (updated || mAwbDebug.checkExternalAwbFile()){
 	            // 把磁盘上的对应bundle全部删除，以便后面重新安装新版本
-	            props.put("osgi.init", "true");            
+//	            props.put("osgi.init", "true");
+                osgiInit = "true";
             }
         }
+        props.put("osgi.init", osgiInit);
         
 		/*
 		 * Make sure bundle installer/OptDex  processors are initialized 
