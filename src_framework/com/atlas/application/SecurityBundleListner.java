@@ -1,4 +1,4 @@
-package com.taobao.tao.atlaswrapper;
+package com.atlas.application;
 
 import java.io.File;
 

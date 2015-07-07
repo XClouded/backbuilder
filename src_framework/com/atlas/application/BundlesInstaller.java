@@ -1,4 +1,4 @@
-package com.taobao.tao.atlaswrapper;
+package com.atlas.application;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,13 +8,11 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
 import org.osgi.framework.Bundle;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageInfo;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
@@ -29,8 +27,7 @@ public class BundlesInstaller {
     final static String   TAG                = "BundlesInstaller";
         
     private Application mApplication;
-    private MiniPackage mMiniPackage;
-	AwbDebug mAwbDebug;  
+	AwbDebug mAwbDebug;
 	private boolean mIsInited;	
 	private boolean mIsProcessed;
 	
@@ -42,10 +39,9 @@ public class BundlesInstaller {
 	BundlesInstaller(){
 	}
 
-	void init(Application mApplication, MiniPackage mMiniPackage,
+	void init(Application mApplication,
 			AwbDebug mAwbDebug, boolean mIsTaobaoProcess) {
 		this.mApplication = mApplication;
-		this.mMiniPackage = mMiniPackage;
 		this.mAwbDebug = mAwbDebug;
 		this.mIsTaobaoProcess = mIsTaobaoProcess;
 

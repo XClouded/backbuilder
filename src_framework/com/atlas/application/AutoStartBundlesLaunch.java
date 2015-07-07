@@ -1,4 +1,4 @@
-package com.taobao.tao.atlaswrapper;
+package com.atlas.application;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,12 +9,8 @@ import android.util.Log;
 import com.taobao.android.task.Coordinator;
 import com.taobao.android.task.Priority;
 import com.taobao.android.task.Coordinator.TaggedRunnable;
-import com.taobao.android.utils.Debuggable;
 import com.taobao.tao.Globals;
-
 import org.osgi.framework.BundleException;
-
-import android.os.Build;
 import android.os.Debug;
 import android.taobao.atlas.framework.BundleImpl;
 import android.taobao.atlas.framework.Atlas;

@@ -1,7 +1,8 @@
-package com.taobao.tao.atlaswrapper;
+package com.atlas.application;
 
 import java.io.File;
 import java.util.ArrayList;
+
 import org.osgi.framework.Bundle;
 import android.os.Environment;
 import android.taobao.atlas.framework.Atlas;

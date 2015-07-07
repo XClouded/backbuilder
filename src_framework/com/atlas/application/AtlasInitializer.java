@@ -1,43 +1,22 @@
-package com.taobao.tao.atlaswrapper;
+package com.atlas.application;
 
-import java.io.File;
-import java.lang.reflect.Field;
 import java.util.*;
 
-import com.taobao.tao.update.Updater;
-
-import org.osgi.framework.BundleException;
-
+import android.os.AsyncTask;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.taobao.atlas.bundleInfo.BundleInfoList;
 import android.taobao.atlas.framework.Atlas;
-import android.taobao.atlas.framework.BundleImpl;
 import android.taobao.atlas.util.ApkUtils;
-import android.text.TextUtils;
 import android.util.Log;
-
-import com.taobao.android.base.Versions;
-import com.taobao.android.service.Services;
-import com.taobao.android.task.Coordinator;
-import com.taobao.android.task.Coordinator.TaggedRunnable;
-import com.taobao.lightapk.BundleInfoManager;
-import com.taobao.lightapk.BundleListing;
-import com.taobao.tao.Globals;
-
-import android.content.SharedPreferences.Editor;
-
+//import com.taobao.lightapk.BundleInfoManager;
+//import com.taobao.lightapk.BundleListing;
 import com.taobao.tao.ClassNotFoundInterceptor;
-
 import android.taobao.atlas.util.IMonitor;
-
 import com.taobao.statistic.TBS;
+import com.taobao.tao.atlaswrapper.ExternalLog;
 
 public class AtlasInitializer {
 	
@@ -55,9 +34,6 @@ public class AtlasInitializer {
     // Atlas debug bundles on external storage
     private AwbDebug mAwbDebug;
     
-    // Mini package logic
-    private MiniPackage mMiniPackage;
-    
     // Defines the bundle<->components map
     private final String mBundleInfoFile = "bundleinfo";
     
@@ -73,8 +49,7 @@ public class AtlasInitializer {
      *  Check whether need override when version is reversed
      *  i.e., from mini <-->full, if yes, need reinstall all bundles
      */
-    private boolean resetForOverrideInstall;
-    
+
     private Properties props = new Properties();
     
     private boolean updated = false;
@@ -96,7 +71,7 @@ public class AtlasInitializer {
 			 setAtlasMonitor();
 			 setAtlasLog();
 	        try {
-	            Atlas.getInstance().init(mApplication,Globals.getInstalledVersionName());
+	            Atlas.getInstance().init(mApplication,AtlasApplicationDelegate.sInstallVersionName);
 	        } catch (Exception e) {
 	            Log.e(TAG, "Could not init atlas framework !!!", e);
 	            throw new RuntimeException("atlas initialization fail" + e.getMessage());
@@ -109,27 +84,7 @@ public class AtlasInitializer {
 
         props.put("android.taobao.atlas.welcome", "com.taobao.tao.welcome.Welcome");
         props.put("android.taobao.atlas.debug.bundles", "true");
-        props.put("android.taobao.atlas.AppDirectory", mApplication.getFilesDir().getParent());	        
-        
-        mMiniPackage = new MiniPackage(mApplication); 
-        mMiniPackage.init(props);
-		
-        /*
-         * Set Global.sApplication since system bundle is
-         * started at Atlas initiate which would start TaoApplication.
-         */
-        try {
-            Field sApplication = Globals.class.getDeclaredField("sApplication");
-            sApplication.setAccessible(true);
-            sApplication.set(null, mApplication);
-            Field sClassLoader = Globals.class.getDeclaredField("sClassLoader");
-            sClassLoader.setAccessible(true);
-            sClassLoader.set(null, Atlas.getInstance().getDelegateClassLoader());
-        } catch (Exception e) {
-            throw new RuntimeException("Could not set Globals !!!",e);
-        }	        
-
-        Services.setSystemClassloader(Atlas.getInstance().getDelegateClassLoader());
+        props.put("android.taobao.atlas.AppDirectory", mApplication.getFilesDir().getParent());
         
 		// Check whether awb debug from external storage is supported or not
 		mAwbDebug = new AwbDebug();
@@ -137,7 +92,7 @@ public class AtlasInitializer {
         if (mApplication.getPackageName().equals(mProcessName)) {
 	
             // 非debug版本设置公钥，用于atlas校验签名
-            if (!Versions.isDebug() && !isLowDevice() && ApkUtils.isRootSystem()) {
+            if (!AtlasUtil.isDebugMode(mApplication) && !isLowDevice() && ApkUtils.isRootSystem()) {
                 props.put("android.taobao.atlas.publickey", SecurityBundleListner.PUBLIC_KEY);
                 Atlas.getInstance().addBundleListener(new SecurityBundleListner());
             }
@@ -154,10 +109,10 @@ public class AtlasInitializer {
 		 * Make sure bundle installer/OptDex  processors are initialized 
 		 * in OnCreate() to avoid Replaced Receiver's installer cannot work!
 		 */	        
-		final BundlesInstaller bundlesInstaller =BundlesInstaller.getInstance();	        
-		final OptDexProcess optDexProcess = OptDexProcess.getInstance();		   	
+		final BundlesInstaller bundlesInstaller =BundlesInstaller.getInstance();
+		final OptDexProcess optDexProcess = OptDexProcess.getInstance();
 		if (mApplication.getPackageName().equals(mProcessName) && (updated || mAwbDebug.checkExternalAwbFile())) {
-		   	bundlesInstaller.init(mApplication, mMiniPackage, mAwbDebug, mIsTaobaoProcess);
+		   	bundlesInstaller.init(mApplication, mAwbDebug, mIsTaobaoProcess);
 		   	optDexProcess.init(mApplication);
 		}
 		
@@ -232,20 +187,13 @@ public class AtlasInitializer {
 				 *  Just send out the bundle installed message out, so that homepage could be started.
 				 *  System bundle would start the auto start bundles
 				 */
-//		        Utils.notifyBundleInstalled(mApplication);
 		        Utils.UpdatePackageVersion(mApplication);
 				Utils.saveAtlasInfoBySharedPreferences(mApplication);		
 				mAutoStartBundlesLaunch.registerDelayedBundlesAutoStart();
 				mAutoStartBundlesLaunch.launch_async_bundles();
 		   	} else {		        
 				// Install all bundles
-				Coordinator.postTask(new TaggedRunnable("AtlasStartup") {
-				    @Override
-				    public void run() {	        
-			            bundlesInstaller.process(false, false);
-			            optDexProcess.processPackages(false, false);
-				    }
-				});
+                installAllBundleAsync(bundlesInstaller,optDexProcess);
 		   	}
 		} else if (!updated){
 			if (mIsBundleInfoParsedFail == false){
@@ -258,42 +206,25 @@ public class AtlasInitializer {
 //		        Utils.notifyBundleInstalled(mApplication);
 			} else {
 				// BundleInfoList parsed fail, fall back to install all bundles
-				Coordinator.postTask(new TaggedRunnable("AtlasStartup") {
-				    @Override
-				    public void run() {	        
-			            bundlesInstaller.process(false, false);
-			            optDexProcess.processPackages(false, false);
-				    }
-				});
+                installAllBundleAsync(bundlesInstaller,optDexProcess);
 			}
 		}
 		
 	}
+
+    private void installAllBundleAsync(final BundlesInstaller bundlesInstaller,
+                                       final OptDexProcess optDexProcess){
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected Void doInBackground(Void... params) {
+                bundlesInstaller.process(false, false);
+                optDexProcess.processPackages(false, false);
+                return null;
+            }
+        }.execute();
+    }
 	
 	private static final String BundleInfoKey = "bundle-info";
-	
-//	private boolean UpdateBundleInfo() {
-//		
-//		ArrayList<BundleInfoList.BundleInfo> list = null;
-//		list = (ArrayList<BundleInfoList.BundleInfo>)
-//				PendingIntentSave.getInstance().getData(BundleInfoKey, mBaseContext);
-//		
-//		if (list == null){
-//			list = UpdateFromBundleInfoManager();
-//			if (list == null){
-//				return false;
-//			}
-//			PendingIntentSave.getInstance().saveData(BundleInfoKey, list);
-//			PendingIntentSave.getInstance().commit(mBaseContext);
-//            Log.d(TAG, "Save bundle info to pending intent");			
-//		} else {
-//            Log.d(TAG, "Successfully get bundle info from pending intent");
-//		}
-//		
-//		BundleInfoList.getInstance().initBundleInfoList(list);
-//		
-//		return true;
-//	}
 
 	private boolean UpdateBundleInfo() {
 	

@@ -1,4 +1,4 @@
-package com.taobao.tao.atlaswrapper;
+package com.atlas.application;
 
 import android.content.BroadcastReceiver;
 import com.taobao.android.task.Coordinator;
