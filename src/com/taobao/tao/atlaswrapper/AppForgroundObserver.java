@@ -42,12 +42,12 @@ public class AppForgroundObserver implements CrossActivityLifecycleCallback{
 	        long availableBlocks = stat.getAvailableBlocks();
 	        long totalBlocks = stat.getBlockCount();  
 	        long blockSize = stat.getBlockSize();  
-        	if((availableBlocks < (totalBlocks / 20)) || (availableBlocks * blockSize < 100 *1024*1024)){
+        	if((availableBlocks < (totalBlocks / 20)) && (availableBlocks * blockSize < 50 *1024*1024)){
         		Handler h = new Handler(Looper.getMainLooper());
         		h.post(new Runnable(){
 					@Override
 					public void run() {
-						Toast.makeText(RuntimeVariables.androidApplication, "检测到手机存储空间不足，为不影响您的使用请清理！", Toast.LENGTH_LONG).show();
+						Toast.makeText(RuntimeVariables.androidApplication, "检测到手机内部存储空间不足，为不影响您的使用请清理！", Toast.LENGTH_SHORT).show();
 					}
         			
         		});
