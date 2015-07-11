@@ -1,4 +1,4 @@
-package com.taobao.tao.atlaswrapper;
+package com.taobao.tao.frameworkwrapper;
 import java.io.File;
 
 import android.app.Activity;

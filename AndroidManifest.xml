@@ -19,7 +19,7 @@
                 android:value="com.taobao.tao.TaoApplication">
         </meta-data>
 
-        <receiver android:name="com.atlas.application.ReplacedReceiver" >
+        <receiver android:name="android.taobao.atlas.wrapper.ReplacedReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
