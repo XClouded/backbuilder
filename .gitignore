@@ -1,0 +1,8 @@
+jar-libs
+libs/*.jar
+unpacked-aar
+dependencies.txt
+target
+gen
+base
+.idea
