@@ -144,7 +144,7 @@ public class BundlesInstaller {
             while (entries.hasMoreElements()) {
                 ZipEntry zipEntry = entries.nextElement();
                 String entryName = zipEntry.getName();
-                if (entryName.startsWith(prefix) && entryName.endsWith(suffix)) {
+                if (entryName.startsWith(prefix) && entryName.endsWith(suffix) && !entryName.equalsIgnoreCase("../")) {
                     entryNames.add(entryName);
                 }
             }
