@@ -28,7 +28,6 @@ import com.taobao.updatecenter.hotpatch.HotPatchManager;
 import com.taobao.wireless.security.sdk.SecurityGuardManager;
 import com.taobao.wireless.security.sdk.pkgvaliditycheck.IPkgValidityCheckComponent;
 import com.ut.mini.crashhandler.UTCrashHandler;
-
 import java.lang.reflect.Field;
 
 /**
@@ -63,11 +62,6 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
         }
 
         Services.setSystemClassloader(Atlas.getInstance().getDelegateClassLoader());
-        mAtlasApplicationDelegate.setRemoteMonitor(new AtlasMonitorImpl());
-        mAtlasApplicationDelegate.setsPublicKey(PUBLIC_KEY);
-        mAtlasApplicationDelegate.setLocalLog(new ExternalLog());
-        mAtlasApplicationDelegate.setClassNotFoundListener(new ClassNotFoundInterceptor());
-        mAtlasApplicationDelegate.setHighPriorityBundles(HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL, HIGH_PRIORITY_BUNDLE_FOR_BLOCK_INSTALL);
         mAtlasApplicationDelegate.onCreate();
         ((PanguApplication) Globals.getApplication()).registerCrossActivityLifecycleCallback(new AppForgroundObserver());
     }
@@ -77,6 +71,11 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
         super.attachBaseContext(base);
         if (mAtlasApplicationDelegate == null) {
             mAtlasApplicationDelegate = new AtlasApplicationDelegate(this);
+            mAtlasApplicationDelegate.setRemoteMonitor(new AtlasMonitorImpl());
+            mAtlasApplicationDelegate.setsPublicKey(PUBLIC_KEY);
+            mAtlasApplicationDelegate.setLocalLog(new ExternalLog());
+            mAtlasApplicationDelegate.setClassNotFoundListener(new ClassNotFoundInterceptor());
+            mAtlasApplicationDelegate.setHighPriorityBundles(HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL, HIGH_PRIORITY_BUNDLE_FOR_BLOCK_INSTALL);
         }
         mAtlasApplicationDelegate.attachBaseContext(base);
     }
@@ -104,9 +103,9 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
     @Override
     public boolean skipLoadBundles(String processName) {
         if(processName.equals(getPackageName()))
-            return true;
-        else
             return false;
+        else
+            return true;
     }
 
     @Override
