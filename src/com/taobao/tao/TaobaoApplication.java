@@ -72,7 +72,7 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
         if (mAtlasApplicationDelegate == null) {
             mAtlasApplicationDelegate = new AtlasApplicationDelegate(this);
             mAtlasApplicationDelegate.setRemoteMonitor(new AtlasMonitorImpl());
-            mAtlasApplicationDelegate.setsPublicKey(PUBLIC_KEY);
+//            mAtlasApplicationDelegate.setsPublicKey(PUBLIC_KEY);
             mAtlasApplicationDelegate.setLocalLog(new ExternalLog());
             mAtlasApplicationDelegate.setClassNotFoundListener(new ClassNotFoundInterceptor());
             mAtlasApplicationDelegate.setHighPriorityBundles(HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL, HIGH_PRIORITY_BUNDLE_FOR_BLOCK_INSTALL);
