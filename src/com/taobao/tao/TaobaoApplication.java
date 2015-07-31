@@ -42,7 +42,7 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
     final static String[] HIGH_PRIORITY_BUNDLE_FOR_BLOCK_INSTALL = new String[]{"com.taobao.taobao.home","com.taobao.dynamic","com.taobao.login4android", "com.taobao.passivelocation", "com.taobao.mytaobao", "com.taobao.wangxin", "com.taobao.allspark",
             "com.taobao.search", "com.taobao.android.scancode", "com.taobao.android.trade", "com.taobao.taobao.cashdesk", "com.taobao.weapp", "com.taobao.taobao.alipay"};
 
-    final static String[] HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL = new String[]{"com.taobao.taobao.home", "com.taobao.login4android","com.taobao.barrier"};
+    final static String[] HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL = new String[]{"com.taobao.taobao.home", "com.taobao.login4android","com.taobao.barrier", "com.taobao.passivelocation"};
 
     private AtlasApplicationDelegate mAtlasApplicationDelegate;
 
