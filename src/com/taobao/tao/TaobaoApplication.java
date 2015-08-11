@@ -62,6 +62,9 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
         }
 
         Services.setSystemClassloader(Atlas.getInstance().getDelegateClassLoader());
+        mAtlasApplicationDelegate.setRemoteMonitor(new AtlasMonitorImpl());
+        mAtlasApplicationDelegate.setLocalLog(new ExternalLog());
+        mAtlasApplicationDelegate.setClassNotFoundListener(new ClassNotFoundInterceptor());
         mAtlasApplicationDelegate.onCreate();
         ((PanguApplication) Globals.getApplication()).registerCrossActivityLifecycleCallback(new AppForgroundObserver());
     }
@@ -71,10 +74,6 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
         super.attachBaseContext(base);
         if (mAtlasApplicationDelegate == null) {
             mAtlasApplicationDelegate = new AtlasApplicationDelegate(this);
-            mAtlasApplicationDelegate.setRemoteMonitor(new AtlasMonitorImpl());
-//            mAtlasApplicationDelegate.setsPublicKey(PUBLIC_KEY);
-            mAtlasApplicationDelegate.setLocalLog(new ExternalLog());
-            mAtlasApplicationDelegate.setClassNotFoundListener(new ClassNotFoundInterceptor());
             mAtlasApplicationDelegate.setHighPriorityBundles(HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL, HIGH_PRIORITY_BUNDLE_FOR_BLOCK_INSTALL);
         }
         mAtlasApplicationDelegate.attachBaseContext(base);
