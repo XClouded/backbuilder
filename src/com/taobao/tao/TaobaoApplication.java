@@ -132,17 +132,13 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
 
     @Override
     public boolean isBundleValid(String bundlePath) {
-    	try{
-	        IPkgValidityCheckComponent pvcComp = SecurityGuardManager
-	                .getInstance(this)
-	                .getPackageValidityCheckComp();
-	        if (pvcComp != null) {
-	            return pvcComp.isPackageValid(bundlePath);
-	        }
-	        return true;
-    	}catch(Exception e){
-    		return true;
-    	}
+        IPkgValidityCheckComponent pvcComp = SecurityGuardManager
+                .getInstance(this)
+                .getPackageValidityCheckComp();
+        if (pvcComp != null) {
+            return pvcComp.isPackageValid(bundlePath);
+        }
+        return true;
     }
 
     @Override
