@@ -27,8 +27,12 @@ import com.taobao.tao.watchdog.LaunchdogAlarm;
 import com.taobao.updatecenter.hotpatch.HotPatchManager;
 import com.taobao.wireless.security.sdk.SecurityGuardManager;
 import com.taobao.wireless.security.sdk.pkgvaliditycheck.IPkgValidityCheckComponent;
-import com.ut.mini.crashhandler.UTCrashHandler;
 import java.lang.reflect.Field;
+import com.alibaba.motu.crashreporter.MotuCrashReporter;
+import com.alibaba.motu.crashreporter.ReporterConfigure;
+import com.taobao.login4android.api.Login;
+import com.taobao.login4android.broadcast.LoginAction;
+import com.taobao.login4android.broadcast.LoginBroadcastHelper;
 
 /**
  * Created by guanjie on 15/7/8.
@@ -178,12 +182,24 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
     }
 
     private void initCrashHandlerAndSafeMode(Context context) {
-        if (Versions.isDebug()) {
-            UTCrashHandler.getInstance().turnOnDebug();
+        ReporterConfigure reporterConfigure = new ReporterConfigure();
+
+        String appVersion = null;
+        String ttid = null;
+
+        if (Versions.isDebug() && reporterConfigure != null) {
+            reporterConfigure.setEnableDebug(true);
         }
         try {
             TaoPackageInfo.init();
-            UTCrashHandler.getInstance().setChannel(TaoPackageInfo.sTTID);
+            ttid = TaoPackageInfo.sTTID;
+            appVersion = TaoPackageInfo.getVersion();
+
+            if(ttid != null && appVersion != null){
+                Log.d("TBCrashReporterInit: ","ttid:" + ttid + "and appVersion:" + appVersion );
+            }else{
+                Log.d("TBCrashReporterInit: ","failure!" );
+            }
 
             StringBuilder sb = new StringBuilder(32);
             boolean isMini = Globals.isMiniPackage(this);
@@ -195,14 +211,69 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
 
             if (sb.length() > 0) {
                 sb.setLength(sb.length() - 1);
-                UTCrashHandler.getInstance().setExtraInfo(sb.toString());
+                MotuCrashReporter.getInstance().setExtraInfo(sb.toString());
             }
 
         } catch (Exception e) {
         }
 
-        UTCrashHandler.getInstance().setCrashCaughtListener(new UTCrashCaughtListner(context));
-        UTCrashHandler.getInstance().enable(context, Constants.appkey);
+        //监听登录广播
+        try{
+            LoginBroadcastHelper.registerLoginReceiver(Globals.getApplication(), new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (intent == null || TextUtils.isEmpty(intent.getAction())) {
+                        return;
+                    }
+
+                    LoginAction action = LoginAction.valueOf(intent.getAction());
+                    switch (action) {
+                        case NOTIFY_LOGIN_SUCCESS:
+                            String userNick = Login.getNick();
+                            MotuCrashReporter.getInstance().setUserNick(userNick);
+
+                            if (userNick != null) {
+                                Log.d("TBCrashReporterInit: ", "getUsernick succ!");
+                            } else {
+                                Log.d("TBCrashReporterInit: ", "getUsernick failure!");
+                            }
+
+                            LoginBroadcastHelper.unregisterLoginReceiver(getApplicationContext(), this);
+                            break;
+                        case NOTIFY_LOGIN_FAILED:
+                            MotuCrashReporter.getInstance().setUserNick(null);
+
+                            LoginBroadcastHelper.unregisterLoginReceiver(getApplicationContext(), this);
+                            break;
+                        case NOTIFY_LOGIN_CANCEL:
+                            MotuCrashReporter.getInstance().setUserNick(null);
+
+                            LoginBroadcastHelper.unregisterLoginReceiver(getApplicationContext(), this);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+        }catch (Exception e){
+            Log.d("TBCrashReporterInit: ", "registerLoginReceiver failure");
+        }
+
+
+        try{
+            reporterConfigure.setEnableDumpSysLog(true);
+            reporterConfigure.setEnableDumpRadioLog(true);
+            reporterConfigure.setEnableDumpEventsLog(true);
+            reporterConfigure.setEnableANRMainThreadOnly(true);  //只传递主线程的ANR堆栈信息
+
+            MotuCrashReporter.getInstance().setCrashCaughtListener(new UTCrashCaughtListner(context));
+            MotuCrashReporter.getInstance().enable(context, Constants.appkey, appVersion,ttid, null, reporterConfigure);//appkey appversion channel usernick
+            //MotuCrashReporter.getInstance().enable(context, "245811395106", "2.0.0-SNAPSHOT","1123123", null, reporterConfigure);
+            //test
+            //MotuCrashReporterTestCase.getInstance().TestJavaCrash();
+        }catch (Exception e){
+            Log.d("TBCrashReporterInit: ", "end and failure!");
+        }
     }
 
     private void initAndStartHotpatch() {
