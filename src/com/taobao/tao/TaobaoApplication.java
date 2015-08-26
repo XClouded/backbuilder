@@ -265,6 +265,7 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
             reporterConfigure.setEnableDumpRadioLog(true);
             reporterConfigure.setEnableDumpEventsLog(true);
             reporterConfigure.setEnableANRMainThreadOnly(true);  //只传递主线程的ANR堆栈信息
+            reporterConfigure.setEnableDumpAllThread(true);     //开启dump所有线程数据
 
             MotuCrashReporter.getInstance().setCrashCaughtListener(new UTCrashCaughtListner(context));
             MotuCrashReporter.getInstance().enable(context, Constants.appkey, appVersion,ttid, null, reporterConfigure);//appkey appversion channel usernick
