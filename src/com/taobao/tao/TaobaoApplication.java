@@ -136,15 +136,24 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
 
     @Override
     public boolean isBundleValid(String bundlePath) {
-        IPkgValidityCheckComponent pvcComp = SecurityGuardManager
-                .getInstance(this)
-                .getPackageValidityCheckComp();
-        if (pvcComp != null) {
-            return pvcComp.isPackageValid(bundlePath);
-        }
-        return true;
-    }
-
+    	com.alibaba.wireless.security.open.SecurityGuardManager openManager = null;
+        try{
+            openManager = com.alibaba.wireless.security.open.SecurityGuardManager.getInstance(getApplicationContext());
+           }catch (com.alibaba.wireless.security.open.SecException e){
+        	   throw new RuntimeException("SecException ErrorCode=" + e.getErrorCode() , e);
+           }
+    	
+         if(openManager != null){
+            IPkgValidityCheckComponent pvcComp = SecurityGuardManager
+                     .getInstance(getApplicationContext())
+                     .getPackageValidityCheckComp();
+             if (pvcComp != null) {
+                 return pvcComp.isPackageValid(bundlePath);
+             }
+         } 
+         return true;
+     }
+    
     @Override
     public void onFrameworkStartUp() {
         AutoStartBundlesLaunch launchManager= new AutoStartBundlesLaunch();
