@@ -44,7 +44,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.taobao.android:phenix:1.9.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.taobao.android:new-cache:2.3.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.taobao.android:tao_richview:1.8.5" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.taobao.android:crashreporter:2.0.1.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.taobao.android:utcrashhandler:1.2.0-build-23" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.taobao.android:usertrack:4.3.3.2" level="project" />
     <orderEntry type="library" name="Maven: com.taobao.android:atlas:2.4.2-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.taobao.android:login4android_api:2.0.6" level="project" />
@@ -104,7 +104,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.taobao.android:phenix:1.9.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.taobao.android:new-cache:2.3.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.taobao.android:tao_richview:1.8.5" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.taobao.android:crashreporter:2.0.1.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.taobao.android:utcrashhandler:1.2.0-build-23" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.taobao.android:usertrack:4.3.3.2" level="project" />
     <orderEntry type="library" name="Maven: com.taobao.android:atlas:2.4.2-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.taobao.android:login4android_api:2.0.6" level="project" />
