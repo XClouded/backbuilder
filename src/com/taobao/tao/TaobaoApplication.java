@@ -274,26 +274,20 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
         return hookDatabase(name, mode, factory);
     }
 
-    //对3.0以下版本增加一次db创建失败后的retry。
+    //增加一次db创建失败后的retry。
     public SQLiteDatabase hookDatabase(String name, int mode,
                                        SQLiteDatabase.CursorFactory factory) {
-
-        if (Build.VERSION.SDK_INT < 11) {
-
-            SQLiteDatabase database = null;
-            try {
+        SQLiteDatabase database = null;
+        try {
+            database = super.openOrCreateDatabase(name, mode, factory);
+        } catch (SQLiteException e) {
+            // try again by deleting the old db and create a new one
+            Log.d("SQLiteDatabase", "fail to openOrCreateDatabase:" + name);
+            if (Globals.getApplication().deleteDatabase(name)) {
                 database = super.openOrCreateDatabase(name, mode, factory);
-            } catch (SQLiteException e) {
-                // try again by deleting the old db and create a new one
-                Log.d("SQLiteDatabase", "fail to openOrCreateDatabase:" + name);
-                if (Globals.getApplication().deleteDatabase(name)) {
-                    database = super.openOrCreateDatabase(name, mode, factory);
-                }
             }
-            return database;
-        } else {
-            return super.openOrCreateDatabase(name, mode, factory);
         }
+        return database;
     }
 
 }
