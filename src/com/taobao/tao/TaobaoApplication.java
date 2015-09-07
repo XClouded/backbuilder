@@ -163,6 +163,8 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
         if (mAtlasApplicationDelegate.getCurrentProcessName().equals(CHANNEL_PROCESS)){
             if (Build.BRAND.equalsIgnoreCase("xiaomi")){
                 AutoStartBundlesLaunch.startBundles(new String[]{"com.taobao.xiaomi"});
+            } else if(Build.BRAND.equalsIgnoreCase("huawei") || Build.BRAND.equalsIgnoreCase("honor")) {
+                AutoStartBundlesLaunch.startBundles(new String[]{"com.taobao.huawei"});
             }
         }
     }
