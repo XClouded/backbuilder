@@ -277,8 +277,6 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
             reporterConfigure.setEnableCatchANRException(true);   //开启ANR监听，默认开启
             reporterConfigure.setEnableANRMainThreadOnly(false);  //只传递主线程的ANR堆栈信息 设置为false,意味着ANR将传递所有线程数据
             reporterConfigure.setEnableDumpAllThread(true);     //开启dump所有线程数据 设置为false
-            reporterConfigure.setEnableMaxThreadNumber(15); //dump的线程数据量控制
-            reporterConfigure.setEnableMaxThreadStackTraceNumber(15); //dump的堆栈长度控制
 
             MotuCrashReporter.getInstance().setCrashCaughtListener(new UTCrashCaughtListner(context));
             MotuCrashReporter.getInstance().enable(context, Constants.appkey, appVersion,ttid, null, reporterConfigure);//appkey appversion channel usernick
