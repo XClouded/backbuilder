@@ -71,7 +71,7 @@ public class TaobaoApplicationFake{
         }
 
         Services.setSystemClassloader(Atlas.getInstance().getDelegateClassLoader());
-        mAtlasApplicationDelegate.setRemoteMonitor(new AtlasMonitorImpl());
+        mAtlasApplicationDelegate.setRemoteMonitor(new AtlasMonitorImpl(mApplication));
         mAtlasApplicationDelegate.setLocalLog(new ExternalLog());
         mAtlasApplicationDelegate.setClassNotFoundListener(new ClassNotFoundInterceptor());
         mAtlasApplicationDelegate.onCreate();

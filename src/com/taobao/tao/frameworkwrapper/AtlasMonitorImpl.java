@@ -1,30 +1,41 @@
 package com.taobao.tao.frameworkwrapper;
 
+import android.app.Application;
+import android.content.Context;
 import android.taobao.atlas.util.IMonitor;
-import com.taobao.statistic.TBS;
-import com.taobao.tao.TaobaoApplication;
-
-import java.lang.Throwable;
+import com.alibaba.mtl.appmonitor.AppMonitor;
+import com.alibaba.mtl.appmonitor.model.DimensionSet;
+import com.alibaba.mtl.appmonitor.model.DimensionValueSet;
+import com.alibaba.mtl.appmonitor.model.MeasureSet;
+import com.alibaba.mtl.appmonitor.model.MeasureValueSet;
+import com.taobao.tao.TaoPackageInfo;
+import com.taobao.tao.util.GetAppKeyFromSecurity;
 
 /**
  * Created by guanjie on 15/7/8.
  */
 public class AtlasMonitorImpl implements IMonitor{
-    public void trace(String num, String arg1, String arg2, String detail){
-        if(!TaobaoApplication.isFrameworkStartUp){
-            return;
-        }
-        try {
-            TBS.Ext.commitEvent(61005, num, arg1, arg2, detail);
-        }catch(Throwable e){e.printStackTrace();}
-    }
+    private DimensionValueSet interactiveDSet = DimensionValueSet.create();
+    private MeasureValueSet interactiveMSet = MeasureValueSet.create();
+	
+	public AtlasMonitorImpl(Application application){ 
+		AppMonitor.init(application);
+		AppMonitor.enableLog(true);
+		AppMonitor.setRequestAuthInfo(true, GetAppKeyFromSecurity.getAppKey(0),null);
+		AppMonitor.setChannel(TaoPackageInfo.getTTID());
+		DimensionSet dimensionSet = DimensionSet.create().addDimension("TypeID").addDimension("Detail").addDimension("BundleName");
+		MeasureSet measureSet = MeasureSet.create().addMeasure("remainDisk");
+		AppMonitor.register("Atlas", "Monitor", measureSet, dimensionSet);
 
-    public void trace(Integer num, String arg1, String arg2, String detail){
-        if(!TaobaoApplication.isFrameworkStartUp){
-            return;
-        }
-        try {
-        TBS.Ext.commitEvent(61005, num.toString(), arg1, arg2, detail);
-        }catch(Throwable e){e.printStackTrace();}
-    }
+	}
+	
+	public void trace(String TypeID, String BundleName, String Detail, String remainedDisk){
+		AppMonitor.Stat.commit("Atlas", "Monitor", interactiveDSet.setValue("TypeID", TypeID).setValue("Detail",Detail).setValue("BundleName", BundleName),
+                interactiveMSet.setValue("remainDisk", Double.parseDouble(remainedDisk)));
+	}
+	
+	public void trace(Integer TypeID, String BundleName, String Detail, String remainedDisk){
+		AppMonitor.Stat.commit("Atlas", "Monitor", interactiveDSet.setValue("TypeID", TypeID.toString()).setValue("Detail",Detail).setValue("BundleName", BundleName),
+                interactiveMSet.setValue("remainDisk", Double.parseDouble(remainedDisk)));
+	}
 }
