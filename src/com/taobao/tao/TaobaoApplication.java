@@ -4,6 +4,7 @@ import android.content.*;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.taobao.atlas.wrapper.AtlasApplicationDelegate;
 import android.taobao.atlas.wrapper.IAtlasApplication;
 import android.text.TextUtils;
 import android.util.Log;
@@ -15,33 +16,42 @@ import com.taobao.android.lifecycle.PanguApplication;
 public class TaobaoApplication extends PanguApplication implements IAtlasApplication {
 
     public TaobaoApplicationFake mApplicationFake;
+    final static String[] HIGH_PRIORITY_BUNDLE_FOR_BLOCK_INSTALL = new String[]{"com.taobao.browser","com.taobao.taobao.home","com.taobao.dynamic","com.taobao.login4android", "com.taobao.passivelocation", "com.taobao.mytaobao", "com.taobao.wangxin", "com.taobao.allspark",
+            "com.taobao.search", "com.taobao.android.scancode", "com.taobao.android.trade", "com.taobao.taobao.cashdesk", "com.taobao.weapp", "com.taobao.taobao.alipay"};
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        mApplicationFake.onCreate();
-    }
+    final static String[] HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL = new String[]{"com.taobao.browser","com.taobao.taobao.home", "com.taobao.login4android","com.taobao.barrier"};
 
+    private AtlasApplicationDelegate mAtlasApplicationDelegate;
+
+    //step 1
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        mApplicationFake = new TaobaoApplicationFake(this);
-        mApplicationFake.attachBaseContext(base);
+        if (mAtlasApplicationDelegate == null) {
+            mAtlasApplicationDelegate = new AtlasApplicationDelegate(this);
+            mAtlasApplicationDelegate.setHighPriorityBundles(HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL, HIGH_PRIORITY_BUNDLE_FOR_BLOCK_INSTALL);
+        }
+        mAtlasApplicationDelegate.attachBaseContext(base);
     }
 
+    //step 2
     @Override
-    public boolean bindService(Intent service, ServiceConnection conn, int flags) {
-        return mApplicationFake.bindService(service,conn,flags);
+    public void onCreate() {
+        super.onCreate();
+        mApplicationFake = new TaobaoApplicationFake(this,mAtlasApplicationDelegate);
+        mApplicationFake.onCreate();
     }
 
+    //step 3
     @Override
-    public ComponentName startService(Intent service) {
-        return mApplicationFake.startService(service);
+    public void preFrameworkinit(Context mBaseContext) {
+        mApplicationFake.preFrameworkinit(mBaseContext);
     }
 
+    //step 4
     @Override
-    public PackageManager getPackageManager() {
-        return mApplicationFake.getPackageManager();
+    public void onFrameworkStartUp() {
+        mApplicationFake.onFrameworkStartUp();
     }
 
     @Override
@@ -55,39 +65,23 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
     }
 
     @Override
-    public boolean shouldResetFramework() {
-        return mApplicationFake.shouldResetFramework();
-    }
-
-    @Override
-    public void onAppUpgrade() {
-        mApplicationFake.onAppUpgrade();
-    }
-
-    @Override
-    public String getCustomVersionName() {
-        return mApplicationFake.getCustomVersionName();
-    }
-
-    @Override
-    public int getCustomVersionCode() {
-        return mApplicationFake.getCustomVersionCode();
-    }
-
-    @Override
     public boolean isBundleValid(String bundlePath) {
     	return mApplicationFake.isBundleValid(bundlePath);
      }
-    
+
     @Override
-    public void onFrameworkStartUp() {
-        mApplicationFake.onFrameworkStartUp();
+    public boolean bindService(Intent service, ServiceConnection conn, int flags) {
+        return mAtlasApplicationDelegate.bindService(service,conn,flags);
     }
 
     @Override
-    public void preFrameworkinit(Context mBaseContext) {
-        mApplicationFake.preFrameworkinit(mBaseContext);
+    public ComponentName startService(Intent service) {
+        return mAtlasApplicationDelegate.startService(service);
+    }
 
+    @Override
+    public PackageManager getPackageManager() {
+        return mAtlasApplicationDelegate.getPackageManager();
     }
 
     /**
@@ -111,7 +105,6 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
                     return hookDatabase(dbname, mode, factory);
                 }
             }
-
         }
 
         return hookDatabase(name, mode, factory);

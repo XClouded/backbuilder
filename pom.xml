@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.taobao.android</groupId>
     <artifactId>taobao_launch</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.1-SNAPSHOT</version>
     <packaging>aar</packaging>
     <name>taobao_launch</name>
     <properties>
@@ -75,7 +75,7 @@
             <groupId>com.taobao.android</groupId>
             <artifactId>atlas</artifactId>
             <type>jar</type>
-            <version>3.0.0-SNAPSHOT</version>
+            <version>3.0.3-SNAPSHOT</version>
         </dependency>
 
         <dependency>

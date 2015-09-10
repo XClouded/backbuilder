@@ -14,6 +14,7 @@ import android.util.Log;
 import com.alibaba.motu.crashreporter.MotuCrashReporter;
 import com.taobao.android.base.Versions;
 import com.taobao.android.lifecycle.PanguApplication;
+import com.alibaba.motu.crashreporter.ReporterConfigure;
 import com.taobao.android.service.Services;
 import com.taobao.login4android.api.Login;
 import com.taobao.login4android.broadcast.LoginAction;
@@ -22,7 +23,6 @@ import com.taobao.tao.frameworkwrapper.AppForgroundObserver;
 import com.taobao.tao.frameworkwrapper.AtlasMonitorImpl;
 import com.taobao.tao.frameworkwrapper.AutoStartBundlesLaunch;
 import com.taobao.tao.frameworkwrapper.ExternalLog;
-import com.taobao.tao.update.Updater;
 import com.taobao.tao.util.Constants;
 import com.taobao.tao.util.StringUtil;
 import com.taobao.updatecenter.hotpatch.HotPatchManager;
@@ -30,6 +30,7 @@ import com.taobao.wireless.security.sdk.SecurityGuardManager;
 import com.taobao.wireless.security.sdk.pkgvaliditycheck.IPkgValidityCheckComponent;
 import android.taobao.safemode.UTCrashCaughtListner;
 import com.taobao.tao.watchdog.LaunchdogAlarm;
+import com.alibaba.motu.crashreporter.MotuCrashReporter;
 import java.lang.reflect.Field;
 
 /**
@@ -41,17 +42,12 @@ public class TaobaoApplicationFake implements IAtlasApplication {
     final static String TAG = "TaobaoApplication";
     private final static String CHANNEL_PROCESS = "com.taobao.taobao:channel";
     public final static String PUBLIC_KEY = "30819f300d06092a864886f70d010101050003818d00308189028181008406125f369fde2720f7264923a63dc48e1243c1d9783ed44d8c276602d2d570073d92c155b81d5899e9a8a97e06353ac4b044d07ca3e2333677d199e0969c96489f6323ed5368e1760731704402d0112c002ccd09a06d27946269a438fe4b0216b718b658eed9d165023f24c6ddaec0af6f47ada8306ad0c4f0fcd80d9b69110203010001";
-
-    final static String[] HIGH_PRIORITY_BUNDLE_FOR_BLOCK_INSTALL = new String[]{"com.taobao.taobao.home","com.taobao.dynamic","com.taobao.login4android", "com.taobao.passivelocation", "com.taobao.mytaobao", "com.taobao.wangxin", "com.taobao.allspark",
-            "com.taobao.search", "com.taobao.android.scancode", "com.taobao.android.trade", "com.taobao.taobao.cashdesk", "com.taobao.weapp", "com.taobao.taobao.alipay"};
-
-    final static String[] HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL = new String[]{"com.taobao.taobao.home", "com.taobao.login4android","com.taobao.barrier"};
-
-    private AtlasApplicationDelegate mAtlasApplicationDelegate;
     private Application mApplication;
+    private AtlasApplicationDelegate mAtlasApplicationDelegate;
 
-    public TaobaoApplicationFake(Application application){
+    public TaobaoApplicationFake(Application application,AtlasApplicationDelegate delegate){
         this.mApplication = application;
+        mAtlasApplicationDelegate = delegate;
     }
 
     public void onCreate(){
@@ -73,14 +69,6 @@ public class TaobaoApplicationFake implements IAtlasApplication {
         mAtlasApplicationDelegate.setClassNotFoundListener(new ClassNotFoundInterceptor());
         mAtlasApplicationDelegate.onCreate();
         ((PanguApplication) Globals.getApplication()).registerCrossActivityLifecycleCallback(new AppForgroundObserver());
-    }
-
-    protected void attachBaseContext(Context base) {
-        if (mAtlasApplicationDelegate == null) {
-            mAtlasApplicationDelegate = new AtlasApplicationDelegate(mApplication);
-            mAtlasApplicationDelegate.setHighPriorityBundles(HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL, HIGH_PRIORITY_BUNDLE_FOR_BLOCK_INSTALL);
-        }
-        mAtlasApplicationDelegate.attachBaseContext(base);
     }
 
     public boolean bindService(Intent service, ServiceConnection conn, int flags) {
@@ -107,29 +95,6 @@ public class TaobaoApplicationFake implements IAtlasApplication {
             return false;
         else
             return true;
-    }
-
-    @Override
-    public boolean shouldResetFramework() {
-        return Updater.needRollback();
-    }
-
-    @Override
-    public void onAppUpgrade() {
-        /**
-         * 如果发生了更新，清除动态部署缓存文件
-         */
-        Updater.removeBaseLineInfo();
-    }
-
-    @Override
-    public String getCustomVersionName() {
-        return BaselineInfoProvider.getInstance().getBaselineVersion();
-    }
-
-    @Override
-    public int getCustomVersionCode() {
-        return BaselineInfoProvider.getInstance().getMainVersionCode();
     }
 
     @Override
