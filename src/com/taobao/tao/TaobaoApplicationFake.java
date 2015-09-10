@@ -23,6 +23,7 @@ import com.taobao.tao.frameworkwrapper.AppForgroundObserver;
 import com.taobao.tao.frameworkwrapper.AtlasMonitorImpl;
 import com.taobao.tao.frameworkwrapper.AutoStartBundlesLaunch;
 import com.taobao.tao.frameworkwrapper.ExternalLog;
+import com.taobao.tao.update.Updater;
 import com.taobao.tao.util.Constants;
 import com.taobao.tao.util.StringUtil;
 import com.taobao.updatecenter.hotpatch.HotPatchManager;
@@ -125,6 +126,9 @@ public class TaobaoApplicationFake implements IAtlasApplication {
         if (mAtlasApplicationDelegate.getCurrentProcessName().equals(CHANNEL_PROCESS)){
             if (Build.BRAND.equalsIgnoreCase("xiaomi")){
                 AutoStartBundlesLaunch.startBundles(new String[]{"com.taobao.xiaomi"});
+            } else if(Build.BRAND.equalsIgnoreCase("huawei") || Build.BRAND.equalsIgnoreCase("honor")) {
+                AutoStartBundlesLaunch.startBundles(new String[]{"com.taobao.huawei"});
+
             }
         }
     }
@@ -257,7 +261,7 @@ public class TaobaoApplicationFake implements IAtlasApplication {
         HotPatchManager hm = HotPatchManager.getInstance();
         hm.init(mApplication, Globals.getVersionName(), null, null);
         if (mApplication.getPackageName().equals(TaoApplication.getProcessName(Globals.getApplication()))
-                || StringUtil.contains(TaoApplication.getProcessName(Globals.getApplication()), ":push")) {
+                || StringUtil.contains(TaoApplication.getProcessName(Globals.getApplication()), ":channel")) {
             SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(Globals.getApplication());
             if ("1".equals(settings.getString("hotpatch_priority", "0"))) {
                 hm.startHotPatch();

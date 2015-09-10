@@ -68,45 +68,15 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
     public boolean isBundleValid(String bundlePath) {
     	return mApplicationFake.isBundleValid(bundlePath);
      }
-<<<<<<< HEAD
-=======
-    
-    @Override
-    public void onFrameworkStartUp() {
-        AutoStartBundlesLaunch launchManager= new AutoStartBundlesLaunch();
-        launchManager.registerDelayedBundlesAutoStart();
-        //start xiaomi bundle on Channel process.
-        if (mAtlasApplicationDelegate.getCurrentProcessName().equals(CHANNEL_PROCESS)){
-            if (Build.BRAND.equalsIgnoreCase("xiaomi")){
-                AutoStartBundlesLaunch.startBundles(new String[]{"com.taobao.xiaomi"});
-            } else if(Build.BRAND.equalsIgnoreCase("huawei") || Build.BRAND.equalsIgnoreCase("honor")) {
-                AutoStartBundlesLaunch.startBundles(new String[]{"com.taobao.huawei"});
-            }
-        }
-    }
->>>>>>> fd57b2f330d2fe517ee929a61ed3f91403bcbcb6
 
     @Override
     public boolean bindService(Intent service, ServiceConnection conn, int flags) {
         return mAtlasApplicationDelegate.bindService(service,conn,flags);
     }
 
-<<<<<<< HEAD
     @Override
     public ComponentName startService(Intent service) {
         return mAtlasApplicationDelegate.startService(service);
-=======
-    private void initAndStartHotpatch() {
-        HotPatchManager hm = HotPatchManager.getInstance();
-        hm.init(this, Globals.getVersionName(), null, null);
-        if (getPackageName().equals(TaoApplication.getProcessName(Globals.getApplication()))
-                || StringUtil.contains(TaoApplication.getProcessName(Globals.getApplication()), ":channel")) {
-            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(Globals.getApplication());
-            if ("1".equals(settings.getString("hotpatch_priority", "0"))) {
-                hm.startHotPatch();
-            }
-        }
->>>>>>> fd57b2f330d2fe517ee929a61ed3f91403bcbcb6
     }
 
     @Override
