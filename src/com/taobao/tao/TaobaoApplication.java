@@ -298,7 +298,7 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
         HotPatchManager hm = HotPatchManager.getInstance();
         hm.init(this, Globals.getVersionName(), null, null);
         if (getPackageName().equals(TaoApplication.getProcessName(Globals.getApplication()))
-                || StringUtil.contains(TaoApplication.getProcessName(Globals.getApplication()), ":push")) {
+                || StringUtil.contains(TaoApplication.getProcessName(Globals.getApplication()), ":channel")) {
             SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(Globals.getApplication());
             if ("1".equals(settings.getString("hotpatch_priority", "0"))) {
                 hm.startHotPatch();
