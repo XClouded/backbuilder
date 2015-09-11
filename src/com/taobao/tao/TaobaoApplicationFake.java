@@ -38,7 +38,7 @@ import java.lang.reflect.Field;
  * 添加此类目的是为了Application里面import的所以类都可以支持动态部署
  * Created by guanjie on 15/9/9.
  */
-public class TaobaoApplicationFake implements IAtlasApplication {
+public class TaobaoApplicationFake{
 
     final static String TAG = "TaobaoApplication";
     private final static String CHANNEL_PROCESS = "com.taobao.taobao:channel";
@@ -84,13 +84,6 @@ public class TaobaoApplicationFake implements IAtlasApplication {
         return mAtlasApplicationDelegate.getPackageManager();
     }
 
-
-    @Override
-    public boolean isLightPackage() {
-        return Globals.isMiniPackage();
-    }
-
-    @Override
     public boolean skipLoadBundles(String processName) {
         if(processName.equals(mApplication.getPackageName()))
             return false;
@@ -98,7 +91,6 @@ public class TaobaoApplicationFake implements IAtlasApplication {
             return true;
     }
 
-    @Override
     public boolean isBundleValid(String bundlePath) {
         com.alibaba.wireless.security.open.SecurityGuardManager openManager = null;
         try{
@@ -118,7 +110,6 @@ public class TaobaoApplicationFake implements IAtlasApplication {
         return true;
     }
 
-    @Override
     public void onFrameworkStartUp() {
         AutoStartBundlesLaunch launchManager= new AutoStartBundlesLaunch();
         launchManager.registerDelayedBundlesAutoStart();
@@ -133,7 +124,6 @@ public class TaobaoApplicationFake implements IAtlasApplication {
         }
     }
 
-    @Override
     public void preFrameworkinit(Context mBaseContext) {
         Field sInstalledVersionName = null;
         try {

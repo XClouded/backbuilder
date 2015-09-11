@@ -9,6 +9,7 @@ import android.taobao.atlas.wrapper.IAtlasApplication;
 import android.text.TextUtils;
 import android.util.Log;
 import com.taobao.android.lifecycle.PanguApplication;
+import com.taobao.taobaocompat.R;
 
 /**
  * Created by guanjie on 15/7/8.
@@ -56,7 +57,18 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
 
     @Override
     public boolean isLightPackage() {
-        return mApplicationFake.isLightPackage();
+        String miniPackage = null;
+        try{
+            miniPackage = getString(R.string.isMiniPackage);
+        }catch(Throwable e){
+            return false;
+        }
+
+        if(!TextUtils.isEmpty(miniPackage)){
+            return "1".equals(miniPackage.trim());
+        }
+
+        return false;
     }
 
     @Override
