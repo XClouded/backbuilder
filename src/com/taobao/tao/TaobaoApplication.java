@@ -12,11 +12,14 @@ import com.taobao.android.lifecycle.PanguApplication;
 import com.taobao.taobaocompat.R;
 
 /**
+ * Application 锁死不能修改，如果要修改，请将代码移入TaobaoApplicationFake，Application内用
+ * 到的class无法支持动态部署
  * Created by guanjie on 15/7/8.
  */
 public class TaobaoApplication extends PanguApplication implements IAtlasApplication {
 
     public TaobaoApplicationFake mApplicationFake;
+
     final static String[] HIGH_PRIORITY_BUNDLE_FOR_BLOCK_INSTALL = new String[]{"com.taobao.browser","com.taobao.taobao.home","com.taobao.dynamic","com.taobao.login4android", "com.taobao.passivelocation", "com.taobao.mytaobao", "com.taobao.wangxin", "com.taobao.allspark",
             "com.taobao.search", "com.taobao.android.scancode", "com.taobao.android.trade", "com.taobao.taobao.cashdesk", "com.taobao.weapp", "com.taobao.taobao.alipay"};
 
@@ -34,6 +37,26 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
         }
         mAtlasApplicationDelegate.attachBaseContext(base);
     }
+
+    //step 1.5
+    @Override
+    public boolean isLightPackage() {
+        String miniPackage = null;
+        try{
+            miniPackage = getString(R.string.isMiniPackage);
+        }catch(Throwable e){
+            return false;
+        }
+
+        if(!TextUtils.isEmpty(miniPackage)){
+            return "1".equals(miniPackage.trim());
+        }
+
+        return false;
+    }
+
+    /////////////////////////////////////step2 之前的代码在主dex的patch load之前调用，无法支持动态部署///////////////////////////
+    /////////////////////////////////////step2 开始使用的到的代码可以支持动态部署（前提是不在TaobaoApplication里面被引用）//////////
 
     //step 2
     @Override
@@ -53,22 +76,6 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
     @Override
     public void onFrameworkStartUp() {
         mApplicationFake.onFrameworkStartUp();
-    }
-
-    @Override
-    public boolean isLightPackage() {
-        String miniPackage = null;
-        try{
-            miniPackage = getString(R.string.isMiniPackage);
-        }catch(Throwable e){
-            return false;
-        }
-
-        if(!TextUtils.isEmpty(miniPackage)){
-            return "1".equals(miniPackage.trim());
-        }
-
-        return false;
     }
 
     @Override
