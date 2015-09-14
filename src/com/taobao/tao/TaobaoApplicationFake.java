@@ -129,7 +129,7 @@ public class TaobaoApplicationFake{
         try {
             Field sApplication = Globals.class.getDeclaredField("sApplication");
             sApplication.setAccessible(true);
-            sApplication.set(null, this);
+            sApplication.set(null, application);
             sInstalledVersionName = Globals.class.getDeclaredField("sInstalledVersionName");
             sInstalledVersionName.setAccessible(true);
             sInstalledVersionName.set(null, mBaseContext.getPackageManager().getPackageInfo(mBaseContext.getPackageName(), 0).versionName);
