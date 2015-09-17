@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.taobao.atlas.framework.Atlas;
+import android.taobao.atlas.framework.BundleImpl;
+import android.taobao.atlas.runtime.ClassLoadFromBundle;
 import android.taobao.atlas.wrapper.AtlasApplicationDelegate;
 import android.taobao.atlas.wrapper.IAtlasApplication;
 import android.text.TextUtils;
@@ -32,6 +34,8 @@ import com.taobao.wireless.security.sdk.pkgvaliditycheck.IPkgValidityCheckCompon
 import android.taobao.safemode.UTCrashCaughtListner;
 import com.taobao.tao.watchdog.LaunchdogAlarm;
 import com.alibaba.motu.crashreporter.MotuCrashReporter;
+import org.osgi.framework.BundleException;
+
 import java.lang.reflect.Field;
 
 /**
@@ -111,6 +115,19 @@ public class TaobaoApplicationFake{
     }
 
     public void onFrameworkStartUp() {
+        if(mApplication.getString(com.taobao.taobaocompat.R.string.env_switch).equals("1")){
+            ClassLoadFromBundle.resolveInternalBundles();
+            Atlas.getInstance().installBundleWithDependency("com.taobao.debugsetting");
+            BundleImpl bundle = (BundleImpl)Atlas.getInstance().getBundle("com.taobao.debugsetting");
+            if(bundle!=null){
+                try {
+                    Log.d("TaobaoApplication","start debugsetting");
+                    bundle.start();
+                } catch (BundleException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         AutoStartBundlesLaunch launchManager= new AutoStartBundlesLaunch();
         launchManager.registerDelayedBundlesAutoStart();
         //start xiaomi bundle on Channel process.
