@@ -68,12 +68,19 @@ public class AutoStartBundlesLaunch {
     private class HomeFinishedBroadcastReceiver extends BroadcastReceiver {
 
 		@Override public void onReceive(Context context, Intent intent) {
-	    	if(!isDelayHomeStarted) {
+	    	    if(!isDelayHomeStarted) {
 	    		startBundles(delayHomeBundle);
 	    		isDelayHomeStarted = true;
-	    	}
-	    	Globals.getApplication().unregisterReceiver(homeReceiver);
-	    	homeReceiver = null;
+	    	    }
+                    try{
+                        if (homeReceiver != null){
+	    	            Globals.getApplication().unregisterReceiver(homeReceiver);
+	    	            homeReceiver = null;
+                        }
+                    } catch (Throwable e){
+	    	        homeReceiver = null;
+        		Log.d(TAG, "unregister homeReceiver failed." + e);
+                    }
 		}	
     }
     
