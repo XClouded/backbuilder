@@ -158,13 +158,13 @@ public class TaobaoApplicationFake{
         initAndStartHotpatch();
         // start watchdog monitor alarm
         if (TaoApplication.getProcessName(mBaseContext).equals(mApplication.getPackageName())) {
-            LaunchdogAlarm.start(mBaseContext);
+            LaunchdogAlarm.start(mApplication);
         }
-        initCrashHandlerAndSafeMode(mBaseContext);
+        initCrashHandlerAndSafeMode();
 
     }
 
-    private void initCrashHandlerAndSafeMode(Context context) {
+    private void initCrashHandlerAndSafeMode() {
         ReporterConfigure reporterConfigure = new ReporterConfigure();
 
         String appVersion = null;
