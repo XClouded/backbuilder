@@ -120,19 +120,18 @@ public class TaobaoApplicationFake{
          * mApplication.getString 内部实现 getResource().getString 里面存在空指针的风险
          */
         try {
-            if(mApplication.getResources()==null){
-                return;
-            }
-            if (mApplication.getString(com.taobao.taobaocompat.R.string.env_switch).equals("1")) {
-                ClassLoadFromBundle.resolveInternalBundles();
-                Atlas.getInstance().installBundleWithDependency("com.taobao.debugsetting");
-                BundleImpl bundle = (BundleImpl) Atlas.getInstance().getBundle("com.taobao.debugsetting");
-                if (bundle != null) {
-                    try {
-                        Log.d("TaobaoApplication", "start debugsetting");
-                        bundle.start();
-                    } catch (BundleException e) {
-                        e.printStackTrace();
+            if(mApplication.getResources()!=null) {
+                if (mApplication.getString(com.taobao.taobaocompat.R.string.env_switch).equals("1")) {
+                    ClassLoadFromBundle.resolveInternalBundles();
+                    Atlas.getInstance().installBundleWithDependency("com.taobao.debugsetting");
+                    BundleImpl bundle = (BundleImpl) Atlas.getInstance().getBundle("com.taobao.debugsetting");
+                    if (bundle != null) {
+                        try {
+                            Log.d("TaobaoApplication", "start debugsetting");
+                            bundle.start();
+                        } catch (BundleException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
