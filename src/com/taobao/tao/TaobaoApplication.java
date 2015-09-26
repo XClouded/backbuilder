@@ -26,6 +26,7 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
     final static String[] HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL = new String[]{"com.taobao.browser","com.taobao.taobao.home", "com.taobao.login4android","com.taobao.barrier"};
 
     private AtlasApplicationDelegate mAtlasApplicationDelegate;
+    public static boolean isFrameworkStartUp = false;
 
     //step 1
     @Override
@@ -75,6 +76,7 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
     //step 4
     @Override
     public void onFrameworkStartUp() {
+        isFrameworkStartUp = true;
         mApplicationFake.onFrameworkStartUp();
     }
 

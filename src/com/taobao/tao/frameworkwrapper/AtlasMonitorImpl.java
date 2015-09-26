@@ -2,6 +2,7 @@ package com.taobao.tao.frameworkwrapper;
 
 import android.taobao.atlas.util.IMonitor;
 import com.taobao.statistic.TBS;
+import com.taobao.tao.TaobaoApplication;
 
 import java.lang.Throwable;
 
@@ -10,12 +11,18 @@ import java.lang.Throwable;
  */
 public class AtlasMonitorImpl implements IMonitor{
     public void trace(String num, String arg1, String arg2, String detail){
+        if(!TaobaoApplication.isFrameworkStartUp){
+            return;
+        }
         try {
             TBS.Ext.commitEvent(61005, num, arg1, arg2, detail);
         }catch(Throwable e){e.printStackTrace();}
     }
 
     public void trace(Integer num, String arg1, String arg2, String detail){
+        if(!TaobaoApplication.isFrameworkStartUp){
+            return;
+        }
         try {
         TBS.Ext.commitEvent(61005, num.toString(), arg1, arg2, detail);
         }catch(Throwable e){e.printStackTrace();}
