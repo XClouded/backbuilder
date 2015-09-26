@@ -262,8 +262,8 @@ public class TaobaoApplicationFake{
             reporterConfigure.setEnableANRMainThreadOnly(false);  //只传递主线程的ANR堆栈信息 设置为false,意味着ANR将传递所有线程数据
             reporterConfigure.setEnableDumpAllThread(true);     //开启dump所有线程数据 设置为false
 
-            MotuCrashReporter.getInstance().setCrashCaughtListener(new UTCrashCaughtListner(context));
-            MotuCrashReporter.getInstance().enable(context, Constants.appkey, appVersion,ttid, null, reporterConfigure);//appkey appversion channel usernick
+            MotuCrashReporter.getInstance().setCrashCaughtListener(new UTCrashCaughtListner(mApplication));
+            MotuCrashReporter.getInstance().enable(mApplication, Constants.appkey, appVersion,ttid, null, reporterConfigure);//appkey appversion channel usernick
 
             //test
             //MotuCrashReporter.getInstance().enable(context, "245811395106", "2.0.0-SNAPSHOT", "1123123", "凤巢-11", reporterConfigure);
