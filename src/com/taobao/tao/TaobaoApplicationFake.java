@@ -36,6 +36,7 @@ import com.taobao.tao.watchdog.LaunchdogAlarm;
 import com.alibaba.motu.crashreporter.MotuCrashReporter;
 import org.osgi.framework.BundleException;
 
+import java.lang.Throwable;
 import java.lang.reflect.Field;
 
 /**
@@ -115,19 +116,30 @@ public class TaobaoApplicationFake{
     }
 
     public void onFrameworkStartUp() {
-        if(mApplication.getString(com.taobao.taobaocompat.R.string.env_switch).equals("1")){
-            ClassLoadFromBundle.resolveInternalBundles();
-            Atlas.getInstance().installBundleWithDependency("com.taobao.debugsetting");
-            BundleImpl bundle = (BundleImpl)Atlas.getInstance().getBundle("com.taobao.debugsetting");
-            if(bundle!=null){
-                try {
-                    Log.d("TaobaoApplication","start debugsetting");
-                    bundle.start();
-                } catch (BundleException e) {
-                    e.printStackTrace();
+        /**
+         * mApplication.getString 内部实现 getResource().getString 里面存在空指针的风险
+         */
+        try {
+            if(mApplication.getResources()==null){
+                return;
+            }
+            if (mApplication.getString(com.taobao.taobaocompat.R.string.env_switch).equals("1")) {
+                ClassLoadFromBundle.resolveInternalBundles();
+                Atlas.getInstance().installBundleWithDependency("com.taobao.debugsetting");
+                BundleImpl bundle = (BundleImpl) Atlas.getInstance().getBundle("com.taobao.debugsetting");
+                if (bundle != null) {
+                    try {
+                        Log.d("TaobaoApplication", "start debugsetting");
+                        bundle.start();
+                    } catch (BundleException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+        }catch(Throwable e){
+
         }
+
         AutoStartBundlesLaunch launchManager= new AutoStartBundlesLaunch();
         launchManager.registerDelayedBundlesAutoStart();
         //start xiaomi bundle on Channel process.
