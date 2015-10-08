@@ -57,7 +57,8 @@ public class TaobaoApplicationFake{
     }
 
     public void onCreate(){
-                /*
+    	    	
+        /*
          * Set Global.sApplication since system bundle is
          * started at Atlas initiate which would start TaoApplication.
          */
@@ -172,9 +173,24 @@ public class TaobaoApplicationFake{
             LaunchdogAlarm.start(mApplication);
         }
         initCrashHandlerAndSafeMode();
-
+        
+        initSecurityManager();
     }
 
+    private void initSecurityManager() {
+        
+    	if ("com.taobao.taobao".equals(mAtlasApplicationDelegate.getCurrentProcessName())
+    			||CHANNEL_PROCESS.equals(mAtlasApplicationDelegate.getCurrentProcessName())){
+	    	long start = System.currentTimeMillis();
+			try {
+				android.taobao.apirequest.SecurityManager.getInstance().init(this.mApplication);
+			} catch(Exception e){
+				Log.e(TAG, "SecurityManager:", e);
+			}
+	    	Log.d(TAG, "init Secutiry:"+ (System.currentTimeMillis() - start));
+    	}
+    }
+    
     private void initCrashHandlerAndSafeMode() {
         ReporterConfigure reporterConfigure = new ReporterConfigure();
 
