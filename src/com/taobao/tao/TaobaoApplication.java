@@ -28,6 +28,9 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
     private AtlasApplicationDelegate mAtlasApplicationDelegate;
     public static boolean isFrameworkStartUp = false;
 
+    //不要删，这个在 welcome 界面埋点需要
+    public static long START;
+    
     //step 1
     @Override
     protected void attachBaseContext(Context base) {
@@ -63,6 +66,7 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
     @Override
     public void onCreate() {
         super.onCreate();
+        START = System.currentTimeMillis();
         mApplicationFake = new TaobaoApplicationFake(this,mAtlasApplicationDelegate);
         mApplicationFake.onCreate();
     }
