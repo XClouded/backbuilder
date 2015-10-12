@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.taobao.android</groupId>
     <artifactId>taobao_launch</artifactId>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>3.0.2.8</version>
     <packaging>aar</packaging>
     <name>taobao_launch</name>
     <properties>
