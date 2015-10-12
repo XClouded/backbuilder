@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import com.taobao.android.lifecycle.PanguApplication;
 import com.taobao.taobaocompat.R;
+import com.taobao.barrier.startup.StartupMonitor;
 
 /**
  * Application 锁死不能修改，如果要修改，请将代码移入TaobaoApplicationFake，Application内用
@@ -66,6 +67,7 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
     @Override
     public void onCreate() {
         super.onCreate();
+        StartupMonitor.start(this);
         START = System.currentTimeMillis();
         mApplicationFake = new TaobaoApplicationFake(this,mAtlasApplicationDelegate);
         mApplicationFake.onCreate();
