@@ -67,7 +67,7 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
     @Override
     public void onCreate() {
         super.onCreate();
-        StartupMonitor.start(this);
+        StartupMonitor.monitor(this);
         START = System.currentTimeMillis();
         mApplicationFake = new TaobaoApplicationFake(this,mAtlasApplicationDelegate);
         mApplicationFake.onCreate();
