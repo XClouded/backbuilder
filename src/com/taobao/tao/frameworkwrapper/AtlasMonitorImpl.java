@@ -19,23 +19,30 @@ public class AtlasMonitorImpl implements IMonitor{
     private MeasureValueSet interactiveMSet = MeasureValueSet.create();
 	
 	public AtlasMonitorImpl(Application application){ 
+            try{
 		AppMonitor.init(application);
-		AppMonitor.enableLog(true);
 		AppMonitor.setRequestAuthInfo(true, GetAppKeyFromSecurity.getAppKey(0),null);
 		AppMonitor.setChannel(TaoPackageInfo.getTTID());
 		DimensionSet dimensionSet = DimensionSet.create().addDimension("TypeID").addDimension("Detail").addDimension("BundleName");
 		MeasureSet measureSet = MeasureSet.create().addMeasure("remainDisk");
 		AppMonitor.register("Atlas", "Monitor", measureSet, dimensionSet);
-
+            } catch (Exception e){
+            }
 	}
 	
 	public void trace(String TypeID, String BundleName, String Detail, String remainedDisk){
+            try{
 		AppMonitor.Stat.commit("Atlas", "Monitor", interactiveDSet.setValue("TypeID", TypeID).setValue("Detail",Detail).setValue("BundleName", BundleName),
                 interactiveMSet.setValue("remainDisk", Double.parseDouble(remainedDisk)));
+            } catch (Exception e){
+            }
 	}
 	
 	public void trace(Integer TypeID, String BundleName, String Detail, String remainedDisk){
+            try{
 		AppMonitor.Stat.commit("Atlas", "Monitor", interactiveDSet.setValue("TypeID", TypeID.toString()).setValue("Detail",Detail).setValue("BundleName", BundleName),
                 interactiveMSet.setValue("remainDisk", Double.parseDouble(remainedDisk)));
+            } catch (Exception e){
+            }
 	}
 }
