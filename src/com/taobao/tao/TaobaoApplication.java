@@ -40,22 +40,27 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         if (mAtlasApplicationDelegate == null) {
-            String[] demandInstallBundles = HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL;
             mAtlasApplicationDelegate = new AtlasApplicationDelegate(this);
-            if(!"1".equals(base.getString(R.string.package_type)) ||
-                    "0".equals(base.getString(R.string.publish_type))){
-                Log.d(TAG, "need to start com.taobao.barrier");
-                demandInstallBundles = Arrays.copyOf(HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL,
-                        HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL.length + 1);
-                demandInstallBundles[demandInstallBundles.length - 1] = "com.taobao.barrier";
-            }
 
+            String[] demandInstallBundles = remakeDemandBundleList(base);
             for(String s : demandInstallBundles){
                 Log.d(TAG, String.format("  demand_bundle: %s", s));
             }
             mAtlasApplicationDelegate.setHighPriorityBundles(demandInstallBundles, HIGH_PRIORITY_BUNDLE_FOR_BLOCK_INSTALL);
         }
         mAtlasApplicationDelegate.attachBaseContext(base);
+    }
+
+    private static String[] remakeDemandBundleList(Context base){
+        String[] demandInstallBundles = HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL;
+        if(!"1".equals(base.getString(R.string.package_type)) ||
+                "0".equals(base.getString(R.string.publish_type))){
+            Log.d(TAG, "need to start com.taobao.barrier");
+            demandInstallBundles = Arrays.copyOf(HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL,
+                    HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL.length + 1);
+            demandInstallBundles[demandInstallBundles.length - 1] = "com.taobao.barrier";
+        }
+        return demandInstallBundles;
     }
 
     //step 1.5
