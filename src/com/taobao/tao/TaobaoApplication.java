@@ -12,19 +12,22 @@ import com.taobao.android.lifecycle.PanguApplication;
 import com.taobao.taobaocompat.R;
 import com.taobao.barrier.startup.StartupMonitor;
 
+import java.util.Arrays;
+
 /**
  * Application 锁死不能修改，如果要修改，请将代码移入TaobaoApplicationFake，Application内用
  * 到的class无法支持动态部署
  * Created by guanjie on 15/7/8.
  */
 public class TaobaoApplication extends PanguApplication implements IAtlasApplication {
+    private static final String TAG = TaobaoApplication.class.getSimpleName();
 
     public TaobaoApplicationFake mApplicationFake;
 
     final static String[] HIGH_PRIORITY_BUNDLE_FOR_BLOCK_INSTALL = new String[]{"com.taobao.browser","com.taobao.taobao.home","com.taobao.dynamic","com.taobao.login4android", "com.taobao.passivelocation", "com.taobao.mytaobao", "com.taobao.wangxin", "com.taobao.allspark",
             "com.taobao.search", "com.taobao.android.scancode", "com.taobao.android.trade", "com.taobao.taobao.cashdesk", "com.taobao.weapp", "com.taobao.taobao.alipay"};
 
-    final static String[] HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL = new String[]{"com.taobao.browser","com.taobao.taobao.home", "com.taobao.login4android","com.taobao.barrier"};
+    final static String[] HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL = new String[]{"com.taobao.browser","com.taobao.taobao.home", "com.taobao.login4android"};
 
     private AtlasApplicationDelegate mAtlasApplicationDelegate;
     public static boolean isFrameworkStartUp = false;
@@ -37,8 +40,20 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         if (mAtlasApplicationDelegate == null) {
+            String[] demandInstallBundles = HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL;
             mAtlasApplicationDelegate = new AtlasApplicationDelegate(this);
-            mAtlasApplicationDelegate.setHighPriorityBundles(HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL, HIGH_PRIORITY_BUNDLE_FOR_BLOCK_INSTALL);
+            if(!"1".equals(base.getString(R.string.package_type)) ||
+                    "0".equals(base.getString(R.string.publish_type))){
+                Log.d(TAG, "need to start com.taobao.barrier");
+                demandInstallBundles = Arrays.copyOf(HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL,
+                        HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL.length + 1);
+                demandInstallBundles[demandInstallBundles.length - 1] = "com.taobao.barrier";
+            }
+
+            for(String s : demandInstallBundles){
+                Log.d(TAG, String.format("  demand_bundle: %s", s));
+            }
+            mAtlasApplicationDelegate.setHighPriorityBundles(demandInstallBundles, HIGH_PRIORITY_BUNDLE_FOR_BLOCK_INSTALL);
         }
         mAtlasApplicationDelegate.attachBaseContext(base);
     }
