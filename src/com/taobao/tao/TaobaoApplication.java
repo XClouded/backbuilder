@@ -53,6 +53,8 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
 
     private static String[] remakeDemandBundleList(Context base){
         String[] demandInstallBundles = HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL;
+        // in debug or beta builds, try to load barrier
+        // in release builds, don't load barrier
         if(!"1".equals(base.getString(R.string.package_type)) ||
                 "0".equals(base.getString(R.string.publish_type))){
             Log.d(TAG, "need to start com.taobao.barrier");
