@@ -51,18 +51,30 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
         mAtlasApplicationDelegate.attachBaseContext(base);
     }
 
+    /**
+     * Re-form the bundle list for demand install, according to current build.
+     * @param base
+     * @return
+     */
     private static String[] remakeDemandBundleList(Context base){
-        String[] demandInstallBundles = HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL;
-        // in debug or beta builds, try to load barrier
-        // in release builds, don't load barrier
-        if(!"1".equals(base.getString(R.string.package_type)) ||
-                "0".equals(base.getString(R.string.publish_type))){
-            Log.d(TAG, "need to start com.taobao.barrier");
-            demandInstallBundles = Arrays.copyOf(HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL,
-                    HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL.length + 1);
-            demandInstallBundles[demandInstallBundles.length - 1] = "com.taobao.barrier";
+        try {
+            String[] demandInstallBundles = HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL;
+            // package_type and publish_type are defined through MTL builds.
+            // a. in debug or beta builds, try to load barrier
+            // b. in release builds, don't load barrier
+            if (!"1".equals(base.getString(R.string.package_type)) ||
+                    "0".equals(base.getString(R.string.publish_type))) {
+                Log.d(TAG, "need to start com.taobao.barrier");
+                demandInstallBundles = Arrays.copyOf(HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL,
+                        HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL.length + 1);
+                demandInstallBundles[demandInstallBundles.length - 1] = "com.taobao.barrier";
+            }
+            return demandInstallBundles;
+        }catch (Throwable e){
+            // protection: in some cases(human error in integration, etc.), build variables may not be passed in, use default build list.
+            Log.w(TAG, "unable to re-make bundle list for demand install, use default list instead", e);
+            return HIGH_PRIORITY_BUNDLE_FOR_DEMAND_INSTALL;
         }
-        return demandInstallBundles;
     }
 
     //step 1.5
