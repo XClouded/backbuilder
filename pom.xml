@@ -82,7 +82,7 @@
             <groupId>com.taobao.android</groupId>
             <artifactId>atlas</artifactId>
             <type>jar</type>
-            <version>3.0.4</version>
+            <version>3.0.34-SNAPSHOT</version>
         </dependency>
 
         <dependency>

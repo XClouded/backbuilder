@@ -11,6 +11,7 @@ import android.util.Log;
 import com.taobao.android.lifecycle.PanguApplication;
 import com.taobao.taobaocompat.R;
 import com.taobao.barrier.startup.StartupMonitor;
+import android.content.pm.ApplicationInfo;
 
 import java.util.Arrays;
 
@@ -48,6 +49,9 @@ public class TaobaoApplication extends PanguApplication implements IAtlasApplica
             }
             mAtlasApplicationDelegate.setHighPriorityBundles(demandInstallBundles, HIGH_PRIORITY_BUNDLE_FOR_BLOCK_INSTALL);
         }
+        boolean isDebuggable = (0 != (base.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+        if (isDebuggable)
+            mAtlasApplicationDelegate.enableMultiDex();
         mAtlasApplicationDelegate.attachBaseContext(base);
     }
 
