@@ -90,8 +90,15 @@ public class AutoStartBundlesLaunch {
 	    		startBundles(delayLoginBundle);
 	    		isDelayLoginStarted = true;
 	    	}
-	    	Globals.getApplication().unregisterReceiver(loginReceiver);
-	    	loginReceiver = null;
+                    try{
+                        if(loginReceiver!=null){
+	    	            Globals.getApplication().unregisterReceiver(loginReceiver);
+	    	            loginReceiver = null;
+                        }
+                    } catch (Throwable e){
+     	                loginReceiver = null;
+        		Log.d(TAG, "unregister loginReceiver failed." + e);
+                    }
 		}	
     }  
 
